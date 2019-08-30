@@ -6,7 +6,6 @@ import izumi.sbtgen.model._
 import izumi.sbtgen.output.PreparedAggregate
 
 
-
 class Renderer(protected val config: GenConfig, project: Project)
   extends WithProjectIndex
     with WithBasicRenderers
@@ -44,7 +43,13 @@ class Renderer(protected val config: GenConfig, project: Project)
     assert(allAggregates.nonEmpty, "All aggregates were filtered out")
     val aggDefs = renderAggregateProjects(allAggregates)
 
-    Seq(artifacts, aggDefs)
+    val settings = project.settings.map(renderSetting)
+
+    Seq(
+      settings,
+      artifacts,
+      aggDefs
+    )
       .flatten
   }
 
@@ -199,6 +204,14 @@ class Renderer(protected val config: GenConfig, project: Project)
 
   protected def renderSetting(settingDef: SettingDef): String = {
     val name = settingDef.name
+
+    val in = settingDef.scope match {
+      case SettingScope.Project =>
+        Seq.empty
+      case SettingScope.Build =>
+        Seq("in", "ThisBuild")
+    }
+
     val op = settingDef.op match {
       case SettingOp.Append =>
         "+="
@@ -240,7 +253,8 @@ class Renderer(protected val config: GenConfig, project: Project)
             "{ (isSnapshot.value, scalaVersion.value) match {\n", "\n", "\n} }"
           )
     }
-    Seq(name, op, out).mkString(" ")
+    val all = Seq(name) ++ in ++ Seq(op, out)
+    all.mkString(" ")
   }
 
   protected def renderConst(const: Const): String = {

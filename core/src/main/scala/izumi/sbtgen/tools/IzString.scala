@@ -34,7 +34,7 @@ final class IzString(private val s: String) extends AnyVal {
   }
 
   @inline final def minimize(leave: Int): String = {
-    val parts = s.split('.').toVector
+    val parts = s.split('.').toSeq
     if (parts.size < leave) {
       s
     } else {

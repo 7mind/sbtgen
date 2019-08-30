@@ -2,17 +2,25 @@ package izumi.sbtgen.model
 
 import scala.language.implicitConversions
 
+sealed trait SettingScope
+object SettingScope {
+  case object Project extends SettingScope
+  case object Build extends SettingScope
+}
+
 sealed trait SettingDef {
   def name: String
 
   def op: SettingOp
+
+  def scope: SettingScope
 }
 
 object SettingDef {
 
-  case class UnscopedSettingDef(name: String, op: SettingOp, value: Const) extends SettingDef
+  case class UnscopedSettingDef(name: String, op: SettingOp, value: Const, scope: SettingScope) extends SettingDef
 
-  case class ScopedSettingDef(name: String, op: SettingOp, defs: Seq[(SettingKey, Const)]) extends SettingDef
+  case class ScopedSettingDef(name: String, op: SettingOp, defs: Seq[(SettingKey, Const)], scope: SettingScope) extends SettingDef
 
 }
 

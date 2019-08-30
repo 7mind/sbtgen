@@ -2,16 +2,20 @@ turbo in ThisBuild := true
 crossScalaVersions in ThisBuild := Seq("2.13.0", "2.12.9")
 scalaVersion in ThisBuild := crossScalaVersions.value.head
 
+name := "izumi-sbtgen"
+organization in ThisBuild := "io.7mind.izumi.sbtgen"
+publishMavenStyle in ThisBuild := true
+homepage in ThisBuild := Some(url("https://izumi.7mind.io"))
+licenses in ThisBuild := Seq("BSD-style" -> url("http://www.opensource.org/licenses/bsd-license.php"))
+developers in ThisBuild := List(
+  Developer(id = "7mind", name = "Septimal Mind", url = url("https://github.com/7mind"), email = "team@7mind.io"),
+)
+scmInfo in ThisBuild := Some(ScmInfo(url("https://github.com/7mind/sbtgen"), "scm:git:https://github.com/7mind/sbtgen.git"))
+
 lazy val core = (project in file("core"))
   .settings(
     libraryDependencies += "com.github.scopt" %% "scopt" % "4.0.0-RC2",
     libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-  )
-
-lazy val example = (project in file("example"))
-  .dependsOn(core)
-  .settings(
-    mainClass := Some("izumi.sbtgen.Main")
   )
 
 lazy val sbtgen = (project in file("sbtgen"))
@@ -20,9 +24,15 @@ lazy val sbtgen = (project in file("sbtgen"))
     libraryDependencies += "com.lihaoyi" % "ammonite" % "1.6.9-19-827dffe" cross CrossVersion.full
   )
 
+lazy val example = (project in file("example"))
+  .dependsOn(core)
+  .settings(
+    mainClass := Some("izumi.sbtgen.Main"),
+    skip in publish := true,
+  )
+
 lazy val `sbtgen-root` = (project in file("."))
   .aggregate(core, example, sbtgen)
   .settings(
-    publish := {},
-    publishLocal := {}
+    skip in publish := true,
   )

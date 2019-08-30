@@ -10,48 +10,59 @@ trait ModelExt {
     }
   }
 
-  implicit class StringExt(s: String) {
+  trait WithSettingsDsl {
+    protected val s: String
+    protected val scope: SettingScope
     def :=(const: Const): UnscopedSettingDef = {
-      UnscopedSettingDef(s, SettingOp.Assign, const)
+      UnscopedSettingDef(s, SettingOp.Assign, const, scope)
     }
 
     def +=(const: Const): UnscopedSettingDef = {
-      UnscopedSettingDef(s, SettingOp.Append, const)
+      UnscopedSettingDef(s, SettingOp.Append, const, scope)
     }
 
     def ++=(const: Const.EmptyMap.type): UnscopedSettingDef = {
-      UnscopedSettingDef(s, SettingOp.Extend, const)
+      UnscopedSettingDef(s, SettingOp.Extend, const, scope)
     }
 
     def ++=(const: Const.EmptySeq.type): UnscopedSettingDef = {
-      UnscopedSettingDef(s, SettingOp.Extend, const)
+      UnscopedSettingDef(s, SettingOp.Extend, const, scope)
     }
 
     def ++=[T: Const.Conv](const: Seq[T]): UnscopedSettingDef = {
       import Const._
-      UnscopedSettingDef(s, SettingOp.Extend, const)
+      UnscopedSettingDef(s, SettingOp.Extend, const, scope)
     }
 
     def ++=[T: Const.Conv](const: Map[Const.Scalar, T]): UnscopedSettingDef = {
       import Const._
-      UnscopedSettingDef(s, SettingOp.Extend, const)
+      UnscopedSettingDef(s, SettingOp.Extend, const, scope)
     }
 
     def :=(const: Seq[(SettingKey, Const)]): ScopedSettingDef = {
-      ScopedSettingDef(s, SettingOp.Assign, const)
+      ScopedSettingDef(s, SettingOp.Assign, const, scope)
     }
 
     def +=(const: Seq[(SettingKey, Const)]): ScopedSettingDef = {
-      ScopedSettingDef(s, SettingOp.Append, const)
+      ScopedSettingDef(s, SettingOp.Append, const, scope)
     }
 
     def ++=(const: Seq[(SettingKey, Const)]): ScopedSettingDef = {
-      ScopedSettingDef(s, SettingOp.Extend, const)
+      ScopedSettingDef(s, SettingOp.Extend, const, scope)
     }
 
+  }
+
+  class ScopedSettingBuilder(protected val s: String, protected val scope: SettingScope) extends WithSettingsDsl
+
+  implicit class StringExt(protected val s: String) extends WithSettingsDsl {
+    override protected val scope: SettingScope = SettingScope.Project
+    def in(scope: SettingScope): ScopedSettingBuilder = new ScopedSettingBuilder(s, scope)
 
     def raw: Const = Const.CRaw(s)
   }
+
+
 
   implicit class ArtifactIdExt(id: ArtifactId) {
     def in(scope: FullDependencyScope): ScopedDependency = {

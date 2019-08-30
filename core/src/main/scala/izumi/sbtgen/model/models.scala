@@ -73,9 +73,9 @@ case class Group(name: String)
 case class Artifact(
                      name: ArtifactId,
                      basePath: String,
-                     libs: Vector[ScopedLibrary],
-                     depends: Vector[ScopedDependency],
-                     platforms: Vector[PlatformEnv],
+                     libs: Seq[ScopedLibrary],
+                     depends: Seq[ScopedDependency],
+                     platforms: Seq[PlatformEnv],
                      groups: Set[Group] = Set.empty,
                      subGroupId: Option[String] = None,
                      settings: Seq[SettingDef] = Seq.empty,
@@ -84,11 +84,14 @@ case class Artifact(
 case class Aggregate(
                       name: ArtifactId,
                       path: String,
-                      artifacts: Vector[Artifact],
+                      artifacts: Seq[Artifact],
                     )
+
+
 
 case class Project(
                     name: ArtifactId,
-                    aggregates: Vector[Aggregate],
+                    aggregates: Seq[Aggregate],
+                    settings: Seq[SettingDef] = Seq.empty,
                   )
 

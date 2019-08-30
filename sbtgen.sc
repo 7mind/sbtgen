@@ -13,9 +13,9 @@ object TestProject {
   }
 
   object Targets {
-    private val targetScala = Vector(scala212, scala213)
-    final val cross = Vector(PlatformEnv(Platform.Jvm, targetScala), PlatformEnv(Platform.Js, targetScala))
-    final val crossJvm = Vector(PlatformEnv(Platform.Jvm, targetScala))
+    private val targetScala = Seq(scala212, scala213)
+    final val cross = Seq(PlatformEnv(Platform.Jvm, targetScala), PlatformEnv(Platform.Js, targetScala))
+    final val crossJvm = Seq(PlatformEnv(Platform.Jvm, targetScala))
   }
 
   object Projects {
@@ -41,13 +41,13 @@ object TestProject {
   lazy val fundamentalsCollections: Artifact = Artifact(
     ArtifactId("fundamentals-collections"),
     Projects.fundamentals.basePath,
-    Vector(
+    Seq(
       catsCore in Scope.Runtime.all,
       catsCore in Scope.Runtime.jvm,
       catsCore in Scope.Runtime.js,
       catsXXX in Scope.Runtime.jvm,
     ),
-    Vector.empty,
+    Seq.empty,
     Targets.cross,
     Groups.fundamentals,
     settings = Projects.root.settings,
@@ -56,8 +56,8 @@ object TestProject {
   lazy val fundamentalsPlatform: Artifact = Artifact(
     ArtifactId("fundamentals-platform"),
     Projects.fundamentals.basePath,
-    Vector.empty,
-    Vector(
+    Seq.empty,
+    Seq(
       fundamentalsCollections.name in Scope.Compile.jvm
     ),
     Targets.cross,
@@ -67,8 +67,8 @@ object TestProject {
   lazy val fundamentalsFunctional: Artifact = Artifact(
     ArtifactId("fundamentals-functional"),
     Projects.fundamentals.basePath,
-    Vector.empty,
-    Vector(
+    Seq.empty,
+    Seq(
       fundamentalsCollections.name in Scope.Runtime.all,
       fundamentalsFunctionalJvmOnly.name in Scope.Compile.jvm,
       fundamentalsFunctionalJvmOnly.name in Scope.Runtime.all,
@@ -80,8 +80,8 @@ object TestProject {
   lazy val fundamentalsFunctionalJvmOnly: Artifact = Artifact(
     ArtifactId("fundamentals-functional-jvmonly"),
     Projects.fundamentals.basePath,
-    Vector.empty,
-    Vector(
+    Seq.empty,
+    Seq(
       fundamentalsCollections.name in Scope.Runtime.all,
     ),
     Targets.crossJvm,
@@ -90,21 +90,23 @@ object TestProject {
 
   val tgSdk: Project = Project(
     Projects.root.id,
-    Vector(
+    Seq(
       Aggregate(
         Projects.fundamentals.id,
         Projects.fundamentals.basePath,
-        Vector(
+        Seq(
           fundamentalsCollections,
           fundamentalsPlatform,
           fundamentalsFunctional,
           fundamentalsFunctionalJvmOnly
         ),
       )
+    ),
+    Seq(
+      "publishMavenStyle" in SettingScope.Build := true
     )
   )
 }
-
 
 
 val settings = GlobalSettings(

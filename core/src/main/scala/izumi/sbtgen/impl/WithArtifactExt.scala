@@ -9,7 +9,7 @@ trait WithArtifactExt {
   protected val config: GenConfig
 
   protected implicit class AggregateExt(a: Aggregate) {
-    def filteredArtifacts: Vector[Artifact] = {
+    def filteredArtifacts: Seq[Artifact] = {
       a.artifacts.filter(a => config.onlyGroups.isEmpty || a.groups.intersect(config.onlyGroups).nonEmpty)
     }
   }
