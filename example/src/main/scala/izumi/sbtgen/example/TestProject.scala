@@ -108,6 +108,9 @@ object TestProject {
     ),
     Seq(
       "publishMavenStyle" in SettingScope.Build := true
-    )
+    ),
+    Seq(
+      Import("sbt.Keys._")
+    ),
   )
 }

@@ -17,6 +17,8 @@ object Scope {
 
   case object Optional extends Scope
 
+  case object Provided extends Scope
+
   case object Compile extends Scope
 
   case object Test extends Scope
@@ -89,9 +91,12 @@ case class Aggregate(
 
 
 
+case class Import(value: String)
+
 case class Project(
                     name: ArtifactId,
                     aggregates: Seq[Aggregate],
                     settings: Seq[SettingDef] = Seq.empty,
+                    imports: Seq[Import] = Seq.empty,
                   )
 

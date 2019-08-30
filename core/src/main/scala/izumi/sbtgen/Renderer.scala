@@ -45,7 +45,10 @@ class Renderer(protected val config: GenConfig, project: Project)
 
     val settings = project.settings.map(renderSetting)
 
+    val imports = Seq(project.imports.map(i => s"import ${i.value}").mkString("\n"))
+
     Seq(
+      imports,
       settings,
       artifacts,
       aggDefs
@@ -320,6 +323,8 @@ class Renderer(protected val config: GenConfig, project: Project)
                 Seq("%", "Runtime")
               case Scope.Optional =>
                 Seq("%", "Optional")
+              case Scope.Provided =>
+                Seq("%", "Provided")
               case Scope.Compile =>
                 Seq.empty
               case Scope.Test =>

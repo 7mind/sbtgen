@@ -104,10 +104,12 @@ object TestProject {
     ),
     Seq(
       "publishMavenStyle" in SettingScope.Build := true
-    )
+    ),
+    Seq(
+      Import("sbt.Keys._")
+    ),
   )
 }
-
 
 val settings = GlobalSettings(
   groupId = "io.7mind"

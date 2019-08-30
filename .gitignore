@@ -1,5 +1,10 @@
 testproject
 test-out
+
+/local.sbt
+.secrets*
+secrets.tar
+
 .idea
 # Created by https://www.gitignore.io/api/java,scala,sbt,maven,intellij
 # Edit at https://www.gitignore.io/?templates=java,scala,sbt,maven,intellij
