@@ -15,7 +15,6 @@ developers in ThisBuild := List(
 scmInfo in ThisBuild := Some(ScmInfo(url("https://github.com/7mind/sbtgen"), "scm:git:https://github.com/7mind/sbtgen.git"))
 
 credentials in ThisBuild += Credentials(file(".secrets/credentials.sonatype-nexus.properties"))
-publishTo in ThisBuild := sonatypePublishTo.value
 sonatypeProfileName := "io.7mind"
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies, // : ReleaseStep
@@ -30,6 +29,13 @@ releaseProcess := Seq[ReleaseStep](
   commitNextVersion, // : ReleaseStep
   pushChanges // : ReleaseStep, also checks that an upstream branch is properly configured
 )
+
+// publishTo in ThisBuild := sonatypePublishTo.value
+publishTo in ThisBuild := (if (!isSnapshot.value) {
+  Some(Resolver.file("local-publish", new File("target/local-repo")))
+} else {
+  Some(Opts.resolver.sonatypeSnapshots)
+})
 
 lazy val core = (project in file("core"))
   .settings(
