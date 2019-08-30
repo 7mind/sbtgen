@@ -12,6 +12,11 @@ developers in ThisBuild := List(
 )
 scmInfo in ThisBuild := Some(ScmInfo(url("https://github.com/7mind/sbtgen"), "scm:git:https://github.com/7mind/sbtgen.git"))
 
+credentials in ThisBuild += Credentials(file(".secrets/credentials.sonatype-nexus.properties"))
+publishTo in ThisBuild := sonatypePublishTo.value
+sonatypeProfileName in ThisBuild := "io.7mind"
+
+
 lazy val core = (project in file("core"))
   .settings(
     libraryDependencies += "com.github.scopt" %% "scopt" % "4.0.0-RC2",
