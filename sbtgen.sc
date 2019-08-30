@@ -3,6 +3,7 @@ object TestProject {
   final val catsVersion = Version("2.0.0-RC2")
   final val catsCore = Library("org.typelevel", "cats-core", catsVersion, LibraryType.Auto)
   final val catsXXX = Library("org.typelevel", "cats-core_2.12", catsVersion, LibraryType.Invariant)
+  final val projector = Library("org.typelevel", "kind-projector", Version("0.10.3"), LibraryType.Auto)
 
   final val scala212 = ScalaVersion("2.12.9")
   final val scala213 = ScalaVersion("2.13.0")
@@ -103,13 +104,19 @@ object TestProject {
       )
     ),
     Seq(
-      "publishMavenStyle" in SettingScope.Build := true
+      "publishMavenStyle" in SettingScope.Build := true,
     ),
     Seq(
       Import("sbt.Keys._")
     ),
+    Seq(
+      ScopedLibrary(projector, FullDependencyScope(Scope.Compile, Platform.All), compilerPlugin = true),
+    )
   )
 }
+
+
+
 
 val settings = GlobalSettings(
   groupId = "io.7mind"

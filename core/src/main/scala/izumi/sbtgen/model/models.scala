@@ -66,7 +66,7 @@ case class Library(group: String, artifact: String, version: Version, kind: Libr
 
 case class FullDependencyScope(scope: Scope, platform: Platform)
 
-case class ScopedLibrary(dependency: Library, scope: FullDependencyScope)
+case class ScopedLibrary(dependency: Library, scope: FullDependencyScope, compilerPlugin: Boolean = false)
 
 case class ScopedDependency(name: ArtifactId, scope: FullDependencyScope)
 
@@ -98,5 +98,6 @@ case class Project(
                     aggregates: Seq[Aggregate],
                     settings: Seq[SettingDef] = Seq.empty,
                     imports: Seq[Import] = Seq.empty,
+                    globalLibs: Seq[ScopedLibrary] = Seq.empty,
                   )
 

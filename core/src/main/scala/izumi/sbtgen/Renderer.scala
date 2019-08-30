@@ -292,7 +292,7 @@ class Renderer(protected val config: GenConfig, project: Project)
   }
 
   protected def formatLibDeps(a: Artifact, targetPlatform: Platform): Seq[String] = {
-    val deps = a.libs
+    val deps = project.globalLibs ++ a.libs
 
     val sharedArtDeps = deps.filter(_.scope.platform == targetPlatform)
 
@@ -331,7 +331,13 @@ class Renderer(protected val config: GenConfig, project: Project)
                 Seq("%", "Test")
             }
 
-            (Seq(stringLit(d.dependency.group), sep, stringLit(d.dependency.artifact), "%", stringLit(d.dependency.version.value)) ++ suffix).mkString(" ").raw
+            val out = (Seq(stringLit(d.dependency.group), sep, stringLit(d.dependency.artifact), "%", stringLit(d.dependency.version.value)) ++ suffix).mkString(" ")
+
+            if (d.compilerPlugin) {
+              s"compilerPlugin($out)".raw
+            } else {
+              out.raw
+            }
         }
       val settings = Seq("libraryDependencies" ++= deps)
 
