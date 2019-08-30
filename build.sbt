@@ -1,3 +1,5 @@
+import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
+
 turbo in ThisBuild := true
 crossScalaVersions in ThisBuild := Seq("2.13.0", "2.12.9")
 scalaVersion in ThisBuild := crossScalaVersions.value.head
@@ -14,8 +16,20 @@ scmInfo in ThisBuild := Some(ScmInfo(url("https://github.com/7mind/sbtgen"), "sc
 
 credentials in ThisBuild += Credentials(file(".secrets/credentials.sonatype-nexus.properties"))
 publishTo in ThisBuild := sonatypePublishTo.value
-sonatypeProfileName in ThisBuild := "io.7mind"
-
+sonatypeProfileName := "io.7mind"
+releaseProcess := Seq[ReleaseStep](
+  checkSnapshotDependencies, // : ReleaseStep
+  inquireVersions, // : ReleaseStep
+  runClean, // : ReleaseStep
+  runTest, // : ReleaseStep
+  setReleaseVersion, // : ReleaseStep
+  commitReleaseVersion, // : ReleaseStep, performs the initial git checks
+  tagRelease, // : ReleaseStep
+  //publishArtifacts,                       // : ReleaseStep, checks whether `publishTo` is properly set up
+  setNextVersion, // : ReleaseStep
+  commitNextVersion, // : ReleaseStep
+  pushChanges // : ReleaseStep, also checks that an upstream branch is properly configured
+)
 
 lazy val core = (project in file("core"))
   .settings(
