@@ -391,12 +391,28 @@ class Renderer(protected val config: GenConfig, project: Project)
         .map {
           d =>
             val ad = index(d.name)
-            p match {
+            val name = p match {
               case Platform.All if a.isJvmOnly =>
                 ad.nameOn(Platform.Jvm)
               case _ =>
                 ad.nameOn(p)
             }
+
+            val scope = d.scope.scope match {
+              case Scope.Test =>
+                if (config.mergeTestScopes) {
+                  "test->compile,test"
+                } else {
+                  "test->compile"
+                }
+              case _ =>
+                if (config.mergeTestScopes) {
+                  "test->test;compile->compile"
+                } else {
+                  "test->compile;compile->compile"
+                }
+            }
+            s"$name % ${stringLit(scope)}"
         }
         .map(_.shift(2))
         .mkString(s".dependsOn(\n", ",\n", "\n)").shift(2)

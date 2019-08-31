@@ -11,6 +11,7 @@ case class Config(
                    withSjs: Boolean = false,
                    withSnat: Boolean = false,
                    debug: Boolean = true,
+                   mergeTestScopes: Boolean = true,
                    output: String = "test-out",
                    groups: Set[Group] = Set.empty,
                  )
@@ -38,6 +39,9 @@ object Entrypoint {
         opt[Unit]('d', "debug")
           .action((_, c) => c.copy(withSnat = true))
           .text("enable debug output"),
+        opt[Unit]('t', "isolate-tests")
+          .action((_, c) => c.copy(mergeTestScopes = false))
+          .text("enable debug output"),
         opt[String]('o', "output")
           .action((x, c) => c.copy(output = x))
           .text("output directory"),
@@ -54,6 +58,7 @@ object Entrypoint {
           config.withSjs,
           config.withSnat,
           config.debug,
+          config.mergeTestScopes,
           settings,
           config.output,
           config.groups,

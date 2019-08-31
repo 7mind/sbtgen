@@ -5,6 +5,7 @@ case class GenConfig(
                       js: Boolean,
                       native: Boolean,
                       debug: Boolean,
+                      mergeTestScopes: Boolean,
                       settings: GlobalSettings,
                       output: String,
                       onlyGroups: Set[Group],
