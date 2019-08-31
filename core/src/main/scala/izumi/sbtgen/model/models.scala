@@ -48,6 +48,7 @@ case class PlatformEnv(
                         platform: Platform.BasePlatform,
                         language: Seq[ScalaVersion],
                         settings: Seq[SettingDef] = Seq.empty,
+                        plugins: Plugins = Plugins(Seq.empty, Seq.empty),
                       )
 
 case class ArtifactId(value: String)
@@ -81,6 +82,7 @@ case class Artifact(
                      groups: Set[Group] = Set.empty,
                      subGroupId: Option[String] = None,
                      settings: Seq[SettingDef] = Seq.empty,
+                     plugins: Plugins = Plugins(Seq.empty, Seq.empty),
                    )
 
 case class Aggregate(
@@ -93,11 +95,16 @@ case class Aggregate(
 
 case class Import(value: String)
 
+case class Plugin(name: String)
+
+case class Plugins(enabled: Seq[Plugin], disabled: Seq[Plugin])
+
 case class Project(
                     name: ArtifactId,
                     aggregates: Seq[Aggregate],
                     settings: Seq[SettingDef] = Seq.empty,
                     imports: Seq[Import] = Seq.empty,
                     globalLibs: Seq[ScopedLibrary] = Seq.empty,
+                    plugins: Plugins = Plugins(Seq.empty, Seq.empty),
                   )
 

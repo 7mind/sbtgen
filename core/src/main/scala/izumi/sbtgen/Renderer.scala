@@ -46,9 +46,11 @@ class Renderer(protected val config: GenConfig, project: Project)
     val settings = project.settings.map(renderSetting)
 
     val imports = Seq(project.imports.map(i => s"import ${i.value}").mkString("\n"))
+    val plugins = renderPlugins(project.plugins, dot = false)
 
     Seq(
       imports,
+      plugins,
       settings,
       artifacts,
       aggDefs
@@ -138,14 +140,15 @@ class Renderer(protected val config: GenConfig, project: Project)
 
     val platforms = if (!a.isJvmOnly) {
       enabledPlatforms
-        .map {
+        .flatMap {
           p =>
             val prefix = platformName(p.platform)
             val settings = Seq(
               "scalaVersion" := "crossScalaVersions.value.head".raw,
               "crossScalaVersions" := p.language.map(_.value)
             ) ++ p.settings
-            renderSettings(settings, Some(prefix))
+            val plugins = renderPlugins(p.plugins, dot = true)
+            plugins ++ Seq(renderSettings(settings, Some(prefix)))
         }
     } else {
       Seq.empty
@@ -183,9 +186,12 @@ class Renderer(protected val config: GenConfig, project: Project)
     ) ++ more ++ a.settings
 
     val renderedSettings = renderSettings(sharedSettings)
+    val plugins = renderPlugins(a.plugins, dot = true)
 
     val out = Seq(
-      Seq(header, renderedSettings),
+      Seq(header),
+      plugins,
+      Seq(renderedSettings),
       formatDeps(a, Platform.All),
       formatLibDeps(a, Platform.All),
       platforms,
@@ -193,6 +199,27 @@ class Renderer(protected val config: GenConfig, project: Project)
     ).flatten
 
     out.mkString("\n")
+  }
+
+  protected def renderPlugins(plugins: Plugins, dot: Boolean): Seq[String] = {
+    val enabled = if (plugins.enabled.nonEmpty) {
+      Seq(plugins.enabled.map(_.name).mkString("enablePlugins(", ", ", ")"))
+    } else {
+      Seq.empty
+    }
+
+    val disabled = if (plugins.disabled.nonEmpty) {
+      Seq(plugins.disabled.map(_.name).mkString("disablePlugins(", ", ", ")"))
+    } else {
+      Seq.empty
+    }
+
+    val out = enabled ++ disabled
+    if (dot) {
+      out.map(s => '.' + s).map(_.shift(2))
+    } else {
+      out
+    }
   }
 
   protected def renderSettings(settings: Seq[SettingDef], prefix: Option[String] = None): String = {

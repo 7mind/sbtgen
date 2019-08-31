@@ -19,19 +19,28 @@ object TestProject {
 
   object Targets {
     private val targetScala = Seq(scala212, scala213)
-    final val cross = Seq(PlatformEnv(Platform.Jvm, targetScala), PlatformEnv(Platform.Js, targetScala))
+    final val cross = Seq(PlatformEnv(Platform.Jvm, targetScala, plugins = Projects.root.plugins), PlatformEnv(Platform.Js, targetScala))
     final val crossJvm = Seq(PlatformEnv(Platform.Jvm, targetScala))
   }
 
   object Projects {
+
     object root {
       final val id = ArtifactId("testproject")
-      final val settings  = Seq(
+      final val settings = Seq(
         "scalacOptions" ++= Seq("-Ypartial-unification"),
         "scalacOptions" ++= Const.EmptySeq,
         "scalacOptions" ++= Seq(
           SettingKey(Some(scala212), None) := Seq("-Ypartial-unification"),
           SettingKey.Default := Const.EmptySeq
+        )
+      )
+      final val plugins = Plugins(
+        Seq(
+          Plugin("TestEnabledPlugin")
+        ),
+        Seq(
+          Plugin("TestDisabledPlugin")
         )
       )
     }
@@ -40,6 +49,7 @@ object TestProject {
       final val id = ArtifactId("fundamentals")
       final val basePath = "fundamentals"
     }
+
   }
 
 
@@ -91,6 +101,7 @@ object TestProject {
     ),
     Targets.crossJvm,
     Groups.jvmonly,
+    plugins = Projects.root.plugins,
   )
 
   val tgSdk: Project = Project(
@@ -115,6 +126,7 @@ object TestProject {
     ),
     Seq(
       ScopedLibrary(projector, FullDependencyScope(Scope.Compile, Platform.All), compilerPlugin = true),
-    )
+    ),
+    Projects.root.plugins,
   )
 }
