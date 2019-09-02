@@ -1,6 +1,7 @@
 package izumi.sbtgen
 
 import izumi.sbtgen.impl.{WithArtifactExt, WithBasicRenderers, WithProjectIndex}
+import izumi.sbtgen.model.SettingDef.ScopedSettingDef
 import izumi.sbtgen.tools.IzString._
 import izumi.sbtgen.model._
 import izumi.sbtgen.output.PreparedAggregate
@@ -43,7 +44,7 @@ class Renderer(protected val config: GenConfig, project: Project)
     assert(allAggregates.nonEmpty, "All aggregates were filtered out")
     val aggDefs = renderAggregateProjects(allAggregates)
 
-    val settings = project.settings.map(renderSetting)
+    val settings = project.settings.map(renderSetting(_, Platform.All))
 
     val imports = Seq(project.imports.map(i => s"import ${i.value}").mkString("\n"))
     val plugins = renderPlugins(project.plugins, dot = false)
@@ -114,7 +115,7 @@ class Renderer(protected val config: GenConfig, project: Project)
       "skip in publish" := true,
     )
 
-    val s = renderSettings(settings)
+    val s = renderSettings(settings, Platform.All)
 
     val aggDefs = aggregates.map {
       case PreparedAggregate(name, path, agg, _) =>
@@ -146,9 +147,9 @@ class Renderer(protected val config: GenConfig, project: Project)
             val settings = Seq(
               "scalaVersion" := "crossScalaVersions.value.head".raw,
               "crossScalaVersions" := p.language.map(_.value)
-            ) ++ p.settings
+            ) ++ p.settings ++ a.settings
             val plugins = renderPlugins(p.plugins, dot = true)
-            plugins ++ Seq(renderSettings(settings, Some(prefix)))
+            plugins ++ Seq(renderSettings(settings, p.platform, Some(prefix)))
         }
     } else {
       Seq.empty
@@ -185,7 +186,7 @@ class Renderer(protected val config: GenConfig, project: Project)
       "organization" := groupId,
     ) ++ more ++ a.settings
 
-    val renderedSettings = renderSettings(sharedSettings)
+    val renderedSettings = renderSettings(sharedSettings, Platform.All)
     val plugins = renderPlugins(a.plugins, dot = true)
 
     val out = Seq(
@@ -222,17 +223,17 @@ class Renderer(protected val config: GenConfig, project: Project)
     }
   }
 
-  protected def renderSettings(settings: Seq[SettingDef], prefix: Option[String] = None): String = {
+  protected def renderSettings(settings: Seq[SettingDef], platform: Platform, prefix: Option[String] = None): String = {
     val p = prefix match {
       case Some(value) =>
         s"${value}Settings"
       case None =>
         "settings"
     }
-    settings.map(renderSetting).map(_.shift(2)).mkString(s".$p(\n", ",\n", "\n)").shift(2)
+    settings.map(renderSetting(_, platform)).map(_.shift(2)).mkString(s".$p(\n", ",\n", "\n)").shift(2)
   }
 
-  protected def renderSetting(settingDef: SettingDef): String = {
+  protected def renderSetting(settingDef: SettingDef, platform: Platform): String = {
     val name = settingDef.name
 
     val in = settingDef.scope match {
@@ -240,6 +241,12 @@ class Renderer(protected val config: GenConfig, project: Project)
         Seq.empty
       case SettingScope.Build =>
         Seq("in", "ThisBuild")
+      case SettingScope.Test =>
+        Seq("in", "Test")
+      case SettingScope.Compile =>
+        Seq("in", "Compile")
+      case SettingScope.Raw(value) =>
+        Seq("in", value)
     }
 
     val op = settingDef.op match {
@@ -260,9 +267,10 @@ class Renderer(protected val config: GenConfig, project: Project)
         s
           .defs
           .toSeq
+          .filter { case (k, _) => /*k.platform == Platform.All ||*/ k.platform == platform }
           .map {
-            case (key, v) =>
-
+            case (fkey, v) =>
+              val key = fkey.toShort
               val language = key.language match {
                 case Some(value) =>
                   stringLit(value.value)
@@ -302,6 +310,8 @@ class Renderer(protected val config: GenConfig, project: Project)
         }
       case Const.CSeq(value) =>
         value.map(renderConst).map(_.shift(2)).mkString("Seq(\n", ",\n", "\n)")
+      case Const.CTuple(value) =>
+        value.map(renderConst).map(_.shift(2)).mkString("(\n", ",\n", "\n)")
       case Const.CMap(value) =>
         value
           .toSeq
@@ -358,7 +368,7 @@ class Renderer(protected val config: GenConfig, project: Project)
                 Seq("%", "Test")
             }
 
-            val out = (Seq(stringLit(d.dependency.group), sep, stringLit(d.dependency.artifact), "%", stringLit(d.dependency.version.value)) ++ suffix).mkString(" ")
+            val out = (Seq(stringLit(d.dependency.group), sep, stringLit(d.dependency.artifact), "%", renderVersion(d.dependency.version)) ++ suffix).mkString(" ")
 
             if (d.compilerPlugin) {
               s"compilerPlugin($out)".raw
@@ -368,11 +378,20 @@ class Renderer(protected val config: GenConfig, project: Project)
         }
       val settings = Seq("libraryDependencies" ++= deps)
 
-      Seq(renderSettings(settings))
+      Seq(renderSettings(settings, targetPlatform))
     } else {
       Seq.empty
     }
     artDeps
+  }
+
+  protected def renderVersion(v: Version): String = {
+    v match {
+      case Version.VConst(value) =>
+        stringLit(value)
+      case Version.VExpr(value) =>
+        value
+    }
   }
 
   protected def formatDeps(a: Artifact, p: Platform): Seq[String] = {

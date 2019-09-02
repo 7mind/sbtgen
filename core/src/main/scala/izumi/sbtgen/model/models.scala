@@ -2,7 +2,14 @@ package izumi.sbtgen.model
 
 import scala.language.implicitConversions
 
-case class Version(value: String)
+sealed trait Version
+object Version {
+
+  case class VConst(value: String) extends Version
+
+  case class VExpr(value: String) extends Version
+
+}
 
 sealed trait Scope {
   def jvm: FullDependencyScope = FullDependencyScope(this, Platform.Jvm)
@@ -64,6 +71,9 @@ object LibraryType {
 }
 
 case class Library(group: String, artifact: String, version: Version, kind: LibraryType)
+object Library {
+  def apply(group: String, artifact: String, version: String, kind: LibraryType = LibraryType.Auto): Library = new Library(group, artifact, Version.VConst(version), kind)
+}
 
 case class FullDependencyScope(scope: Scope, platform: Platform)
 
