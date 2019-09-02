@@ -57,7 +57,8 @@ object TestProject {
     final val cats_all = Seq(
       cats_core
       , cats_effect
-    ).map(_ in Scope.Compile.all)
+    )
+
     final val circe = Seq(
       Library("io.circe", "circe-core", V.circe),
       Library("io.circe", "circe-parser", V.circe),
@@ -66,7 +67,7 @@ object TestProject {
       Library("io.circe", "circe-derivation", V.circe_derivation),
     ).map(_ in Scope.Compile.all)
 
-    final val zio_core = Library("dev.zio", "zio", V.zio) in Scope.Compile.all
+    final val zio_core = Library("dev.zio", "zio", V.zio)
 
     final val typesafe_config = Library("com.typesafe", "config", V.typesafe_config, LibraryType.Invariant) in Scope.Compile.all
     final val boopickle = Library("io.suzaku", "boopickle", "1.3.1") in Scope.Compile.all
@@ -75,6 +76,9 @@ object TestProject {
     final val scala_compiler = Library("org.scala-lang", "scala-compiler", Version.VExpr("scalaVersion.value"), LibraryType.Invariant)
     final val scala_library = Library("org.scala-lang", "scala-library", Version.VExpr("scalaVersion.value"), LibraryType.Invariant)
     final val scala_reflect = Library("org.scala-lang", "scala-reflect", Version.VExpr("scalaVersion.value"), LibraryType.Invariant)
+
+    final val cglib_nodep = Library("cglib", "cglib-nodep", V.cglib_nodep, LibraryType.Invariant) in Scope.Compile.jvm
+
 
     final val projector = Library("org.typelevel", "kind-projector", "0.10.3", LibraryType.AutoJvm)
   }
@@ -112,11 +116,17 @@ object TestProject {
     object root {
       final val id = ArtifactId("testproject")
       final val settings = Seq(
-        "scalacOptions" ++= Seq(
-          SettingKey(Some(scala212), None) := Seq("-Ypartial-unification"),
+        "publishMavenStyle" in SettingScope.Build := true,
+        "scalaVersion" in SettingScope.Build := "crossScalaVersions.value.head".raw,
+        "crossScalaVersions" in SettingScope.Build := Targets.targetScala.map(_.value),
+        "scalacOptions" in SettingScope.Build ++= Seq(
+          "-language:higherKinds",
+        ),
+        "scalacOptions" in SettingScope.Build ++= Seq(
+          SettingKey(Some(scala212), None) := Seq("-Ypartial-unification", "-Xsource:2.13", "-Yno-adapted-args"),
           SettingKey(Some(scala213), None) := Const.EmptySeq,
           SettingKey.Default := Const.EmptySeq
-        )
+        ),
       )
       final val plugins = Plugins(
         Seq.empty,
@@ -129,6 +139,11 @@ object TestProject {
       final val basePath = "fundamentals"
     }
 
+    object distage {
+      final val id = ArtifactId("distage")
+      final val basePath = "distage"
+    }
+
   }
 
 
@@ -139,7 +154,6 @@ object TestProject {
     Seq.empty,
     Targets.cross,
     Groups.fundamentals,
-    settings = Projects.root.settings,
   )
 
   final lazy val fundamentalsPlatform = Artifact(
@@ -160,8 +174,17 @@ object TestProject {
   final lazy val fundamentalsFunctional = Artifact(
     ArtifactId("fundamentals-functional"),
     Projects.fundamentals.basePath,
-    cats_all ++ Seq(zio_core),
     Seq.empty,
+    Seq.empty,
+    Targets.cross,
+    Groups.fundamentals,
+  )
+
+  final lazy val fundamentalsBio = Artifact(
+    ArtifactId("fundamentals-bio"),
+    Projects.fundamentals.basePath,
+    (cats_all ++ Seq(zio_core)).map(_ in Scope.Optional.all),
+    Seq(fundamentalsFunctional.name in Scope.Runtime.all),
     Targets.cross,
     Groups.fundamentals,
   )
@@ -206,9 +229,37 @@ object TestProject {
       fundamentalsCollections,
       fundamentalsPlatform,
       fundamentalsFunctional,
+      fundamentalsBio,
       fundamentalsTypesafeConfig,
       fundamentalsReflection,
       fundamentalsJsonCirce,
+    ),
+  )
+
+  final lazy val distageModel = Artifact(
+    ArtifactId("distage-model"),
+    Projects.distage.basePath,
+    (cats_all).map(_ in Scope.Optional.all) ++ Seq(scala_reflect in Scope.Compile.all),
+    fundamentalsBasics ++ Seq(fundamentalsBio, fundamentalsReflection).map(_.name in Scope.Compile.all),
+    Targets.jvm,
+    Groups.fundamentals,
+  )
+
+  final lazy val distageProxyCglib = Artifact(
+    ArtifactId("distage-proxy-cglib"),
+    Projects.distage.basePath,
+    Seq(cglib_nodep),
+    fundamentalsBasics ++ Seq(distageModel).map(_.name in Scope.Compile.all),
+    Targets.jvm,
+    Groups.fundamentals,
+  )
+
+  final lazy val distage = Aggregate(
+    Projects.distage.id,
+    Projects.distage.basePath,
+    Seq(
+      distageModel,
+      distageProxyCglib,
     ),
   )
 
@@ -216,12 +267,9 @@ object TestProject {
     Projects.root.id,
     Seq(
       fundamentals,
+      distage,
     ),
-    Seq(
-      "publishMavenStyle" in SettingScope.Build := true,
-      "scalaVersion" in SettingScope.Build := "crossScalaVersions.value.head".raw,
-      "crossScalaVersions" in SettingScope.Build := Targets.targetScala.map(_.value)
-    ),
+    Projects.root.settings,
     Seq(
       Import("sbt.Keys._")
     ),

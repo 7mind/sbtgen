@@ -83,7 +83,11 @@ class Renderer(protected val config: GenConfig, project: Project)
             a.platforms.filter(_.platform == Platform.Jvm).map(p => a.nameOn(p.platform))
           }
       }
-      Seq(output.PreparedAggregate(ArtifactId(a.name.value + "-jvm"), a.path + "/.agg-jvm", jvmAgg, Platform.Jvm))
+      if (jvmAgg.nonEmpty) {
+        Seq(output.PreparedAggregate(ArtifactId(a.name.value + "-jvm"), a.path + "/.agg-jvm", jvmAgg, Platform.Jvm))
+      } else {
+        Seq.empty
+      }
     }
 
     val jsOnly = if (config.jvmOnly || !config.js) {
@@ -94,7 +98,11 @@ class Renderer(protected val config: GenConfig, project: Project)
           a.platforms.filter(_.platform == Platform.Js).map(p => a.nameOn(p.platform))
 
       }
-      Seq(output.PreparedAggregate(ArtifactId(a.name.value + "-js"), a.path + "/.agg-js", jsAgg, Platform.Js))
+      if (jsAgg.nonEmpty) {
+        Seq(output.PreparedAggregate(ArtifactId(a.name.value + "-js"), a.path + "/.agg-js", jsAgg, Platform.Js))
+      } else {
+        Seq.empty
+      }
     }
 
     val nativeOnly = if (config.jvmOnly || !config.native) {
@@ -104,7 +112,11 @@ class Renderer(protected val config: GenConfig, project: Project)
         a =>
           a.platforms.filter(_.platform == Platform.Native).map(p => a.nameOn(p.platform))
       }
-      Seq(output.PreparedAggregate(ArtifactId(a.name.value + "-native"), a.path + "/.agg-native", nativeAgg, Platform.Native))
+      if (nativeAgg.nonEmpty) {
+        Seq(output.PreparedAggregate(ArtifactId(a.name.value + "-native"), a.path + "/.agg-native", nativeAgg, Platform.Native))
+      } else {
+        Seq.empty
+      }
     }
 
     Seq(output.PreparedAggregate(a.name, a.path, fullAgg, Platform.All)) ++ jvmOnly ++ jsOnly ++ nativeOnly
@@ -339,7 +351,7 @@ class Renderer(protected val config: GenConfig, project: Project)
         .map {
           d =>
             val sep = d.dependency.kind match {
-              case LibraryType.AutoJvm=>
+              case LibraryType.AutoJvm =>
                 "%%"
               case LibraryType.Invariant =>
                 "%"
