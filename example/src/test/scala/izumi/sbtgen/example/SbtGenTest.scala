@@ -12,7 +12,7 @@ class SbtGenTest extends WordSpec {
       )
 
       Entrypoint.main(TestProject.tgSdk, settings, Seq())
-      Entrypoint.main(TestProject.tgSdk, settings, Seq("--js", "-o", "/Users/pshirshov/work/7mind/izumi-r2"))
+      Entrypoint.main(TestProject.tgSdk, settings, Seq("--js", "-o", "../izumi-r2"))
     }
   }
 }

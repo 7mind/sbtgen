@@ -233,7 +233,7 @@ class Renderer(protected val config: GenConfig, project: Project)
       case None =>
         "settings"
     }
-    settings.filter(_.scope.platform == platform).map(renderSetting).map(_.shift(2)).mkString(s".$p(\n", ",\n", "\n)").shift(2)
+    settings.filter(s => s.scope.platform == platform || s.scope.platform == Platform.All).map(renderSetting).map(_.shift(2)).mkString(s".$p(\n", ",\n", "\n)").shift(2)
   }
 
   protected def renderSetting(settingDef: SettingDef): String = {
@@ -332,7 +332,7 @@ class Renderer(protected val config: GenConfig, project: Project)
   protected def formatLibDeps(a: Artifact, targetPlatform: Platform): Seq[String] = {
     val deps = project.globalLibs ++ a.libs
 
-    val sharedArtDeps = deps.filter(_.scope.platform == targetPlatform)
+    val sharedArtDeps = deps.filter(d => (a.isJvmOnly && targetPlatform == Platform.All) || d.scope.platform == targetPlatform)
 
     val artDeps = if (sharedArtDeps.nonEmpty) {
       val deps = sharedArtDeps
@@ -397,13 +397,13 @@ class Renderer(protected val config: GenConfig, project: Project)
     }
   }
 
-  protected def formatDeps(a: Artifact, p: Platform): Seq[String] = {
+  protected def formatDeps(a: Artifact, targetPlatform: Platform): Seq[String] = {
     val deps = a.depends
-    val predicate = p match {
+    val predicate = targetPlatform match {
       case platform: Platform.BasePlatform =>
-        (a: ScopedDependency) => a.scope.platform == platform
+        (d: ScopedDependency) => d.scope.platform == platform
       case Platform.All =>
-        (ad: ScopedDependency) => (ad.scope.platform == Platform.All && !index(ad.name).isJvmOnly) || (index(ad.name).isJvmOnly && ad.scope.platform == Platform.Jvm && a.isJvmOnly)
+        (d: ScopedDependency) => a.isJvmOnly || (d.scope.platform == Platform.All && !index(d.name).isJvmOnly) || (index(d.name).isJvmOnly && d.scope.platform == Platform.Jvm && a.isJvmOnly)
     }
 
     val sharedArtDeps = deps.filter(predicate)
@@ -413,11 +413,11 @@ class Renderer(protected val config: GenConfig, project: Project)
         .map {
           d =>
             val ad = index(d.name)
-            val name = p match {
+            val name = targetPlatform match {
               case Platform.All if a.isJvmOnly =>
                 ad.nameOn(Platform.Jvm)
               case _ =>
-                ad.nameOn(p)
+                ad.nameOn(targetPlatform)
             }
 
             val scope = d.scope.scope match {

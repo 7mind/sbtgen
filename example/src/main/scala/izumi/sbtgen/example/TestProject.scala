@@ -70,7 +70,7 @@ object TestProject {
 
     final val typesafe_config = Library("com.typesafe", "config", V.typesafe_config, LibraryType.Invariant) in Scope.Compile.all
     final val boopickle = Library("io.suzaku", "boopickle", "1.3.1") in Scope.Compile.all
-    final val jawn = Library("org.typelevel", "jawn-parser", V.jawn, LibraryType.Invariant)
+    final val jawn = Library("org.typelevel", "jawn-parser", V.jawn, LibraryType.AutoJvm)
 
     final val scala_compiler = Library("org.scala-lang", "scala-compiler", Version.VExpr("scalaVersion.value"), LibraryType.Invariant)
     final val scala_library = Library("org.scala-lang", "scala-library", Version.VExpr("scalaVersion.value"), LibraryType.Invariant)
@@ -90,7 +90,7 @@ object TestProject {
   }
 
   object Targets {
-    private val targetScala = Seq(scala212, scala213)
+    val targetScala = Seq(scala212, scala213)
     private val jvmPlatform = PlatformEnv(
       Platform.Jvm,
       targetScala,
@@ -112,10 +112,9 @@ object TestProject {
     object root {
       final val id = ArtifactId("testproject")
       final val settings = Seq(
-        "scalacOptions" ++= Seq("-Ypartial-unification"),
-        "scalacOptions" ++= Const.EmptySeq,
         "scalacOptions" ++= Seq(
           SettingKey(Some(scala212), None) := Seq("-Ypartial-unification"),
+          SettingKey(Some(scala213), None) := Const.EmptySeq,
           SettingKey.Default := Const.EmptySeq
         )
       )
@@ -176,8 +175,8 @@ object TestProject {
   final lazy val fundamentalsTypesafeConfig = Artifact(
     ArtifactId("fundamentals-typesafe-config"),
     Projects.fundamentals.basePath,
-    Seq(typesafe_config, scala_reflect in Scope.Compile.all),
-    fundamentalsBasics ++ Seq(fundamentalsReflection.name in Scope.Runtime.all),
+    Seq(typesafe_config, scala_reflect in Scope.Compile.jvm),
+    fundamentalsBasics ++ Seq(fundamentalsReflection.name in Scope.Runtime.jvm),
     Targets.jvm,
     Groups.fundamentals,
   )
@@ -220,6 +219,8 @@ object TestProject {
     ),
     Seq(
       "publishMavenStyle" in SettingScope.Build := true,
+      "scalaVersion" in SettingScope.Build := "crossScalaVersions.value.head".raw,
+      "crossScalaVersions" in SettingScope.Build := Targets.targetScala.map(_.value)
     ),
     Seq(
       Import("sbt.Keys._")
