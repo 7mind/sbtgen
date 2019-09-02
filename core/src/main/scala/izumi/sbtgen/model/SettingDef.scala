@@ -11,19 +11,21 @@ object SettingScope {
   case class Raw(value: String) extends SettingScope
 }
 
+case class FullSettingScope(scope: SettingScope, platform: Platform)
+
 sealed trait SettingDef {
   def name: String
 
   def op: SettingOp
 
-  def scope: SettingScope
+  def scope: FullSettingScope
 }
 
 object SettingDef {
 
-  case class UnscopedSettingDef(name: String, op: SettingOp, value: Const, scope: SettingScope) extends SettingDef
+  case class UnscopedSettingDef(name: String, op: SettingOp, value: Const, scope: FullSettingScope) extends SettingDef
 
-  case class ScopedSettingDef(name: String, op: SettingOp, defs: Seq[(SettingKey, Const)], scope: SettingScope) extends SettingDef
+  case class ScopedSettingDef(name: String, op: SettingOp, defs: Seq[(SettingKey, Const)], scope: FullSettingScope) extends SettingDef
 
 }
 
@@ -40,14 +42,10 @@ object SettingOp {
 }
 
 
-case class ShortSettingKey(language: Option[ScalaVersion], release: Option[Boolean])
-case class SettingKey(platform: Platform, language: Option[ScalaVersion], release: Option[Boolean]) {
-  def toShort: ShortSettingKey = ShortSettingKey(language, release)
-}
 
-
+case class SettingKey(language: Option[ScalaVersion], release: Option[Boolean])
 object SettingKey {
-  def Default: SettingKey = SettingKey(Platform.All, None, None)
+  def Default: SettingKey = SettingKey(None, None)
 }
 
 

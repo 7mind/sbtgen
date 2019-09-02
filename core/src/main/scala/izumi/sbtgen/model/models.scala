@@ -63,11 +63,9 @@ case class ArtifactId(value: String)
 sealed trait LibraryType
 
 object LibraryType {
-
   case object Invariant extends LibraryType
-
+  case object AutoJvm extends LibraryType
   case object Auto extends LibraryType
-
 }
 
 case class Library(group: String, artifact: String, version: Version, kind: LibraryType)

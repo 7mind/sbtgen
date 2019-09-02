@@ -3,6 +3,7 @@ package izumi.sbtgen.example
 import izumi.sbtgen.model._
 
 object TestProject {
+
   object Deps {
 
     object V {
@@ -47,6 +48,8 @@ object TestProject {
       val scala_java_time = "2.0.0-RC3"
     }
 
+    final val collection_compat = Library("org.scala-lang.modules", "scala-collection-compat", V.collection_compat)
+    final val scalatest = Library("org.scalatest", "scalatest", V.scalatest) in Scope.Test.all
 
 
     final val cats_core = Library("org.typelevel", "cats-core", V.cats)
@@ -65,7 +68,7 @@ object TestProject {
 
     final val zio_core = Library("dev.zio", "zio", V.zio) in Scope.Compile.all
 
-    final val typesafe_config = Library("com.typesafe", "config", V.typesafe_config, LibraryType.Invariant) in Scope.Compile.jvm
+    final val typesafe_config = Library("com.typesafe", "config", V.typesafe_config, LibraryType.Invariant) in Scope.Compile.all
     final val boopickle = Library("io.suzaku", "boopickle", "1.3.1") in Scope.Compile.all
     final val jawn = Library("org.typelevel", "jawn-parser", V.jawn, LibraryType.Invariant)
 
@@ -73,9 +76,11 @@ object TestProject {
     final val scala_library = Library("org.scala-lang", "scala-library", Version.VExpr("scalaVersion.value"), LibraryType.Invariant)
     final val scala_reflect = Library("org.scala-lang", "scala-reflect", Version.VExpr("scalaVersion.value"), LibraryType.Invariant)
 
-    final val projector = Library("org.typelevel", "kind-projector", "0.10.3")
+    final val projector = Library("org.typelevel", "kind-projector", "0.10.3", LibraryType.AutoJvm)
   }
+
   import Deps._
+
   final val scala212 = ScalaVersion("2.12.9")
   final val scala213 = ScalaVersion("2.13.0")
 
@@ -110,7 +115,7 @@ object TestProject {
         "scalacOptions" ++= Seq("-Ypartial-unification"),
         "scalacOptions" ++= Const.EmptySeq,
         "scalacOptions" ++= Seq(
-          SettingKey(Platform.All, Some(scala212), None) := Seq("-Ypartial-unification"),
+          SettingKey(Some(scala212), None) := Seq("-Ypartial-unification"),
           SettingKey.Default := Const.EmptySeq
         )
       )
@@ -148,10 +153,9 @@ object TestProject {
     Targets.cross,
     Groups.fundamentals,
     settings = Seq(
-      "npmDependencies" in SettingScope.Compile ++= Seq(
-        SettingKey(Platform.Js, None, None) := Seq("hash.js" -> "1.1.7"),
-      )
-    )
+      "npmDependencies" in(SettingScope.Compile, Platform.Js) ++= Seq("hash.js" -> "1.1.7")
+    ),
+    plugins = Plugins(Seq(Plugin("ScalaJSBundlerPlugin")), Seq.empty)
   )
 
   final lazy val fundamentalsFunctional = Artifact(
@@ -173,7 +177,7 @@ object TestProject {
     ArtifactId("fundamentals-typesafe-config"),
     Projects.fundamentals.basePath,
     Seq(typesafe_config, scala_reflect in Scope.Compile.all),
-    fundamentalsBasics,
+    fundamentalsBasics ++ Seq(fundamentalsReflection.name in Scope.Runtime.all),
     Targets.jvm,
     Groups.fundamentals,
   )
@@ -222,6 +226,8 @@ object TestProject {
     ),
     Seq(
       ScopedLibrary(projector, FullDependencyScope(Scope.Compile, Platform.All), compilerPlugin = true),
+      collection_compat in Scope.Compile.all,
+      scalatest,
     ),
     Projects.root.plugins,
   )

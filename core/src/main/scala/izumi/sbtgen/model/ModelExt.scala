@@ -12,7 +12,7 @@ trait ModelExt {
 
   trait WithSettingsDsl {
     protected val s: String
-    protected val scope: SettingScope
+    protected val scope: FullSettingScope
     def :=(const: Const): UnscopedSettingDef = {
       UnscopedSettingDef(s, SettingOp.Assign, const, scope)
     }
@@ -53,11 +53,13 @@ trait ModelExt {
 
   }
 
-  class ScopedSettingBuilder(protected val s: String, protected val scope: SettingScope) extends WithSettingsDsl
+  class ScopedSettingBuilder(protected val s: String, protected val scope: FullSettingScope) extends WithSettingsDsl
 
   implicit class StringExt(protected val s: String) extends WithSettingsDsl {
-    override protected val scope: SettingScope = SettingScope.Project
-    def in(scope: SettingScope): ScopedSettingBuilder = new ScopedSettingBuilder(s, scope)
+    override protected val scope: FullSettingScope = FullSettingScope(SettingScope.Project, Platform.All)
+
+    def in(scope: SettingScope): ScopedSettingBuilder = new ScopedSettingBuilder(s, FullSettingScope(scope, Platform.All))
+    def in(scope: SettingScope, platform: Platform): ScopedSettingBuilder = new ScopedSettingBuilder(s, FullSettingScope(scope, platform))
 
     def raw: Const = Const.CRaw(s)
   }

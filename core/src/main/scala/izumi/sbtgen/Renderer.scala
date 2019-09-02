@@ -44,7 +44,10 @@ class Renderer(protected val config: GenConfig, project: Project)
     assert(allAggregates.nonEmpty, "All aggregates were filtered out")
     val aggDefs = renderAggregateProjects(allAggregates)
 
-    val settings = project.settings.map(renderSetting(_, Platform.All))
+    val unexpected = project.settings.filterNot(_.scope.platform == Platform.All)
+    assert(unexpected.isEmpty, "Global settings cannot be scoped to a platform")
+
+    val settings = project.settings.filter(_.scope.platform == Platform.All).map(renderSetting)
 
     val imports = Seq(project.imports.map(i => s"import ${i.value}").mkString("\n"))
     val plugins = renderPlugins(project.plugins, dot = false)
@@ -131,7 +134,7 @@ class Renderer(protected val config: GenConfig, project: Project)
 
     val header = if (!a.isJvmOnly) {
       val platforms = a.platforms.map(p => platformName(p.platform).toUpperCase()).map(pn => s"${pn}Platform")
-      s"""lazy val ${renderName(a.name)} = crossProject${platforms.mkString("(", ", ", ")")}.in(file(${stringLit(path)}))"""
+      s"""lazy val ${renderName(a.name)} = crossProject${platforms.mkString("(", ", ", ")")}.crossType(CrossType.Pure).in(file(${stringLit(path)}))"""
     } else {
       s"""lazy val ${renderName(a.name)} = project.in(file(${stringLit(path)}))"""
     }
@@ -230,13 +233,13 @@ class Renderer(protected val config: GenConfig, project: Project)
       case None =>
         "settings"
     }
-    settings.map(renderSetting(_, platform)).map(_.shift(2)).mkString(s".$p(\n", ",\n", "\n)").shift(2)
+    settings.filter(_.scope.platform == platform).map(renderSetting).map(_.shift(2)).mkString(s".$p(\n", ",\n", "\n)").shift(2)
   }
 
-  protected def renderSetting(settingDef: SettingDef, platform: Platform): String = {
+  protected def renderSetting(settingDef: SettingDef): String = {
     val name = settingDef.name
 
-    val in = settingDef.scope match {
+    val in = settingDef.scope.scope match {
       case SettingScope.Project =>
         Seq.empty
       case SettingScope.Build =>
@@ -267,10 +270,8 @@ class Renderer(protected val config: GenConfig, project: Project)
         s
           .defs
           .toSeq
-          .filter { case (k, _) => /*k.platform == Platform.All ||*/ k.platform == platform }
           .map {
-            case (fkey, v) =>
-              val key = fkey.toShort
+            case (key, v) =>
               val language = key.language match {
                 case Some(value) =>
                   stringLit(value.value)
@@ -311,7 +312,7 @@ class Renderer(protected val config: GenConfig, project: Project)
       case Const.CSeq(value) =>
         value.map(renderConst).map(_.shift(2)).mkString("Seq(\n", ",\n", "\n)")
       case Const.CTuple(value) =>
-        value.map(renderConst).map(_.shift(2)).mkString("(\n", ",\n", "\n)")
+        value.map(renderConst).map(_.shift(2)).mkString("(", ",", ")")
       case Const.CMap(value) =>
         value
           .toSeq
@@ -338,6 +339,8 @@ class Renderer(protected val config: GenConfig, project: Project)
         .map {
           d =>
             val sep = d.dependency.kind match {
+              case LibraryType.AutoJvm=>
+                "%%"
               case LibraryType.Invariant =>
                 "%"
               case LibraryType.Auto =>
