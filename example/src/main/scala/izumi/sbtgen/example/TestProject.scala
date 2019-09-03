@@ -82,7 +82,10 @@ object TestProject {
 
     final val fast_classpath_scanner = Library("io.github.classgraph", "classgraph", V.classgraph, LibraryType.Invariant) in Scope.Compile.jvm
     final val scala_java_time = Library("io.github.cquiroz", "scala-java-time", V.scala_java_time, LibraryType.Auto) in Scope.Compile.all
+    final val shapeless = Library("com.chuusai", "shapeless", V.shapeless, LibraryType.Auto) in Scope.Compile.all
 
+    final val slf4j_api = Library("org.slf4j", "slf4j-api", V.slf4j, LibraryType.Invariant) in Scope.Compile.jvm
+    final val slf4j_simple = Library("org.slf4j", "slf4j-simple", V.slf4j, LibraryType.Invariant) in Scope.Test.jvm
   }
 
   import Deps._
@@ -304,6 +307,38 @@ object TestProject {
     )
   )
 
+  final val allMonads = (cats_all ++ Seq(zio_core)).map(_ in Scope.Optional.all)
+
+  final lazy val distageRoles  = Artifact(
+    ArtifactId("distage-roles"),
+    Projects.distage.basePath,
+    allMonads,
+    Seq(distageRolesApi, distageCore, distagePlugins, distageConfig, logstageDi, logstageAdapterSlf4j, logstageRenderingCirce).map(_.name in Scope.Compile.all),
+    Targets.jvm,
+    Groups.distage,
+  )
+
+  final lazy val distageStatic  = Artifact(
+    ArtifactId("distage-static"),
+    Projects.distage.basePath,
+    Seq(shapeless),
+    Seq(distageCore).map(_.name in Scope.Compile.all) ++ Seq(distageRoles).map(_.name in Scope.Test.all),
+    Targets.jvm,
+    Groups.distage,
+  )
+
+  final lazy val distageTestkit  = Artifact(
+    ArtifactId("distage-testkit"),
+    Projects.distage.basePath,
+    Seq(scalatest.dependency in Scope.Compile.all),
+    Seq(distageCore, distagePlugins, distageConfig, distageRoles, logstageDi).map(_.name in Scope.Compile.all),
+    Targets.jvm,
+    Groups.distage,
+    settings = Seq(
+      "classLoaderLayeringStrategy" in SettingScope.Test := "ClassLoaderLayeringStrategy.Flat".raw,
+    )
+  )
+
   final lazy val distage = Aggregate(
     Projects.distage.id,
     Projects.distage.basePath,
@@ -314,6 +349,9 @@ object TestProject {
       distageConfig,
       distageRolesApi,
       distagePlugins,
+      distageRoles,
+      distageStatic,
+      distageTestkit,
     ),
   )
 
@@ -335,12 +373,68 @@ object TestProject {
     Groups.logstage,
   )
 
+  final lazy val logstageRenderingCirce  = Artifact(
+    ArtifactId("logstage-rendering-circe"),
+    Projects.logstage.basePath,
+    Seq.empty,
+    Seq(fundamentalsJsonCirce, logstageCore).map(_.name in Scope.Compile.all),
+    Targets.cross,
+    Groups.logstage,
+  )
+
+  final lazy val logstageDi  = Artifact(
+    ArtifactId("logstage-di"),
+    Projects.logstage.basePath,
+    Seq.empty,
+    Seq(logstageCore, logstageConfig, distageConfig, distageModel).map(_.name in Scope.Compile.all) ++ Seq(distageCore).map(_.name in Scope.Test.all),
+    Targets.jvm,
+    Groups.logstage ++ Groups.distage,
+  )
+
+  final lazy val logstageConfig  = Artifact(
+    ArtifactId("logstage-config"),
+    Projects.logstage.basePath,
+    Seq.empty,
+    Seq(fundamentalsTypesafeConfig, logstageCore).map(_.name in Scope.Compile.all),
+    Targets.jvm,
+    Groups.logstage,
+  )
+
+  final lazy val logstageAdapterSlf4j  = Artifact(
+    ArtifactId("logstage-adapter-slf4j"),
+    Projects.logstage.basePath,
+    Seq(slf4j_api),
+    Seq(logstageCore).map(_.name in Scope.Compile.all),
+    Targets.jvm,
+    Groups.logstage,
+    settings = Seq(
+      "compileOrder" in SettingScope.Compile := "CompileOrder.Mixed".raw,
+      "compileOrder" in SettingScope.Test := "CompileOrder.Mixed".raw,
+      "classLoaderLayeringStrategy" in SettingScope.Test := "ClassLoaderLayeringStrategy.Flat".raw,
+    )
+  )
+
+  final lazy val logstageSinkSlf4j  = Artifact(
+    ArtifactId("logstage-sink-slf4j"),
+    Projects.logstage.basePath,
+    Seq(slf4j_api, slf4j_simple),
+    Seq(logstageApi).map(_.name in Scope.Compile.all) ++  Seq(logstageCore).map(_.name in Scope.Test.all),
+    Targets.jvm,
+    Groups.logstage,
+  )
+
+
   final lazy val logstage = Aggregate(
     Projects.logstage.id,
     Projects.logstage.basePath,
     Seq(
       logstageApi,
       logstageCore,
+      logstageRenderingCirce,
+      logstageDi,
+      logstageConfig,
+      logstageAdapterSlf4j,
+      logstageSinkSlf4j
     ),
   )
 
