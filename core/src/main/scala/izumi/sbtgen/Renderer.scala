@@ -195,9 +195,9 @@ class Renderer(protected val config: GenConfig, project: Project)
       Seq(
         "scalaVersion" := "crossScalaVersions.value.head".raw,
         "crossScalaVersions" := p.language.map(_.value),
-//        "publishArtifact" in(Test, packageBin) := true,
-//        "publishArtifact" in(Test, packageDoc) := true,
-//        "publishArtifact" in(Test, packageSrc) := true,
+        "publishArtifact" in SettingScope.Raw("(Test, packageBin)") := true,
+        "publishArtifact" in SettingScope.Raw("(Test, packageDoc)") := true,
+        "publishArtifact" in SettingScope.Raw("(Test, packageSrc)") := true,
       )
     } else {
       Seq.empty
