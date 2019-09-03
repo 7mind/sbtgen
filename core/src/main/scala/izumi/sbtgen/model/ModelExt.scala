@@ -70,6 +70,10 @@ trait ModelExt {
     def in(scope: FullDependencyScope): ScopedDependency = {
       ScopedDependency(id, scope)
     }
+
+    def tin(scope: FullDependencyScope): ScopedDependency = {
+      ScopedDependency(id, scope, mergeTestScopes = true)
+    }
   }
 
   implicit class DependencyExt(dependency: Library) {

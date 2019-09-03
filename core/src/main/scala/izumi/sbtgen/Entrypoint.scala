@@ -14,6 +14,7 @@ case class Config(
                    mergeTestScopes: Boolean = true,
                    output: String = "test-out",
                    groups: Set[Group] = Set.empty,
+                   publishTests: Boolean = true,
                  )
 
 
@@ -36,6 +37,9 @@ object Entrypoint {
         opt[Unit]("native")
           .action((_, c) => c.copy(withSnat = true))
           .text("enable native projects"),
+        opt[Unit]("nta")
+          .action((_, c) => c.copy(publishTests = false))
+          .text("don't publish test artifacts"),
         opt[Unit]('d', "debug")
           .action((_, c) => c.copy(withSnat = true))
           .text("enable debug output"),
@@ -62,6 +66,7 @@ object Entrypoint {
           settings,
           config.output,
           config.groups,
+          config.publishTests,
         )
 
         try {

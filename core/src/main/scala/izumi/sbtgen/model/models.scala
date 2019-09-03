@@ -77,7 +77,7 @@ case class FullDependencyScope(scope: Scope, platform: Platform)
 
 case class ScopedLibrary(dependency: Library, scope: FullDependencyScope, compilerPlugin: Boolean = false)
 
-case class ScopedDependency(name: ArtifactId, scope: FullDependencyScope)
+case class ScopedDependency(name: ArtifactId, scope: FullDependencyScope, mergeTestScopes: Boolean = false)
 
 case class Group(name: String)
 

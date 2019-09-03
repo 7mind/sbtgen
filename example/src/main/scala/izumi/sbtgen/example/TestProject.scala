@@ -113,7 +113,7 @@ object TestProject {
         "coverageEnabled" := false,
         "scalaJSModuleKind" in(SettingScope.Project, Platform.Js) := "ModuleKind.CommonJSModule".raw,
       ),
-      plugins = Plugins(Seq(Plugin("ScalaJSBundlerPlugin", Platform.Js)))
+      //plugins = Plugins(Seq(Plugin("ScalaJSBundlerPlugin", Platform.Js))),
     )
     final val cross = Seq(jvmPlatform, jsPlatform)
     final val jvm = Seq(jvmPlatform)
@@ -180,6 +180,7 @@ object TestProject {
     settings = Seq(
       "npmDependencies" in(SettingScope.Compile, Platform.Js) ++= Seq("hash.js" -> "1.1.7"),
     ),
+    plugins = Plugins(Seq(Plugin("ScalaJSBundlerPlugin", Platform.Js))),
   )
 
   final lazy val fundamentalsFunctional = Artifact(
@@ -299,7 +300,9 @@ object TestProject {
     ArtifactId("distage-plugins"),
     Projects.distage.basePath,
     Seq(fast_classpath_scanner),
-    Seq(distageModel).map(_.name in Scope.Compile.all) ++ Seq(distageCore, distageConfig, logstageCore).map(_.name in Scope.Test.all),
+    Seq(distageModel).map(_.name in Scope.Compile.all) ++
+      Seq(distageCore).map(_.name tin Scope.Test.all) ++
+      Seq(distageConfig, logstageCore).map(_.name in Scope.Test.all),
     Targets.jvm,
     Groups.distage,
     settings = Seq(
@@ -308,12 +311,14 @@ object TestProject {
   )
 
   final val allMonads = (cats_all ++ Seq(zio_core)).map(_ in Scope.Optional.all)
+  final val allMonadsTest = (cats_all ++ Seq(zio_core)).map(_ in Scope.Test.all)
 
   final lazy val distageRoles  = Artifact(
     ArtifactId("distage-roles"),
     Projects.distage.basePath,
     allMonads,
-    Seq(distageRolesApi, distageCore, distagePlugins, distageConfig, logstageDi, logstageAdapterSlf4j, logstageRenderingCirce).map(_.name in Scope.Compile.all),
+    Seq(distageRolesApi, logstageDi, logstageAdapterSlf4j, logstageRenderingCirce).map(_.name in Scope.Compile.all) ++
+      Seq(distageCore, distagePlugins, distageConfig).map(_.name tin Scope.Compile.all),
     Targets.jvm,
     Groups.distage,
   )
@@ -322,7 +327,7 @@ object TestProject {
     ArtifactId("distage-static"),
     Projects.distage.basePath,
     Seq(shapeless),
-    Seq(distageCore).map(_.name in Scope.Compile.all) ++ Seq(distageRoles).map(_.name in Scope.Test.all),
+    Seq(distageCore).map(_.name tin Scope.Compile.all) ++ Seq(distageRoles).map(_.name tin Scope.Test.all),
     Targets.jvm,
     Groups.distage,
   )
@@ -330,8 +335,8 @@ object TestProject {
   final lazy val distageTestkit  = Artifact(
     ArtifactId("distage-testkit"),
     Projects.distage.basePath,
-    Seq(scalatest.dependency in Scope.Compile.all),
-    Seq(distageCore, distagePlugins, distageConfig, distageRoles, logstageDi).map(_.name in Scope.Compile.all),
+    Seq(scalatest.dependency in Scope.Compile.all) ++ allMonadsTest,
+    Seq(distageConfig, distageRoles, logstageDi).map(_.name in Scope.Compile.all) ++ Seq(distageCore, distagePlugins).map(_.name tin Scope.Compile.all),
     Targets.jvm,
     Groups.distage,
     settings = Seq(
@@ -367,8 +372,10 @@ object TestProject {
   final lazy val logstageCore  = Artifact(
     ArtifactId("logstage-core"),
     Projects.logstage.basePath,
-    Seq(scala_reflect in Scope.Provided.all) ++ Seq(cats_core, zio_core).map(_ in Scope.Optional.all) ++ (cats_all ++ Seq(zio_core)).map(_ in Scope.Test.all),
-    Seq(fundamentalsBio, logstageApi).map(_.name in Scope.Compile.all),
+    Seq(scala_reflect in Scope.Provided.all) ++
+      Seq(cats_core, zio_core).map(_ in Scope.Optional.all) ++
+      allMonadsTest,
+    Seq(fundamentalsBio).map(_.name in Scope.Compile.all) ++ Seq(logstageApi).map(_.name tin Scope.Compile.all),
     Targets.cross,
     Groups.logstage,
   )
@@ -377,7 +384,7 @@ object TestProject {
     ArtifactId("logstage-rendering-circe"),
     Projects.logstage.basePath,
     Seq.empty,
-    Seq(fundamentalsJsonCirce, logstageCore).map(_.name in Scope.Compile.all),
+    Seq(fundamentalsJsonCirce).map(_.name in Scope.Compile.all) ++ Seq(logstageCore).map(_.name tin Scope.Compile.all),
     Targets.cross,
     Groups.logstage,
   )
@@ -386,7 +393,9 @@ object TestProject {
     ArtifactId("logstage-di"),
     Projects.logstage.basePath,
     Seq.empty,
-    Seq(logstageCore, logstageConfig, distageConfig, distageModel).map(_.name in Scope.Compile.all) ++ Seq(distageCore).map(_.name in Scope.Test.all),
+    Seq(logstageConfig, distageConfig, distageModel).map(_.name in Scope.Compile.all) ++
+      Seq(distageCore).map(_.name in Scope.Test.all) ++
+      Seq(logstageCore).map(_.name tin Scope.Compile.all),
     Targets.jvm,
     Groups.logstage ++ Groups.distage,
   )
@@ -404,7 +413,7 @@ object TestProject {
     ArtifactId("logstage-adapter-slf4j"),
     Projects.logstage.basePath,
     Seq(slf4j_api),
-    Seq(logstageCore).map(_.name in Scope.Compile.all),
+    Seq(logstageCore).map(_.name tin Scope.Compile.all),
     Targets.jvm,
     Groups.logstage,
     settings = Seq(
@@ -418,7 +427,7 @@ object TestProject {
     ArtifactId("logstage-sink-slf4j"),
     Projects.logstage.basePath,
     Seq(slf4j_api, slf4j_simple),
-    Seq(logstageApi).map(_.name in Scope.Compile.all) ++  Seq(logstageCore).map(_.name in Scope.Test.all),
+    Seq(logstageApi).map(_.name in Scope.Compile.all) ++  Seq(logstageCore).map(_.name tin Scope.Test.all),
     Targets.jvm,
     Groups.logstage,
   )

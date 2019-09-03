@@ -11,7 +11,7 @@ class SbtGenTest extends WordSpec {
         groupId = "io.7mind"
       )
 
-      Entrypoint.main(TestProject.tgSdk, settings, Seq())
+      Entrypoint.main(TestProject.tgSdk, settings, Seq("-o", "../izumi-r2"))
       Entrypoint.main(TestProject.tgSdk, settings, Seq("--js", "-o", "../izumi-r2"))
     }
   }

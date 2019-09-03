@@ -9,6 +9,7 @@ case class GenConfig(
                       settings: GlobalSettings,
                       output: String,
                       onlyGroups: Set[Group],
+                      publishTests: Boolean,
                     ) {
   def jvmOnly: Boolean = jvm && !js && !native
 }

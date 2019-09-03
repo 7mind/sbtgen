@@ -194,7 +194,19 @@ class Renderer(protected val config: GenConfig, project: Project)
       val p = a.platforms.filter(_.platform == Platform.Jvm).head
       Seq(
         "scalaVersion" := "crossScalaVersions.value.head".raw,
-        "crossScalaVersions" := p.language.map(_.value)
+        "crossScalaVersions" := p.language.map(_.value),
+//        "publishArtifact" in(Test, packageBin) := true,
+//        "publishArtifact" in(Test, packageDoc) := true,
+//        "publishArtifact" in(Test, packageSrc) := true,
+      )
+    } else {
+      Seq.empty
+    }
+
+    val jvmOnlyFix = if (config.jvmOnly) {
+      Seq(
+        "unmanagedSourceDirectories" in SettingScope.Compile += """baseDirectory.value / ".jvm/src/main" """.raw,
+        "unmanagedSourceDirectories" in SettingScope.Test += """baseDirectory.value / ".jvm/src/main/test" """.raw,
       )
     } else {
       Seq.empty
@@ -202,7 +214,7 @@ class Renderer(protected val config: GenConfig, project: Project)
 
     val sharedSettings = Seq(
       "organization" := groupId,
-    ) ++ more ++ a.settings
+    ) ++ more ++ jvmOnlyFix ++ a.settings
 
     val renderedSettings = renderSettings(sharedSettings, Platform.All)
     val plugins = renderPlugins(a.plugins, Platform.All, dot = true)
@@ -442,13 +454,13 @@ class Renderer(protected val config: GenConfig, project: Project)
 
             val scope = d.scope.scope match {
               case Scope.Test =>
-                if (config.mergeTestScopes) {
+                if (config.mergeTestScopes && d.mergeTestScopes) {
                   "test->compile,test"
                 } else {
                   "test->compile"
                 }
               case _ =>
-                if (config.mergeTestScopes) {
+                if (config.mergeTestScopes && d.mergeTestScopes) {
                   "test->test;compile->compile"
                 } else {
                   "test->compile;compile->compile"
