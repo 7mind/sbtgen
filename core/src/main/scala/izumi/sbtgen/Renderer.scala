@@ -50,7 +50,7 @@ class Renderer(protected val config: GenConfig, project: Project)
     val settings = project.settings.filter(_.scope.platform == Platform.All).map(renderSetting)
 
     val imports = Seq(project.imports.map(i => s"import ${i.value}").mkString("\n"))
-    val plugins = renderPlugins(project.plugins, dot = false)
+    val plugins = renderPlugins(project.plugins, Platform.All, dot = false)
 
     Seq(
       imports,
@@ -163,8 +163,7 @@ class Renderer(protected val config: GenConfig, project: Project)
               "scalaVersion" := "crossScalaVersions.value.head".raw,
               "crossScalaVersions" := p.language.map(_.value)
             ) ++ p.settings ++ a.settings
-            val plugins = renderPlugins(p.plugins, dot = true)
-            plugins ++ Seq(renderSettings(settings, p.platform, Some(prefix)))
+            Seq(renderSettings(settings, p.platform, Some(prefix)))
         }
     } else {
       Seq.empty
@@ -174,12 +173,16 @@ class Renderer(protected val config: GenConfig, project: Project)
       enabledPlatforms.map {
         p =>
           val pname = platformName(p.platform)
-          val out = Seq(
+          val plugins = renderPlugins(a.plugins ++ p.plugins, p.platform, dot = true)
+
+          Seq(
             Seq(s"""lazy val ${a.nameOn(p.platform)} = ${renderName(a.name)}.$pname"""),
             formatDeps(a, p.platform).map(_.shift(2)),
-            formatLibDeps(a, p.platform)
-          ).flatten
-          out.mkString("\n")
+            formatLibDeps(a, p.platform),
+            plugins
+          )
+            .flatten
+            .mkString("\n")
       }
     } else {
       Seq.empty
@@ -202,7 +205,7 @@ class Renderer(protected val config: GenConfig, project: Project)
     ) ++ more ++ a.settings
 
     val renderedSettings = renderSettings(sharedSettings, Platform.All)
-    val plugins = renderPlugins(a.plugins, dot = true)
+    val plugins = renderPlugins(a.plugins, Platform.All, dot = true)
 
     val out = Seq(
       Seq(header),
@@ -217,15 +220,20 @@ class Renderer(protected val config: GenConfig, project: Project)
     out.mkString("\n")
   }
 
-  protected def renderPlugins(plugins: Plugins, dot: Boolean): Seq[String] = {
-    val enabled = if (plugins.enabled.nonEmpty) {
-      Seq(plugins.enabled.map(_.name).mkString("enablePlugins(", ", ", ")"))
+  protected def renderPlugins(plugins: Plugins, platform: Platform, dot: Boolean): Seq[String] = {
+    val predicate = (p: Plugin) => p.platform == Platform.All || p.platform == platform
+
+    val enabledPlugins = plugins.enabled.filter(predicate)
+    val enabled = if (enabledPlugins.nonEmpty) {
+      Seq(enabledPlugins.map(_.name).mkString("enablePlugins(", ", ", ")"))
     } else {
       Seq.empty
     }
 
-    val disabled = if (plugins.disabled.nonEmpty) {
-      Seq(plugins.disabled.map(_.name).mkString("disablePlugins(", ", ", ")"))
+    val disabledPlugins = plugins.disabled.filter(predicate)
+
+    val disabled = if (disabledPlugins.nonEmpty) {
+      Seq(disabledPlugins.map(_.name).mkString("disablePlugins(", ", ", ")"))
     } else {
       Seq.empty
     }

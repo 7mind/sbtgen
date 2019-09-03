@@ -103,9 +103,13 @@ case class Aggregate(
 
 case class Import(value: String)
 
-case class Plugin(name: String)
+case class Plugin(name: String, platform: Platform = Platform.All)
 
-case class Plugins(enabled: Seq[Plugin], disabled: Seq[Plugin])
+case class Plugins(enabled: Seq[Plugin], disabled: Seq[Plugin] = Seq.empty) {
+  def ++(o: Plugins): Plugins = {
+    Plugins(enabled ++ o.enabled, disabled ++ o.disabled)
+  }
+}
 
 case class Project(
                     name: ArtifactId,

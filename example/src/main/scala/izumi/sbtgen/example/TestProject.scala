@@ -2,55 +2,53 @@ package izumi.sbtgen.example
 
 import izumi.sbtgen.model._
 
+object V {
+  // foundation
+  val scala_212 = "2.12.9"
+  val scala_213 = "2.13.0"
+
+  val collection_compat = "2.1.2"
+
+  val kind_projector = "0.10.3"
+  val scalatest = "3.0.8"
+
+  val shapeless = "2.3.3"
+
+  val cats = "2.0.0-RC1"
+  val cats_effect = "2.0.0-RC1"
+  val zio = "1.0.0-RC11-1"
+  val zio_interop_cats = "2.0.0.0-RC2"
+
+  val circe = "0.12.0-RC4"
+  val circe_derivation = "0.12.0-M5"
+  val jawn = "0.14.2"
+
+  val http4s = "0.21.0-M4"
+
+  val scalameta = "4.2.3"
+  val fastparse = "2.1.3"
+
+  val scala_xml = "1.2.0"
+
+  // java-only dependencies below
+  // java, we need it bcs http4s ws client isn't ready yet
+  val asynchttpclient = "2.10.1"
+
+  val classgraph = "4.8.47"
+  val slf4j = "1.7.28"
+  val typesafe_config = "1.3.4"
+
+  // good to drop - java
+  val cglib_nodep = "3.3.0"
+
+  val scala_java_time = "2.0.0-RC3"
+}
+
 object TestProject {
 
   object Deps {
-
-    object V {
-      // foundation
-      val scala_212 = "2.12.9"
-      val scala_213 = "2.13.0"
-
-      val collection_compat = "2.1.2"
-
-      val kind_projector = "0.10.3"
-      val scalatest = "3.0.8"
-
-      val shapeless = "2.3.3"
-
-      val cats = "2.0.0-RC1"
-      val cats_effect = "2.0.0-RC1"
-      val zio = "1.0.0-RC11-1"
-      val zio_interop_cats = "2.0.0.0-RC2"
-
-      val circe = "0.12.0-RC4"
-      val circe_derivation = "0.12.0-M5"
-      val jawn = "0.14.2"
-
-      val http4s = "0.21.0-M4"
-
-      val scalameta = "4.2.3"
-      val fastparse = "2.1.3"
-
-      val scala_xml = "1.2.0"
-
-      // java-only dependencies below
-      // java, we need it bcs http4s ws client isn't ready yet
-      val asynchttpclient = "2.10.1"
-
-      val classgraph = "4.8.47"
-      val slf4j = "1.7.28"
-      val typesafe_config = "1.3.4"
-
-      // good to drop - java
-      val cglib_nodep = "3.3.0"
-
-      val scala_java_time = "2.0.0-RC3"
-    }
-
     final val collection_compat = Library("org.scala-lang.modules", "scala-collection-compat", V.collection_compat)
     final val scalatest = Library("org.scalatest", "scalatest", V.scalatest) in Scope.Test.all
-
 
     final val cats_core = Library("org.typelevel", "cats-core", V.cats)
     final val cats_effect = Library("org.typelevel", "cats-effect", V.cats_effect)
@@ -81,6 +79,10 @@ object TestProject {
 
 
     final val projector = Library("org.typelevel", "kind-projector", "0.10.3", LibraryType.AutoJvm)
+
+    final val fast_classpath_scanner = Library("io.github.classgraph", "classgraph", V.classgraph, LibraryType.Invariant) in Scope.Compile.jvm
+    final val scala_java_time = Library("io.github.cquiroz", "scala-java-time", V.scala_java_time, LibraryType.Auto) in Scope.Compile.all
+
   }
 
   import Deps._
@@ -90,7 +92,8 @@ object TestProject {
 
   object Groups {
     final val fundamentals = Set(Group("fundamentals"))
-    final val jvmonly = Set(Group("jvmonly"))
+    final val distage = Set(Group("distage"))
+    final val logstage = Set(Group("logstage"))
   }
 
   object Targets {
@@ -104,8 +107,10 @@ object TestProject {
       Platform.Js,
       targetScala,
       settings = Seq(
-        "coverageEnabled" := false
-      )
+        "coverageEnabled" := false,
+        "scalaJSModuleKind" in(SettingScope.Project, Platform.Js) := "ModuleKind.CommonJSModule".raw,
+      ),
+      plugins = Plugins(Seq(Plugin("ScalaJSBundlerPlugin", Platform.Js)))
     )
     final val cross = Seq(jvmPlatform, jsPlatform)
     final val jvm = Seq(jvmPlatform)
@@ -144,6 +149,10 @@ object TestProject {
       final val basePath = "distage"
     }
 
+    object logstage {
+      final val id = ArtifactId("logstage")
+      final val basePath = "logstage"
+    }
   }
 
 
@@ -166,9 +175,8 @@ object TestProject {
     Targets.cross,
     Groups.fundamentals,
     settings = Seq(
-      "npmDependencies" in(SettingScope.Compile, Platform.Js) ++= Seq("hash.js" -> "1.1.7")
+      "npmDependencies" in(SettingScope.Compile, Platform.Js) ++= Seq("hash.js" -> "1.1.7"),
     ),
-    plugins = Plugins(Seq(Plugin("ScalaJSBundlerPlugin")), Seq.empty)
   )
 
   final lazy val fundamentalsFunctional = Artifact(
@@ -242,7 +250,7 @@ object TestProject {
     (cats_all).map(_ in Scope.Optional.all) ++ Seq(scala_reflect in Scope.Compile.all),
     fundamentalsBasics ++ Seq(fundamentalsBio, fundamentalsReflection).map(_.name in Scope.Compile.all),
     Targets.jvm,
-    Groups.fundamentals,
+    Groups.distage,
   )
 
   final lazy val distageProxyCglib = Artifact(
@@ -251,7 +259,49 @@ object TestProject {
     Seq(cglib_nodep),
     fundamentalsBasics ++ Seq(distageModel).map(_.name in Scope.Compile.all),
     Targets.jvm,
-    Groups.fundamentals,
+    Groups.distage,
+  )
+
+  final lazy val distageCore  = Artifact(
+    ArtifactId("distage-core"),
+    Projects.distage.basePath,
+    Seq(cglib_nodep),
+    Seq(distageModel, distageProxyCglib).map(_.name in Scope.Compile.all),
+    Targets.jvm,
+    Groups.distage,
+  )
+
+  final lazy val distageConfig  = Artifact(
+    ArtifactId("distage-config"),
+    Projects.distage.basePath,
+    Seq(typesafe_config),
+    Seq(distageModel, fundamentalsTypesafeConfig).map(_.name in Scope.Compile.all) ++ Seq(distageCore).map(_.name in Scope.Test.all),
+    Targets.jvm,
+    Groups.distage,
+    settings = Seq(
+      "fork" in SettingScope.Test := true,
+    )
+  )
+
+  final lazy val distageRolesApi  = Artifact(
+    ArtifactId("distage-roles-api"),
+    Projects.distage.basePath,
+    Seq.empty,
+    Seq(distageModel).map(_.name in Scope.Compile.all),
+    Targets.jvm,
+    Groups.distage,
+  )
+
+  final lazy val distagePlugins  = Artifact(
+    ArtifactId("distage-plugins"),
+    Projects.distage.basePath,
+    Seq(fast_classpath_scanner),
+    Seq(distageModel).map(_.name in Scope.Compile.all) ++ Seq(distageCore, distageConfig, logstageCore).map(_.name in Scope.Test.all),
+    Targets.jvm,
+    Groups.distage,
+    settings = Seq(
+      "fork" in SettingScope.Test := true,
+    )
   )
 
   final lazy val distage = Aggregate(
@@ -260,14 +310,47 @@ object TestProject {
     Seq(
       distageModel,
       distageProxyCglib,
+      distageCore,
+      distageConfig,
+      distageRolesApi,
+      distagePlugins,
     ),
   )
+
+  final lazy val logstageApi  = Artifact(
+    ArtifactId("logstage-api"),
+    Projects.logstage.basePath,
+    Seq(scala_reflect in Scope.Provided.all) ++ Seq(scala_java_time),
+    Seq(fundamentalsReflection).map(_.name in Scope.Compile.all),
+    Targets.cross,
+    Groups.logstage,
+  )
+
+  final lazy val logstageCore  = Artifact(
+    ArtifactId("logstage-core"),
+    Projects.logstage.basePath,
+    Seq(scala_reflect in Scope.Provided.all) ++ Seq(cats_core, zio_core).map(_ in Scope.Optional.all) ++ (cats_all ++ Seq(zio_core)).map(_ in Scope.Test.all),
+    Seq(fundamentalsBio, logstageApi).map(_.name in Scope.Compile.all),
+    Targets.cross,
+    Groups.logstage,
+  )
+
+  final lazy val logstage = Aggregate(
+    Projects.logstage.id,
+    Projects.logstage.basePath,
+    Seq(
+      logstageApi,
+      logstageCore,
+    ),
+  )
+
 
   val tgSdk: Project = Project(
     Projects.root.id,
     Seq(
       fundamentals,
       distage,
+      logstage,
     ),
     Projects.root.settings,
     Seq(
