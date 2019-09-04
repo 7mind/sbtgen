@@ -80,7 +80,7 @@ object TestProject {
     final val scala_library = Library("org.scala-lang", "scala-library", Version.VExpr("scalaVersion.value"), LibraryType.Invariant)
     final val scala_reflect = Library("org.scala-lang", "scala-reflect", Version.VExpr("scalaVersion.value"), LibraryType.Invariant)
     final val scala_xml = Library("org.scala-lang.modules", "scala-xml", V.scala_xml) in Scope.Compile.all
-    final val scalameta = Library("org.scalameta", "scalameta", V.scalameta)in Scope.Compile.all
+    final val scalameta = Library("org.scalameta", "scalameta", V.scalameta) in Scope.Compile.all
 
     final val cglib_nodep = Library("cglib", "cglib-nodep", V.cglib_nodep, LibraryType.Invariant) in Scope.Compile.jvm
 
@@ -135,12 +135,23 @@ object TestProject {
       final val id = ArtifactId("izumi")
       final val settings = Seq(
         "publishMavenStyle" in SettingScope.Build := true,
-        "scalaVersion" in SettingScope.Build := "crossScalaVersions.value.head".raw,
-        "crossScalaVersions" in SettingScope.Build := Targets.targetScala.map(_.value),
         "scalacOptions" in SettingScope.Build ++= Seq(
           "-language:higherKinds",
         ),
-        "scalacOptions" in SettingScope.Build ++= Seq(
+      )
+
+      final val sharedAggSettings = Seq(
+        "crossScalaVersions" := Targets.targetScala.map(_.value),
+        "scalaVersion" := "crossScalaVersions.value.head".raw,
+      )
+
+      final val sharedRootSettings = Seq(
+        "crossScalaVersions" := "Nil".raw,
+        "scalaVersion" := Targets.targetScala.head.value,
+      )
+
+      final val sharedSettings = Seq(
+        "scalacOptions" ++= Seq(
           SettingKey(Some(scala212), None) := Seq("-Ypartial-unification", "-Xsource:2.13", "-Yno-adapted-args"),
           SettingKey(Some(scala213), None) := Const.EmptySeq,
           SettingKey.Default := Const.EmptySeq
@@ -451,11 +462,50 @@ object TestProject {
         Seq.empty,
         platforms = Targets.jvm,
       ),
+      Artifact(
+        Projects.idealingua.compiler,
+        Seq(typesafe_config),
+        Seq(
+          Projects.idealingua.transpilers,
+          Projects.idealingua.runtimeRpcScala,
+          Projects.idealingua.runtimeRpcTypescript,
+          Projects.idealingua.runtimeRpcGo,
+          Projects.idealingua.runtimeRpcCSharp,
+          Projects.idealingua.testDefs,
+        ).map(_ in Scope.Compile.all),
+        platforms = Targets.jvm,
+        plugins = Plugins(Seq(/*Plugin("AssemblyPlugin")*/))
+      ),
     ),
     pathPrefix = Projects.idealingua.basePath,
     groups = Groups.logstage,
     defaultPlatforms = Targets.cross,
   )
+
+  /*
+  lazy val idealinguaV1Compiler = inIdealinguaV1Base.as.module
+  .depends(idealinguaV1CompilerDeps: _*)
+  .settings(AppSettings)
+  .settings(
+    libraryDependencies ++= Seq(R.typesafe_config),
+    mainClass in assembly := Some("izumi.idealingua.compiler.CommandlineIDLCompiler"),
+    // FIXME: workaround for https://github.com/zio/interop-cats/issues/16
+    assemblyMergeStrategy in assembly := {
+      case path if path.contains("zio/BuildInfo$.class") =>
+        MergeStrategy.last
+      case p =>
+        (assemblyMergeStrategy in assembly).value(p)
+    }
+  )
+  .settings(
+    artifact in(Compile, assembly) := {
+      val art = (artifact in(Compile, assembly)).value
+      art.withClassifier(Some("assembly"))
+    },
+
+    addArtifact(artifact in(Compile, assembly), assembly)
+  )
+   */
 
   val izumi: Project = Project(
     Projects.root.id,
@@ -466,6 +516,9 @@ object TestProject {
       idealingua,
     ),
     Projects.root.settings,
+    Projects.root.sharedSettings,
+    Projects.root.sharedAggSettings,
+    Projects.root.sharedRootSettings,
     Seq(
       Import("sbt.Keys._")
     ),

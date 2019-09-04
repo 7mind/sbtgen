@@ -37,7 +37,7 @@ class Renderer(protected val config: GenConfig, project: Project)
               Seq(".")
           }
 
-          PreparedAggregate(ArtifactId(name), path, group.map(a => renderName(a.id)), p)
+          PreparedAggregate(ArtifactId(name), path, group.map(a => renderName(a.id)), p, isRoot = p == Platform.All)
       }
 
     val allAggregates = (aggs ++ superAgg).filterNot(_.aggregatedNames.isEmpty)
@@ -125,15 +125,23 @@ class Renderer(protected val config: GenConfig, project: Project)
 
   protected def renderAggregateProjects(aggregates: Seq[PreparedAggregate]): Seq[String] = {
     val settings = Seq(
-//      "publish" := "{}".raw,
-//      "publishLocal" := "{}".raw,
-      "skip in publish" := true,
+      //      "publish" := "{}".raw,
+      //      "publishLocal" := "{}".raw,
+      //      "skip in publish" := true,
+      "skip" in SettingScope.Raw("publish") := true,
     )
 
-    val s = renderSettings(settings, Platform.All)
 
     val aggDefs = aggregates.map {
-      case PreparedAggregate(name, path, agg, _) =>
+      case PreparedAggregate(name, path, agg, _, isRoot) =>
+        val hack = if (isRoot) {
+          project.sharedRootSettings
+        } else {
+          project.sharedAggSettings
+        }
+
+        val s = renderSettings(settings ++ hack, Platform.All)
+
         val header = s"""lazy val ${renderName(name.value)} = (project in file(${stringLit(path.mkString("/"))}))"""
         val names = agg.map(_.shift(2)).mkString(".aggregate(\n", ",\n", "\n)").shift(2)
         Seq(header, s, names).mkString("\n")
@@ -214,7 +222,7 @@ class Renderer(protected val config: GenConfig, project: Project)
 
     val sharedSettings = Seq(
       "organization" := groupId,
-    ) ++ more ++ jvmOnlyFix ++ a.settings
+    ) ++ more ++ jvmOnlyFix ++ a.settings ++ project.sharedSettings
 
     val renderedSettings = renderSettings(sharedSettings, Platform.All)
     val plugins = renderPlugins(a.plugins, Platform.All, dot = true)
