@@ -83,10 +83,10 @@ case class Group(name: String)
 
 case class Artifact(
                      name: ArtifactId,
-                     basePath: String,
                      libs: Seq[ScopedLibrary],
                      depends: Seq[ScopedDependency],
-                     platforms: Seq[PlatformEnv],
+                     pathPrefix: Seq[String] = Seq.empty,
+                     platforms: Seq[PlatformEnv] = Seq.empty,
                      groups: Set[Group] = Set.empty,
                      subGroupId: Option[String] = None,
                      settings: Seq[SettingDef] = Seq.empty,
@@ -95,9 +95,29 @@ case class Artifact(
 
 case class Aggregate(
                       name: ArtifactId,
-                      path: String,
                       artifacts: Seq[Artifact],
-                    )
+                      pathPrefix: Seq[String] = Seq.empty,
+                      groups: Set[Group] = Set.empty,
+                      defaultPlatforms: Seq[PlatformEnv] = Seq.empty,
+                    ) {
+  def merge: Aggregate = {
+    val newArtifacts = artifacts.map {
+      a =>
+        val newPlatforms = if (a.platforms.isEmpty) {
+          defaultPlatforms
+        } else {
+          a.platforms
+        }
+        val newPrefix = if (a.pathPrefix.isEmpty) {
+          pathPrefix
+        } else {
+          a.pathPrefix
+        }
+        a.copy(platforms = newPlatforms, pathPrefix = newPrefix)
+    }
+    this.copy(artifacts = newArtifacts)
+  }
+}
 
 
 

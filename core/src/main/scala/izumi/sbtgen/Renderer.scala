@@ -1,7 +1,6 @@
 package izumi.sbtgen
 
 import izumi.sbtgen.impl.{WithArtifactExt, WithBasicRenderers, WithProjectIndex}
-import izumi.sbtgen.model.SettingDef.ScopedSettingDef
 import izumi.sbtgen.tools.IzString._
 import izumi.sbtgen.model._
 import izumi.sbtgen.output.PreparedAggregate
@@ -11,12 +10,13 @@ class Renderer(protected val config: GenConfig, project: Project)
   extends WithProjectIndex
     with WithBasicRenderers
     with WithArtifactExt {
-  protected val index: Map[ArtifactId, Artifact] = makeIndex(project.aggregates)
+  private val aggregates: Seq[Aggregate] = project.aggregates.map(_.merge)
+  protected val index: Map[ArtifactId, Artifact] = makeIndex(aggregates)
 
   def render(): Seq[String] = {
-    val artifacts = project.aggregates.flatMap(_.filteredArtifacts).map(renderArtifact)
+    val artifacts = aggregates.flatMap(_.filteredArtifacts).map(renderArtifact)
 
-    val aggs = project.aggregates.flatMap(renderAgg)
+    val aggs = aggregates.flatMap(renderAgg)
 
     val superAgg = aggs
       .groupBy(_.target)
@@ -32,9 +32,9 @@ class Renderer(protected val config: GenConfig, project: Project)
           val name = (project.name.value +: id.toSeq).mkString("-")
           val path = id match {
             case Some(x) =>
-              Seq(".", ".agg-" + x.toLowerCase).mkString("/")
+              Seq(".", ".agg-" + x.toLowerCase)
             case None =>
-              "."
+              Seq(".")
           }
 
           PreparedAggregate(ArtifactId(name), path, group.map(a => renderName(a.id)), p)
@@ -84,7 +84,7 @@ class Renderer(protected val config: GenConfig, project: Project)
           }
       }
       if (jvmAgg.nonEmpty) {
-        Seq(output.PreparedAggregate(ArtifactId(a.name.value + "-jvm"), a.path + "/.agg-jvm", jvmAgg, Platform.Jvm))
+        Seq(output.PreparedAggregate(ArtifactId(a.name.value + "-jvm"), a.pathPrefix ++ Seq(".agg-jvm"), jvmAgg, Platform.Jvm))
       } else {
         Seq.empty
       }
@@ -99,7 +99,7 @@ class Renderer(protected val config: GenConfig, project: Project)
 
       }
       if (jsAgg.nonEmpty) {
-        Seq(output.PreparedAggregate(ArtifactId(a.name.value + "-js"), a.path + "/.agg-js", jsAgg, Platform.Js))
+        Seq(output.PreparedAggregate(ArtifactId(a.name.value + "-js"), a.pathPrefix ++ Seq(".agg-js"), jsAgg, Platform.Js))
       } else {
         Seq.empty
       }
@@ -113,20 +113,20 @@ class Renderer(protected val config: GenConfig, project: Project)
           a.platforms.filter(_.platform == Platform.Native).map(p => a.nameOn(p.platform))
       }
       if (nativeAgg.nonEmpty) {
-        Seq(output.PreparedAggregate(ArtifactId(a.name.value + "-native"), a.path + "/.agg-native", nativeAgg, Platform.Native))
+        Seq(output.PreparedAggregate(ArtifactId(a.name.value + "-native"), a.pathPrefix ++ Seq(".agg-native"), nativeAgg, Platform.Native))
       } else {
         Seq.empty
       }
     }
 
-    Seq(output.PreparedAggregate(a.name, a.path, fullAgg, Platform.All)) ++ jvmOnly ++ jsOnly ++ nativeOnly
+    Seq(output.PreparedAggregate(a.name, a.pathPrefix, fullAgg, Platform.All)) ++ jvmOnly ++ jsOnly ++ nativeOnly
   }
 
 
   protected def renderAggregateProjects(aggregates: Seq[PreparedAggregate]): Seq[String] = {
     val settings = Seq(
-      "publish" := "{}".raw,
-      "publishLocal" := "{}".raw,
+//      "publish" := "{}".raw,
+//      "publishLocal" := "{}".raw,
       "skip in publish" := true,
     )
 
@@ -134,7 +134,7 @@ class Renderer(protected val config: GenConfig, project: Project)
 
     val aggDefs = aggregates.map {
       case PreparedAggregate(name, path, agg, _) =>
-        val header = s"""lazy val ${renderName(name.value)} = (project in file(${stringLit(path)}))"""
+        val header = s"""lazy val ${renderName(name.value)} = (project in file(${stringLit(path.mkString("/"))}))"""
         val names = agg.map(_.shift(2)).mkString(".aggregate(\n", ",\n", "\n)").shift(2)
         Seq(header, s, names).mkString("\n")
     }
@@ -142,7 +142,7 @@ class Renderer(protected val config: GenConfig, project: Project)
   }
 
   protected def renderArtifact(a: Artifact): String = {
-    val path = a.basePath + "/" + a.name.value
+    val path = (a.pathPrefix :+ a.name.value).mkString("/")
 
     val header = if (!a.isJvmOnly) {
       val platforms = a.platforms.map(p => platformName(p.platform).toUpperCase()).map(pn => s"${pn}Platform")
@@ -196,7 +196,7 @@ class Renderer(protected val config: GenConfig, project: Project)
         "scalaVersion" := "crossScalaVersions.value.head".raw,
         "crossScalaVersions" := p.language.map(_.value),
         "publishArtifact" in SettingScope.Raw("(Test, packageBin)") := true,
-        "publishArtifact" in SettingScope.Raw("(Test, packageDoc)") := true,
+        "publishArtifact" in SettingScope.Raw("(Test, packageDoc)") := false,
         "publishArtifact" in SettingScope.Raw("(Test, packageSrc)") := true,
       )
     } else {

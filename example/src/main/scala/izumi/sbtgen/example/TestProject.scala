@@ -122,7 +122,7 @@ object TestProject {
   object Projects {
 
     object root {
-      final val id = ArtifactId("testproject")
+      final val id = ArtifactId("izumi")
       final val settings = Seq(
         "publishMavenStyle" in SettingScope.Build := true,
         "scalaVersion" in SettingScope.Build := "crossScalaVersions.value.head".raw,
@@ -144,311 +144,237 @@ object TestProject {
 
     object fundamentals {
       final val id = ArtifactId("fundamentals")
-      final val basePath = "fundamentals"
+      final val basePath = Seq("fundamentals")
+
+      final val fundamentalsCollections = ArtifactId("fundamentals-collections")
+      final val fundamentalsPlatform = ArtifactId("fundamentals-platform")
+      final val functional = ArtifactId("fundamentals-functional")
+      final val bio = ArtifactId("fundamentals-bio")
+
+      final val typesafeConfig = ArtifactId("fundamentals-typesafe-config")
+      final val reflection = ArtifactId("fundamentals-reflection")
+      final val fundamentalsJsonCirce = ArtifactId("fundamentals-json-circe")
+
+      final lazy val basics = Seq(
+        fundamentalsPlatform,
+        functional,
+        fundamentalsCollections,
+      ).map(_ in Scope.Runtime.all)
     }
 
     object distage {
       final val id = ArtifactId("distage")
-      final val basePath = "distage"
+      final val basePath = Seq("distage")
+
+      final lazy val model = ArtifactId("distage-model")
+      final lazy val proxyCglib = ArtifactId("distage-proxy-cglib")
+      final lazy val core = ArtifactId("distage-core")
+      final lazy val config = ArtifactId("distage-config")
+      final lazy val rolesApi = ArtifactId("distage-roles-api")
+      final lazy val plugins = ArtifactId("distage-plugins")
+      final lazy val roles = ArtifactId("distage-roles")
+      final lazy val static = ArtifactId("distage-static")
+      final lazy val testkit = ArtifactId("distage-testkit")
     }
 
     object logstage {
       final val id = ArtifactId("logstage")
-      final val basePath = "logstage"
+      final val basePath = Seq("logstage")
+
+      final lazy val api = ArtifactId("logstage-api")
+      final lazy val core = ArtifactId("logstage-core")
+      final lazy val renderingCirce = ArtifactId("logstage-rendering-circe")
+      final lazy val di = ArtifactId("logstage-di")
+      final lazy val config = ArtifactId("logstage-config")
+      final lazy val adapterSlf4j = ArtifactId("logstage-adapter-slf4j")
+      final lazy val sinkSlf4j = ArtifactId("logstage-sink-slf4j")
     }
+
   }
-
-
-  final lazy val fundamentalsCollections = Artifact(
-    ArtifactId("fundamentals-collections"),
-    Projects.fundamentals.basePath,
-    Seq.empty,
-    Seq.empty,
-    Targets.cross,
-    Groups.fundamentals,
-  )
-
-  final lazy val fundamentalsPlatform = Artifact(
-    ArtifactId("fundamentals-platform"),
-    Projects.fundamentals.basePath,
-    Seq.empty,
-    Seq(
-      fundamentalsCollections.name in Scope.Compile.all
-    ),
-    Targets.cross,
-    Groups.fundamentals,
-    settings = Seq(
-      "npmDependencies" in(SettingScope.Compile, Platform.Js) ++= Seq("hash.js" -> "1.1.7"),
-    ),
-    plugins = Plugins(Seq(Plugin("ScalaJSBundlerPlugin", Platform.Js))),
-  )
-
-  final lazy val fundamentalsFunctional = Artifact(
-    ArtifactId("fundamentals-functional"),
-    Projects.fundamentals.basePath,
-    Seq.empty,
-    Seq.empty,
-    Targets.cross,
-    Groups.fundamentals,
-  )
-
-  final lazy val fundamentalsBio = Artifact(
-    ArtifactId("fundamentals-bio"),
-    Projects.fundamentals.basePath,
-    (cats_all ++ Seq(zio_core)).map(_ in Scope.Optional.all),
-    Seq(fundamentalsFunctional.name in Scope.Runtime.all),
-    Targets.cross,
-    Groups.fundamentals,
-  )
-
-  final lazy val fundamentalsBasics = Seq(
-    fundamentalsPlatform,
-    fundamentalsFunctional,
-    fundamentalsCollections,
-  ).map(_.name in Scope.Runtime.all)
-
-  final lazy val fundamentalsTypesafeConfig = Artifact(
-    ArtifactId("fundamentals-typesafe-config"),
-    Projects.fundamentals.basePath,
-    Seq(typesafe_config, scala_reflect in Scope.Compile.jvm),
-    fundamentalsBasics ++ Seq(fundamentalsReflection.name in Scope.Runtime.jvm),
-    Targets.jvm,
-    Groups.fundamentals,
-  )
-
-  final lazy val fundamentalsReflection = Artifact(
-    ArtifactId("fundamentals-reflection"),
-    Projects.fundamentals.basePath,
-    Seq(boopickle, scala_reflect in Scope.Provided.all),
-    fundamentalsBasics,
-    Targets.cross,
-    Groups.fundamentals,
-  )
-
-  final lazy val fundamentalsJsonCirce = Artifact(
-    ArtifactId("fundamentals-json-circe"),
-    Projects.fundamentals.basePath,
-    circe ++ Seq(jawn in Scope.Compile.js),
-    fundamentalsBasics,
-    Targets.cross,
-    Groups.fundamentals,
-  )
 
   final lazy val fundamentals = Aggregate(
     Projects.fundamentals.id,
-    Projects.fundamentals.basePath,
     Seq(
-      fundamentalsCollections,
-      fundamentalsPlatform,
-      fundamentalsFunctional,
-      fundamentalsBio,
-      fundamentalsTypesafeConfig,
-      fundamentalsReflection,
-      fundamentalsJsonCirce,
+      Artifact(
+        Projects.fundamentals.fundamentalsCollections,
+        Seq.empty,
+        Seq.empty,
+      ),
+      Artifact(
+        Projects.fundamentals.fundamentalsPlatform,
+        Seq.empty,
+        Seq(
+          Projects.fundamentals.fundamentalsCollections in Scope.Compile.all
+        ),
+        settings = Seq(
+          "npmDependencies" in(SettingScope.Compile, Platform.Js) ++= Seq("hash.js" -> "1.1.7"),
+        ),
+        plugins = Plugins(Seq(Plugin("ScalaJSBundlerPlugin", Platform.Js))),
+      ),
+      Artifact(
+        Projects.fundamentals.functional,
+        Seq.empty,
+        Seq.empty,
+      ),
+      Artifact(
+        Projects.fundamentals.bio,
+        (cats_all ++ Seq(zio_core)).map(_ in Scope.Optional.all),
+        Seq(Projects.fundamentals.functional in Scope.Runtime.all),
+      ),
+      Artifact(
+        Projects.fundamentals.typesafeConfig,
+        Seq(typesafe_config, scala_reflect in Scope.Compile.jvm),
+        Projects.fundamentals.basics ++ Seq(Projects.fundamentals.reflection in Scope.Runtime.jvm),
+        platforms = Targets.jvm,
+      ),
+      Artifact(
+        Projects.fundamentals.reflection,
+        Seq(boopickle, scala_reflect in Scope.Provided.all),
+        Projects.fundamentals.basics,
+      ),
+      Artifact(
+        Projects.fundamentals.fundamentalsJsonCirce,
+        circe ++ Seq(jawn in Scope.Compile.js),
+        Projects.fundamentals.basics,
+      ),
     ),
+    pathPrefix = Projects.fundamentals.basePath,
+    groups = Groups.fundamentals,
+    defaultPlatforms = Targets.cross,
   )
 
-  final lazy val distageModel = Artifact(
-    ArtifactId("distage-model"),
-    Projects.distage.basePath,
-    (cats_all).map(_ in Scope.Optional.all) ++ Seq(scala_reflect in Scope.Compile.all),
-    fundamentalsBasics ++ Seq(fundamentalsBio, fundamentalsReflection).map(_.name in Scope.Compile.all),
-    Targets.jvm,
-    Groups.distage,
-  )
-
-  final lazy val distageProxyCglib = Artifact(
-    ArtifactId("distage-proxy-cglib"),
-    Projects.distage.basePath,
-    Seq(cglib_nodep),
-    fundamentalsBasics ++ Seq(distageModel).map(_.name in Scope.Compile.all),
-    Targets.jvm,
-    Groups.distage,
-  )
-
-  final lazy val distageCore  = Artifact(
-    ArtifactId("distage-core"),
-    Projects.distage.basePath,
-    Seq(cglib_nodep),
-    Seq(distageModel, distageProxyCglib).map(_.name in Scope.Compile.all),
-    Targets.jvm,
-    Groups.distage,
-  )
-
-  final lazy val distageConfig  = Artifact(
-    ArtifactId("distage-config"),
-    Projects.distage.basePath,
-    Seq(typesafe_config),
-    Seq(distageModel, fundamentalsTypesafeConfig).map(_.name in Scope.Compile.all) ++ Seq(distageCore).map(_.name in Scope.Test.all),
-    Targets.jvm,
-    Groups.distage,
-    settings = Seq(
-      "fork" in SettingScope.Test := true,
-    )
-  )
-
-  final lazy val distageRolesApi  = Artifact(
-    ArtifactId("distage-roles-api"),
-    Projects.distage.basePath,
-    Seq.empty,
-    Seq(distageModel).map(_.name in Scope.Compile.all),
-    Targets.jvm,
-    Groups.distage,
-  )
-
-  final lazy val distagePlugins  = Artifact(
-    ArtifactId("distage-plugins"),
-    Projects.distage.basePath,
-    Seq(fast_classpath_scanner),
-    Seq(distageModel).map(_.name in Scope.Compile.all) ++
-      Seq(distageCore).map(_.name tin Scope.Test.all) ++
-      Seq(distageConfig, logstageCore).map(_.name in Scope.Test.all),
-    Targets.jvm,
-    Groups.distage,
-    settings = Seq(
-      "fork" in SettingScope.Test := true,
-    )
-  )
 
   final val allMonads = (cats_all ++ Seq(zio_core)).map(_ in Scope.Optional.all)
   final val allMonadsTest = (cats_all ++ Seq(zio_core)).map(_ in Scope.Test.all)
 
-  final lazy val distageRoles  = Artifact(
-    ArtifactId("distage-roles"),
-    Projects.distage.basePath,
-    allMonads,
-    Seq(distageRolesApi, logstageDi, logstageAdapterSlf4j, logstageRenderingCirce).map(_.name in Scope.Compile.all) ++
-      Seq(distageCore, distagePlugins, distageConfig).map(_.name tin Scope.Compile.all),
-    Targets.jvm,
-    Groups.distage,
-  )
-
-  final lazy val distageStatic  = Artifact(
-    ArtifactId("distage-static"),
-    Projects.distage.basePath,
-    Seq(shapeless),
-    Seq(distageCore).map(_.name tin Scope.Compile.all) ++ Seq(distageRoles).map(_.name tin Scope.Test.all),
-    Targets.jvm,
-    Groups.distage,
-  )
-
-  final lazy val distageTestkit  = Artifact(
-    ArtifactId("distage-testkit"),
-    Projects.distage.basePath,
-    Seq(scalatest.dependency in Scope.Compile.all) ++ allMonadsTest,
-    Seq(distageConfig, distageRoles, logstageDi).map(_.name in Scope.Compile.all) ++ Seq(distageCore, distagePlugins).map(_.name tin Scope.Compile.all),
-    Targets.jvm,
-    Groups.distage,
-    settings = Seq(
-      "classLoaderLayeringStrategy" in SettingScope.Test := "ClassLoaderLayeringStrategy.Flat".raw,
-    )
-  )
 
   final lazy val distage = Aggregate(
     Projects.distage.id,
-    Projects.distage.basePath,
     Seq(
-      distageModel,
-      distageProxyCglib,
-      distageCore,
-      distageConfig,
-      distageRolesApi,
-      distagePlugins,
-      distageRoles,
-      distageStatic,
-      distageTestkit,
+      Artifact(
+        Projects.distage.model,
+        (cats_all).map(_ in Scope.Optional.all) ++ Seq(scala_reflect in Scope.Compile.all),
+        Projects.fundamentals.basics ++ Seq(Projects.fundamentals.bio, Projects.fundamentals.reflection).map(_ in Scope.Compile.all),
+      ),
+      Artifact(
+        Projects.distage.proxyCglib,
+        Seq(cglib_nodep),
+        Projects.fundamentals.basics ++ Seq(Projects.distage.model).map(_ in Scope.Compile.all),
+      ),
+      Artifact(
+        Projects.distage.core,
+        Seq(cglib_nodep),
+        Seq(Projects.distage.model, Projects.distage.proxyCglib).map(_ in Scope.Compile.all),
+      ),
+      Artifact(
+        Projects.distage.config,
+        Seq(typesafe_config),
+        Seq(Projects.distage.model, Projects.fundamentals.typesafeConfig).map(_ in Scope.Compile.all) ++
+          Seq(Projects.distage.core).map(_ in Scope.Test.all),
+        settings = Seq(
+          "fork" in SettingScope.Test := true,
+        )
+      ),
+      Artifact(
+        Projects.distage.rolesApi,
+        Seq.empty,
+        Seq(Projects.distage.model).map(_ in Scope.Compile.all),
+      ),
+      Artifact(
+        Projects.distage.plugins,
+        Seq(fast_classpath_scanner),
+        Seq(Projects.distage.model).map(_ in Scope.Compile.all) ++
+          Seq(Projects.distage.core).map(_ tin Scope.Test.all) ++
+          Seq(Projects.distage.config, Projects.logstage.core).map(_ in Scope.Test.all),
+        settings = Seq(
+          "fork" in SettingScope.Test := true,
+        )
+      ),
+      Artifact(
+        Projects.distage.roles,
+        allMonads,
+        Seq(Projects.distage.rolesApi, Projects.logstage.di, Projects.logstage.adapterSlf4j, Projects.logstage.renderingCirce).map(_ in Scope.Compile.all) ++
+          Seq(Projects.distage.core, Projects.distage.plugins, Projects.distage.config).map(_ tin Scope.Compile.all),
+      ),
+      Artifact(
+        Projects.distage.static,
+        Seq(shapeless),
+        Seq(Projects.distage.core).map(_ tin Scope.Compile.all) ++ Seq(Projects.distage.roles).map(_ tin Scope.Test.all),
+      ),
+      Artifact(
+        Projects.distage.testkit,
+        Seq(scalatest.dependency in Scope.Compile.all) ++ allMonadsTest,
+        Seq(Projects.distage.config, Projects.distage.roles, Projects.logstage.di).map(_ in Scope.Compile.all) ++ Seq(Projects.distage.core, Projects.distage.plugins).map(_ tin Scope.Compile.all),
+        settings = Seq(
+          "classLoaderLayeringStrategy" in SettingScope.Test := "ClassLoaderLayeringStrategy.Flat".raw,
+        )
+      ),
     ),
+    pathPrefix = Projects.distage.basePath,
+    defaultPlatforms = Targets.jvm,
+    groups = Groups.distage,
   )
-
-  final lazy val logstageApi  = Artifact(
-    ArtifactId("logstage-api"),
-    Projects.logstage.basePath,
-    Seq(scala_reflect in Scope.Provided.all) ++ Seq(scala_java_time),
-    Seq(fundamentalsReflection).map(_.name in Scope.Compile.all),
-    Targets.cross,
-    Groups.logstage,
-  )
-
-  final lazy val logstageCore  = Artifact(
-    ArtifactId("logstage-core"),
-    Projects.logstage.basePath,
-    Seq(scala_reflect in Scope.Provided.all) ++
-      Seq(cats_core, zio_core).map(_ in Scope.Optional.all) ++
-      allMonadsTest,
-    Seq(fundamentalsBio).map(_.name in Scope.Compile.all) ++ Seq(logstageApi).map(_.name tin Scope.Compile.all),
-    Targets.cross,
-    Groups.logstage,
-  )
-
-  final lazy val logstageRenderingCirce  = Artifact(
-    ArtifactId("logstage-rendering-circe"),
-    Projects.logstage.basePath,
-    Seq.empty,
-    Seq(fundamentalsJsonCirce).map(_.name in Scope.Compile.all) ++ Seq(logstageCore).map(_.name tin Scope.Compile.all),
-    Targets.cross,
-    Groups.logstage,
-  )
-
-  final lazy val logstageDi  = Artifact(
-    ArtifactId("logstage-di"),
-    Projects.logstage.basePath,
-    Seq.empty,
-    Seq(logstageConfig, distageConfig, distageModel).map(_.name in Scope.Compile.all) ++
-      Seq(distageCore).map(_.name in Scope.Test.all) ++
-      Seq(logstageCore).map(_.name tin Scope.Compile.all),
-    Targets.jvm,
-    Groups.logstage ++ Groups.distage,
-  )
-
-  final lazy val logstageConfig  = Artifact(
-    ArtifactId("logstage-config"),
-    Projects.logstage.basePath,
-    Seq.empty,
-    Seq(fundamentalsTypesafeConfig, logstageCore).map(_.name in Scope.Compile.all),
-    Targets.jvm,
-    Groups.logstage,
-  )
-
-  final lazy val logstageAdapterSlf4j  = Artifact(
-    ArtifactId("logstage-adapter-slf4j"),
-    Projects.logstage.basePath,
-    Seq(slf4j_api),
-    Seq(logstageCore).map(_.name tin Scope.Compile.all),
-    Targets.jvm,
-    Groups.logstage,
-    settings = Seq(
-      "compileOrder" in SettingScope.Compile := "CompileOrder.Mixed".raw,
-      "compileOrder" in SettingScope.Test := "CompileOrder.Mixed".raw,
-      "classLoaderLayeringStrategy" in SettingScope.Test := "ClassLoaderLayeringStrategy.Flat".raw,
-    )
-  )
-
-  final lazy val logstageSinkSlf4j  = Artifact(
-    ArtifactId("logstage-sink-slf4j"),
-    Projects.logstage.basePath,
-    Seq(slf4j_api, slf4j_simple),
-    Seq(logstageApi).map(_.name in Scope.Compile.all) ++  Seq(logstageCore).map(_.name tin Scope.Test.all),
-    Targets.jvm,
-    Groups.logstage,
-  )
-
 
   final lazy val logstage = Aggregate(
     Projects.logstage.id,
-    Projects.logstage.basePath,
     Seq(
-      logstageApi,
-      logstageCore,
-      logstageRenderingCirce,
-      logstageDi,
-      logstageConfig,
-      logstageAdapterSlf4j,
-      logstageSinkSlf4j
+      Artifact(
+        Projects.logstage.api,
+        Seq(scala_reflect in Scope.Provided.all) ++ Seq(scala_java_time),
+        Seq(Projects.fundamentals.reflection).map(_ in Scope.Compile.all),
+      ),
+      Artifact(
+        Projects.logstage.core,
+        Seq(scala_reflect in Scope.Provided.all) ++
+          Seq(cats_core, zio_core).map(_ in Scope.Optional.all) ++
+          allMonadsTest,
+        Seq(Projects.fundamentals.bio).map(_ in Scope.Compile.all) ++ Seq(Projects.logstage.api).map(_ tin Scope.Compile.all),
+      ),
+      Artifact(
+        Projects.logstage.renderingCirce,
+        Seq.empty,
+        Seq(Projects.fundamentals.fundamentalsJsonCirce).map(_ in Scope.Compile.all) ++ Seq(Projects.logstage.core).map(_ tin Scope.Compile.all),
+      ),
+      Artifact(
+        Projects.logstage.di,
+        Seq.empty,
+        Seq(Projects.logstage.config, Projects.distage.config, Projects.distage.model).map(_ in Scope.Compile.all) ++
+          Seq(Projects.distage.core).map(_ in Scope.Test.all) ++
+          Seq(Projects.logstage.core).map(_ tin Scope.Compile.all),
+        platforms = Targets.jvm,
+        groups = Groups.distage,
+      ),
+      Artifact(
+        Projects.logstage.config,
+        Seq.empty,
+        Seq(Projects.fundamentals.typesafeConfig, Projects.logstage.core).map(_ in Scope.Compile.all),
+        platforms = Targets.jvm,
+      ),
+      Artifact(
+        Projects.logstage.adapterSlf4j,
+        Seq(slf4j_api),
+        Seq(Projects.logstage.core).map(_ tin Scope.Compile.all),
+        platforms = Targets.jvm,
+        settings = Seq(
+          "compileOrder" in SettingScope.Compile := "CompileOrder.Mixed".raw,
+          "compileOrder" in SettingScope.Test := "CompileOrder.Mixed".raw,
+          "classLoaderLayeringStrategy" in SettingScope.Test := "ClassLoaderLayeringStrategy.Flat".raw,
+        )
+      ),
+      Artifact(
+        Projects.logstage.sinkSlf4j,
+        Seq(slf4j_api, slf4j_simple),
+        Seq(Projects.logstage.api).map(_ in Scope.Compile.all) ++ Seq(Projects.logstage.core).map(_ tin Scope.Test.all),
+        platforms = Targets.jvm,
+      )
     ),
+    pathPrefix = Projects.logstage.basePath,
+    groups = Groups.logstage,
+    defaultPlatforms = Targets.cross,
   )
 
 
-  val tgSdk: Project = Project(
+  val izumi: Project = Project(
     Projects.root.id,
     Seq(
       fundamentals,
