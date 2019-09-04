@@ -33,14 +33,13 @@
         <staging:stageLocally>
             <staging:nexusStagingInfo refid="target-nexus" />
             <fileset dir="${dir.repo}" includes="**/*.*" />
-
         </staging:stageLocally>
 
-        <staging:stageRemotely>
+        <staging:stageRemotely stagingProgressTimeoutMinutes="30">
             <staging:nexusStagingInfo refid="target-nexus" />
         </staging:stageRemotely>
 
-        <staging:releaseStagingRepository stagingProgressTimeoutMinutes="10">
+        <staging:releaseStagingRepository stagingProgressTimeoutMinutes="30">
             <staging:nexusStagingInfo refid="target-nexus" />
         </staging:releaseStagingRepository>
 

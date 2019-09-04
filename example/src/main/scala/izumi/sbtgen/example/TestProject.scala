@@ -66,6 +66,11 @@ object TestProject {
     ).map(_ in Scope.Compile.all)
 
     final val zio_core = Library("dev.zio", "zio", V.zio)
+    final val zio_interop_cats = Library("dev.zio", "zio-interop-cats", V.zio_interop_cats)
+    final val zio_all = Seq(
+      zio_core,
+      zio_interop_cats,
+    )
 
     final val typesafe_config = Library("com.typesafe", "config", V.typesafe_config, LibraryType.Invariant) in Scope.Compile.all
     final val boopickle = Library("io.suzaku", "boopickle", "1.3.1") in Scope.Compile.all
@@ -74,6 +79,8 @@ object TestProject {
     final val scala_compiler = Library("org.scala-lang", "scala-compiler", Version.VExpr("scalaVersion.value"), LibraryType.Invariant)
     final val scala_library = Library("org.scala-lang", "scala-library", Version.VExpr("scalaVersion.value"), LibraryType.Invariant)
     final val scala_reflect = Library("org.scala-lang", "scala-reflect", Version.VExpr("scalaVersion.value"), LibraryType.Invariant)
+    final val scala_xml = Library("org.scala-lang.modules", "scala-xml", V.scala_xml) in Scope.Compile.all
+    final val scalameta = Library("org.scalameta", "scalameta", V.scalameta)in Scope.Compile.all
 
     final val cglib_nodep = Library("cglib", "cglib-nodep", V.cglib_nodep, LibraryType.Invariant) in Scope.Compile.jvm
 
@@ -81,11 +88,14 @@ object TestProject {
     final val projector = Library("org.typelevel", "kind-projector", "0.10.3", LibraryType.AutoJvm)
 
     final val fast_classpath_scanner = Library("io.github.classgraph", "classgraph", V.classgraph, LibraryType.Invariant) in Scope.Compile.jvm
-    final val scala_java_time = Library("io.github.cquiroz", "scala-java-time", V.scala_java_time, LibraryType.Auto) in Scope.Compile.all
-    final val shapeless = Library("com.chuusai", "shapeless", V.shapeless, LibraryType.Auto) in Scope.Compile.all
+    final val scala_java_time = Library("io.github.cquiroz", "scala-java-time", V.scala_java_time) in Scope.Compile.all
+    final val shapeless = Library("com.chuusai", "shapeless", V.shapeless) in Scope.Compile.all
 
     final val slf4j_api = Library("org.slf4j", "slf4j-api", V.slf4j, LibraryType.Invariant) in Scope.Compile.jvm
     final val slf4j_simple = Library("org.slf4j", "slf4j-simple", V.slf4j, LibraryType.Invariant) in Scope.Test.jvm
+
+    final val fastparse = Library("com.lihaoyi", "fastparse", V.fastparse) in Scope.Compile.all
+
   }
 
   import Deps._
@@ -190,7 +200,28 @@ object TestProject {
       final lazy val sinkSlf4j = ArtifactId("logstage-sink-slf4j")
     }
 
+    object idealingua {
+      final val id = ArtifactId("idealingua")
+      final val basePath = Seq("idealingua-v1")
+
+      final val model = ArtifactId("idealingua-v1-model")
+      final val core = ArtifactId("idealingua-v1-core")
+      final val runtimeRpcScala = ArtifactId("idealingua-v1-runtime-rpc-scala")
+      final val testDefs = ArtifactId("idealingua-v1-test-defs")
+      final val transpilers = ArtifactId("idealingua-v1-transpilers")
+      final val runtimeRpcHttp4s = ArtifactId("idealingua-v1-runtime-rpc-http4s")
+      final val runtimeRpcTypescript = ArtifactId("idealingua-v1-runtime-rpc-typescript")
+      final val runtimeRpcCSharp = ArtifactId("idealingua-v1-runtime-rpc-csharp")
+      final val runtimeRpcGo = ArtifactId("idealingua-v1-runtime-rpc-go")
+      final val compiler = ArtifactId("idealingua-v1-compiler")
+    }
+
   }
+
+
+  final val forkTests = Seq(
+    "fork" in(SettingScope.Test, Platform.Jvm) := true,
+  )
 
   final lazy val fundamentals = Aggregate(
     Projects.fundamentals.id,
@@ -271,9 +302,7 @@ object TestProject {
         Seq(typesafe_config),
         Seq(Projects.distage.model, Projects.fundamentals.typesafeConfig).map(_ in Scope.Compile.all) ++
           Seq(Projects.distage.core).map(_ in Scope.Test.all),
-        settings = Seq(
-          "fork" in SettingScope.Test := true,
-        )
+        settings = forkTests
       ),
       Artifact(
         Projects.distage.rolesApi,
@@ -286,9 +315,7 @@ object TestProject {
         Seq(Projects.distage.model).map(_ in Scope.Compile.all) ++
           Seq(Projects.distage.core).map(_ tin Scope.Test.all) ++
           Seq(Projects.distage.config, Projects.logstage.core).map(_ in Scope.Test.all),
-        settings = Seq(
-          "fork" in SettingScope.Test := true,
-        )
+        settings = forkTests
       ),
       Artifact(
         Projects.distage.roles,
@@ -373,6 +400,62 @@ object TestProject {
     defaultPlatforms = Targets.cross,
   )
 
+  final lazy val idealingua = Aggregate(
+    Projects.idealingua.id,
+    Seq(
+      Artifact(
+        Projects.idealingua.model,
+        Seq.empty,
+        Projects.fundamentals.basics,
+      ),
+      Artifact(
+        Projects.idealingua.core,
+        Seq(fastparse),
+        Projects.fundamentals.basics ++ Seq(Projects.idealingua.model, Projects.fundamentals.reflection).map(_ in Scope.Compile.all),
+      ),
+      Artifact(
+        Projects.idealingua.runtimeRpcScala,
+        Seq(scala_reflect in Scope.Provided.all) ++ (cats_all ++ zio_all).map(_ in Scope.Compile.all),
+        Projects.fundamentals.basics ++ Seq(Projects.fundamentals.bio, Projects.fundamentals.fundamentalsJsonCirce).map(_ in Scope.Compile.all),
+      ),
+      Artifact(
+        Projects.idealingua.transpilers,
+        Seq(scala_xml, scalameta),
+        Projects.fundamentals.basics ++
+          Seq(Projects.fundamentals.fundamentalsJsonCirce, Projects.idealingua.core, Projects.idealingua.runtimeRpcScala).map(_ in Scope.Compile.all) ++
+          Seq(Projects.idealingua.testDefs, Projects.idealingua.runtimeRpcTypescript, Projects.idealingua.runtimeRpcGo, Projects.idealingua.runtimeRpcCSharp).map(_ in Scope.Compile.jvm),
+        settings = forkTests
+      ),
+
+      Artifact(
+        Projects.idealingua.testDefs,
+        Seq.empty,
+        Seq(Projects.idealingua.runtimeRpcScala).map(_ in Scope.Compile.all),
+        platforms = Targets.jvm,
+      ),
+      Artifact(
+        Projects.idealingua.runtimeRpcTypescript,
+        Seq.empty,
+        Seq.empty,
+        platforms = Targets.jvm,
+      ),
+      Artifact(
+        Projects.idealingua.runtimeRpcGo,
+        Seq.empty,
+        Seq.empty,
+        platforms = Targets.jvm,
+      ),
+      Artifact(
+        Projects.idealingua.runtimeRpcCSharp,
+        Seq.empty,
+        Seq.empty,
+        platforms = Targets.jvm,
+      ),
+    ),
+    pathPrefix = Projects.idealingua.basePath,
+    groups = Groups.logstage,
+    defaultPlatforms = Targets.cross,
+  )
 
   val izumi: Project = Project(
     Projects.root.id,
@@ -380,6 +463,7 @@ object TestProject {
       fundamentals,
       distage,
       logstage,
+      idealingua,
     ),
     Projects.root.settings,
     Seq(
