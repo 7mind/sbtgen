@@ -41,7 +41,8 @@ libraryDependencies in ThisBuild += "org.scalatest" %% "scalatest" % "3.0.8" % "
 
 lazy val core = (project in file("core"))
   .settings(
-    libraryDependencies += "com.github.scopt" %% "scopt" % "4.0.0-RC2",
+//    libraryDependencies += "com.github.scopt" %% "scopt" % "4.0.0-RC2",
+    libraryDependencies += "com.github.scopt" %% "scopt" % "3.7.1",
     libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
   )
 

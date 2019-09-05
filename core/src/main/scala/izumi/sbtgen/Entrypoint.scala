@@ -3,8 +3,8 @@ package izumi.sbtgen
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Paths}
 
-import izumi.sbtgen.model.{GenConfig, Group, Project, GlobalSettings}
-import scopt.OParser
+import izumi.sbtgen.model.{GenConfig, GlobalSettings, Group, Project}
+import scopt.OptionParser
 
 case class Config(
                    withJvm: Boolean = true,
@@ -21,41 +21,68 @@ case class Config(
 
 object Entrypoint {
   def main(project: Project, settings: GlobalSettings, args: Seq[String]): Unit = {
-    val builder = OParser.builder[Config]
-    val parser1 = {
-      import builder._
-      OParser.sequence(
-        programName("sbtgen"),
-        head("sbtgen"),
-
-        opt[Unit]("nojvm")
-          .action((_, c) => c.copy(withJvm = false))
-          .text("disable jvm projects"),
-        opt[Unit]("js")
-          .action((_, c) => c.copy(withSjs = true))
-          .text("enable js projects"),
-        opt[Unit]("native")
-          .action((_, c) => c.copy(withSnat = true))
-          .text("enable native projects"),
-        opt[Unit]("nta")
-          .action((_, c) => c.copy(publishTests = false))
-          .text("don't publish test artifacts"),
-        opt[Unit]('d', "debug")
-          .action((_, c) => c.copy(withSnat = true))
-          .text("enable debug output"),
-        opt[Unit]('t', "isolate-tests")
-          .action((_, c) => c.copy(mergeTestScopes = false))
-          .text("enable debug output"),
-        opt[String]('o', "output")
-          .action((x, c) => c.copy(output = x))
-          .text("output directory"),
-        opt[String]('u', "use")
-          .action((x, c) => c.copy(groups = c.groups + Group(x)))
-          .text("use only groups specified"),
-      )
+    val parser1 = new OptionParser[Config]("sbtgen") {
+      head("sbtgen")
+      opt[Unit]("nojvm")
+        .action((_, c) => c.copy(withJvm = false))
+        .text("disable jvm projects")
+      opt[Unit]("js")
+        .action((_, c) => c.copy(withSjs = true))
+        .text("enable js projects")
+      opt[Unit]("native")
+        .action((_, c) => c.copy(withSnat = true))
+        .text("enable native projects")
+      opt[Unit]("nta")
+        .action((_, c) => c.copy(publishTests = false))
+        .text("don't publish test artifacts")
+      opt[Unit]('d', "debug")
+        .action((_, c) => c.copy(withSnat = true))
+        .text("enable debug output")
+      opt[Unit]('t', "isolate-tests")
+        .action((_, c) => c.copy(mergeTestScopes = false))
+        .text("enable debug output")
+      opt[String]('o', "output")
+        .action((x, c) => c.copy(output = x))
+        .text("output directory")
+      opt[String]('u', "use")
+        .action((x, c) => c.copy(groups = c.groups + Group(x)))
+        .text("use only groups specified")
     }
+//    val builder = OParser.builder[Config]
+//    val parser1 = {
+//      import builder._
+//      OParser.sequence(
+//        programName("sbtgen"),
+//        head("sbtgen"),
+//
+//        opt[Unit]("nojvm")
+//          .action((_, c) => c.copy(withJvm = false))
+//          .text("disable jvm projects"),
+//        opt[Unit]("js")
+//          .action((_, c) => c.copy(withSjs = true))
+//          .text("enable js projects"),
+//        opt[Unit]("native")
+//          .action((_, c) => c.copy(withSnat = true))
+//          .text("enable native projects"),
+//        opt[Unit]("nta")
+//          .action((_, c) => c.copy(publishTests = false))
+//          .text("don't publish test artifacts"),
+//        opt[Unit]('d', "debug")
+//          .action((_, c) => c.copy(withSnat = true))
+//          .text("enable debug output"),
+//        opt[Unit]('t', "isolate-tests")
+//          .action((_, c) => c.copy(mergeTestScopes = false))
+//          .text("enable debug output"),
+//        opt[String]('o', "output")
+//          .action((x, c) => c.copy(output = x))
+//          .text("output directory"),
+//        opt[String]('u', "use")
+//          .action((x, c) => c.copy(groups = c.groups + Group(x)))
+//          .text("use only groups specified"),
+//      )
+//    }
 
-    OParser.parse(parser1, args, Config()) match {
+    parser1.parse(args, Config()) match {
       case Some(config) =>
         val cfg = GenConfig(
           config.withJvm,
