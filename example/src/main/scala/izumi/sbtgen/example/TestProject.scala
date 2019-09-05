@@ -132,6 +132,7 @@ object TestProject {
 
   final val assemblyPluginJvm = Plugin("AssemblyPlugin", Platform.Jvm)
   final val assemblyPluginJs = Plugin("AssemblyPlugin", Platform.Js)
+
   object Projects {
 
     final val plugins = Plugins(
@@ -145,12 +146,7 @@ object TestProject {
         Seq.empty,
         Seq(Plugin("AssemblyPlugin", Platform.All)),
       )
-      final val settings = Seq(
-        "publishMavenStyle" in SettingScope.Build := true,
-        "scalacOptions" in SettingScope.Build ++= Seq(
-          "-language:higherKinds",
-        ),
-      )
+      final val settings = Seq()
 
       final val sharedAggSettings = Seq(
         "crossScalaVersions" := Targets.targetScala.map(_.value),
@@ -160,12 +156,97 @@ object TestProject {
       final val sharedRootSettings = Seq(
         "crossScalaVersions" := "Nil".raw,
         "scalaVersion" := Targets.targetScala.head.value,
+        "publishMavenStyle" in SettingScope.Build := true,
+        "organization" in SettingScope.Build := "io.7mind.izumi",
+        "publishMavenStyle" in SettingScope.Build := true,
+        "homepage" in SettingScope.Build := """Some(url("https://izumi.7mind.io"))""".raw,
+        "licenses" in SettingScope.Build := """Seq("BSD-style" -> url("http://www.opensource.org/licenses/bsd-license.php"))""".raw,
+        "developers" in SettingScope.Build := """List(
+          Developer(id = "7mind", name = "Septimal Mind", url = url("https://github.com/7mind"), email = "team@7mind.io"),
+        )""".raw,
+        "scmInfo" in SettingScope.Build := """Some(ScmInfo(url("https://github.com/7mind/izumi"), "scm:git:https://github.com/7mind/izumi.git"))""".raw,
+        "scalacOptions" in SettingScope.Build ++= Seq(
+          "-encoding", "UTF-8",
+          "-target:jvm-1.8",
+          "-feature",
+          "-unchecked",
+          "-deprecation",
+          "-language:higherKinds",
+        ),
+        "javacOptions" in SettingScope.Build ++= Seq(
+          "-encoding", "UTF-8",
+          "-source", "1.8",
+          "-target", "1.8",
+          "-deprecation",
+          "-parameters",
+          "-Xlint:all",
+          "-XDignore.symbol.file"
+        ),
+        "scalacOptions" in SettingScope.Build += """s"-Xmacro-settings:product-version=${version.value}"""".raw,
+        "scalacOptions" in SettingScope.Build += """s"-Xmacro-settings:product-group=${organization.value}"""".raw,
+        "scalacOptions" in SettingScope.Build += """s"-Xmacro-settings:sbt-version=${sbtVersion.value}"""".raw,
+        "scalacOptions" in SettingScope.Build += """s"-Xmacro-settings:scala-version=${scalaVersion.value}"""".raw,
+        "scalacOptions" in SettingScope.Build += s"""${"\""*3}-Xmacro-settings:scalatest-version=${V.scalatest}${"\""*3}""".raw,
+        "scalacOptions" in SettingScope.Build += s"""${"\""*3}-Xmacro-settings:scala-versions=${Targets.targetScala.map(_.value).mkString(":")}${"\""*3}""".raw,
+        RawSettingDef("""scalacOptions in ThisBuild ++= Seq("-Ybackend-parallelism", math.max(1, sys.runtime.availableProcessors() - 1).toString)"""),
       )
 
       final val sharedSettings = Seq(
+        "testOptions" in SettingScope.Test += """Tests.Argument("-oDF")""".raw,
         "scalacOptions" ++= Seq(
-          SettingKey(Some(scala212), None) := Seq("-Ypartial-unification", "-Xsource:2.13", "-Yno-adapted-args"),
-          SettingKey(Some(scala213), None) := Const.EmptySeq,
+          SettingKey(Some(scala212), None) := Seq(
+            "-Ypartial-unification"
+            , "-Xsource:2.13"
+            , "-Ybackend-parallelism", math.max(1, sys.runtime.availableProcessors() / 2).toString
+            , "-opt-warnings:_"
+            , "-Ywarn-unused:_"
+            , "-Yno-adapted-args"
+            , "-explaintypes" // Explain type errors in more detail.
+            , "-Xlint:adapted-args" // Warn if an argument list is modified to match the receiver.
+            , "-Xlint:by-name-right-associative" // By-name parameter of right associative operator.
+            , "-Xlint:constant" // Evaluation of a constant arithmetic expression results in an error.
+            , "-Xlint:delayedinit-select" // Selecting member of DelayedInit.
+            , "-Xlint:doc-detached" // A Scaladoc comment appears to be detached from its element.
+            , "-Xlint:inaccessible" // Warn about inaccessible types in method signatures.
+            , "-Xlint:infer-any" // Warn when a type argument is inferred to be `Any`.
+            , "-Xlint:missing-interpolator" // A string literal appears to be missing an interpolator id.
+            , "-Xlint:nullary-override" // Warn when non-nullary `def f()' overrides nullary `def f'.
+            , "-Xlint:nullary-unit" // Warn when nullary methods return Unit.
+            , "-Xlint:option-implicit" // Option.apply used implicit view.
+            , "-Xlint:package-object-classes" // Class or object defined in package object.
+            , "-Xlint:poly-implicit-overload" // Parameterized overloaded implicit methods are not visible as view bounds.
+            , "-Xlint:private-shadow" // A private field (or class parameter) shadows a superclass field.
+            , "-Xlint:stars-align" // Pattern sequence wildcard must align with sequence component.
+            , "-Xlint:type-parameter-shadow" // A local type parameter shadows a type already in scope.
+            , "-Xlint:unsound-match" // Pattern match may not be typesafe.
+
+            , "-opt-warnings:_" //2.12 only
+            , "-Ywarn-extra-implicit"        // Warn when more than one implicit parameter section is defined.
+            , "-Ywarn-unused:_"              // Enable or disable specific `unused' warnings: `_' for all, `-Ywarn-unused:help' to list choices.
+            , "-Ywarn-adapted-args" // Warn if an argument list is modified to match the receiver.
+            , "-Ywarn-dead-code" // Warn when dead code is identified.
+            , "-Ywarn-inaccessible" // Warn about inaccessible types in method signatures.
+            , "-Ywarn-infer-any" // Warn when a type argument is inferred to be `Any`.
+            , "-Ywarn-nullary-override" // Warn when non-nullary `def f()' overrides nullary `def f'.
+            , "-Ywarn-nullary-unit" // Warn when nullary methods return Unit.
+            , "-Ywarn-numeric-widen" // Warn when numerics are widened.
+            //, "-Ywarn-self-implicit"
+            , "-Ywarn-unused-import" // Warn when imports are unused.
+            , "-Ywarn-value-discard" // Warn when non-Unit expression results are unused.
+          ),
+          SettingKey(Some(scala213), None) := Seq(
+            //        "-Xsource:2.14", // Delay -Xsource:2.14 due to spurious warnings https://github.com/scala/bug/issues/11639
+            "-Xsource:2.13",
+            "-explaintypes",
+            "-Wdead-code",
+            "-Wextra-implicit",
+            "-Wnumeric-widen",
+            "-Woctal-literal",
+            //        "-Wself-implicit", // Spurious warnings for any top-level implicit, including scala.language._
+            "-Wvalue-discard",
+            "-Wunused:_",
+            "-Xlint:_",
+          ),
           SettingKey.Default := Const.EmptySeq
         ),
       )
