@@ -7,9 +7,9 @@ trait WithBasicRenderers {
 
   protected def renderName(s: ArtifactId): String = renderName(s.value)
 
-  protected def stringLit(s: String): String = {
+  def stringLit(s: String): String = {
     if (s.contains("\"")) {
-      val q = '"'*3
+      val q = "\""*3
       q + s + q
     } else {
       '"' + s + '"'

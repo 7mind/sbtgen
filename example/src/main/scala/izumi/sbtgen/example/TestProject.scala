@@ -1,5 +1,6 @@
 package izumi.sbtgen.example
 
+import izumi.sbtgen.model.SettingDef.RawSettingDef
 import izumi.sbtgen.model._
 
 object V {
@@ -129,10 +130,21 @@ object TestProject {
     final val jvm = Seq(jvmPlatform)
   }
 
+  final val assemblyPluginJvm = Plugin("AssemblyPlugin", Platform.Jvm)
+  final val assemblyPluginJs = Plugin("AssemblyPlugin", Platform.Js)
   object Projects {
+
+    final val plugins = Plugins(
+      Seq.empty,
+      Seq(assemblyPluginJs, assemblyPluginJvm),
+    )
 
     object root {
       final val id = ArtifactId("izumi")
+      final val plugins = Plugins(
+        Seq.empty,
+        Seq(Plugin("AssemblyPlugin", Platform.All)),
+      )
       final val settings = Seq(
         "publishMavenStyle" in SettingScope.Build := true,
         "scalacOptions" in SettingScope.Build ++= Seq(
@@ -156,10 +168,6 @@ object TestProject {
           SettingKey(Some(scala213), None) := Const.EmptySeq,
           SettingKey.Default := Const.EmptySeq
         ),
-      )
-      final val plugins = Plugins(
-        Seq.empty,
-        Seq.empty,
       )
     }
 
@@ -474,38 +482,30 @@ object TestProject {
           Projects.idealingua.testDefs,
         ).map(_ in Scope.Compile.all),
         platforms = Targets.jvm,
-        plugins = Plugins(Seq(/*Plugin("AssemblyPlugin")*/))
+        plugins = Plugins(Seq(assemblyPluginJvm)),
+        settings = Seq(
+          "mainClass" in SettingScope.Raw("assembly") := """Some("izumi.idealingua.compiler.CommandlineIDLCompiler")""".raw,
+          "assemblyMergeStrategy" in SettingScope.Raw("assembly") :=
+            """{
+              |      // FIXME: workaround for https://github.com/zio/interop-cats/issues/16
+              |      case path if path.contains("zio/BuildInfo$.class") =>
+              |        MergeStrategy.last
+              |      case p =>
+              |        (assemblyMergeStrategy in assembly).value(p)
+              |}""".stripMargin.raw,
+          "artifact" in SettingScope.Raw("(Compile, assembly)") :=
+            """{
+              |      val art = (artifact in(Compile, assembly)).value
+              |      art.withClassifier(Some("assembly"))
+              |}""".stripMargin.raw,
+          RawSettingDef("addArtifact(artifact in(Compile, assembly), assembly)")
+        )
       ),
     ),
     pathPrefix = Projects.idealingua.basePath,
     groups = Groups.logstage,
     defaultPlatforms = Targets.cross,
   )
-
-  /*
-  lazy val idealinguaV1Compiler = inIdealinguaV1Base.as.module
-  .depends(idealinguaV1CompilerDeps: _*)
-  .settings(AppSettings)
-  .settings(
-    libraryDependencies ++= Seq(R.typesafe_config),
-    mainClass in assembly := Some("izumi.idealingua.compiler.CommandlineIDLCompiler"),
-    // FIXME: workaround for https://github.com/zio/interop-cats/issues/16
-    assemblyMergeStrategy in assembly := {
-      case path if path.contains("zio/BuildInfo$.class") =>
-        MergeStrategy.last
-      case p =>
-        (assemblyMergeStrategy in assembly).value(p)
-    }
-  )
-  .settings(
-    artifact in(Compile, assembly) := {
-      val art = (artifact in(Compile, assembly)).value
-      art.withClassifier(Some("assembly"))
-    },
-
-    addArtifact(artifact in(Compile, assembly), assembly)
-  )
-   */
 
   val izumi: Project = Project(
     Projects.root.id,
@@ -527,6 +527,11 @@ object TestProject {
       collection_compat in Scope.Compile.all,
       scalatest,
     ),
-    Projects.root.plugins,
+    globalPlugins = Projects.plugins,
+    rootPlugins = Projects.root.plugins,
+    pluginConflictRules = Map(assemblyPluginJvm.name -> true),
+    appendPlugins = Seq(
+      SbtPlugin("com.eed3si9n", "sbt-assembly", "0.14.9")
+    )
   )
 }

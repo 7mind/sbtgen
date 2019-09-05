@@ -37,7 +37,7 @@ class Renderer(protected val config: GenConfig, project: Project)
               Seq(".")
           }
 
-          PreparedAggregate(ArtifactId(name), path, group.map(a => renderName(a.id)), p, isRoot = p == Platform.All)
+          PreparedAggregate(ArtifactId(name), path, group.map(a => renderName(a.id)), p, project.globalPlugins, isRoot = p == Platform.All)
       }
 
     val allAggregates = (aggs ++ superAgg).filterNot(_.aggregatedNames.isEmpty)
@@ -50,7 +50,7 @@ class Renderer(protected val config: GenConfig, project: Project)
     val settings = project.settings.filter(_.scope.platform == Platform.All).map(renderSetting)
 
     val imports = Seq(project.imports.map(i => s"import ${i.value}").mkString("\n"))
-    val plugins = renderPlugins(project.plugins, Platform.All, dot = false)
+    val plugins = renderPlugins(project.rootPlugins, Platform.All, dot = false)
 
     Seq(
       imports,
@@ -84,7 +84,7 @@ class Renderer(protected val config: GenConfig, project: Project)
           }
       }
       if (jvmAgg.nonEmpty) {
-        Seq(output.PreparedAggregate(ArtifactId(a.name.value + "-jvm"), a.pathPrefix ++ Seq(".agg-jvm"), jvmAgg, Platform.Jvm))
+        Seq(output.PreparedAggregate(ArtifactId(a.name.value + "-jvm"), a.pathPrefix ++ Seq(".agg-jvm"), jvmAgg, Platform.Jvm, project.globalPlugins))
       } else {
         Seq.empty
       }
@@ -99,7 +99,7 @@ class Renderer(protected val config: GenConfig, project: Project)
 
       }
       if (jsAgg.nonEmpty) {
-        Seq(output.PreparedAggregate(ArtifactId(a.name.value + "-js"), a.pathPrefix ++ Seq(".agg-js"), jsAgg, Platform.Js))
+        Seq(output.PreparedAggregate(ArtifactId(a.name.value + "-js"), a.pathPrefix ++ Seq(".agg-js"), jsAgg, Platform.Js, project.globalPlugins))
       } else {
         Seq.empty
       }
@@ -113,13 +113,13 @@ class Renderer(protected val config: GenConfig, project: Project)
           a.platforms.filter(_.platform == Platform.Native).map(p => a.nameOn(p.platform))
       }
       if (nativeAgg.nonEmpty) {
-        Seq(output.PreparedAggregate(ArtifactId(a.name.value + "-native"), a.pathPrefix ++ Seq(".agg-native"), nativeAgg, Platform.Native))
+        Seq(output.PreparedAggregate(ArtifactId(a.name.value + "-native"), a.pathPrefix ++ Seq(".agg-native"), nativeAgg, Platform.Native, project.globalPlugins))
       } else {
         Seq.empty
       }
     }
 
-    Seq(output.PreparedAggregate(a.name, a.pathPrefix, fullAgg, Platform.All)) ++ jvmOnly ++ jsOnly ++ nativeOnly
+    Seq(output.PreparedAggregate(a.name, a.pathPrefix, fullAgg, Platform.All, project.globalPlugins)) ++ jvmOnly ++ jsOnly ++ nativeOnly
   }
 
 
@@ -133,7 +133,7 @@ class Renderer(protected val config: GenConfig, project: Project)
 
 
     val aggDefs = aggregates.map {
-      case PreparedAggregate(name, path, agg, _, isRoot) =>
+      case PreparedAggregate(name, path, agg, platform, plugins, isRoot) =>
         val hack = if (isRoot) {
           project.sharedRootSettings
         } else {
@@ -144,7 +144,8 @@ class Renderer(protected val config: GenConfig, project: Project)
 
         val header = s"""lazy val ${renderName(name.value)} = (project in file(${stringLit(path.mkString("/"))}))"""
         val names = agg.map(_.shift(2)).mkString(".aggregate(\n", ",\n", "\n)").shift(2)
-        Seq(header, s, names).mkString("\n")
+        val p = renderPlugins(plugins, platform, dot = true)
+        (Seq(header, s) ++ p ++ Seq(names)).mkString("\n")
     }
     aggDefs
   }
@@ -181,7 +182,7 @@ class Renderer(protected val config: GenConfig, project: Project)
       enabledPlatforms.map {
         p =>
           val pname = platformName(p.platform)
-          val plugins = renderPlugins(a.plugins ++ p.plugins, p.platform, dot = true)
+          val plugins = renderPlugins(a.plugins ++ p.plugins ++ project.globalPlugins, p.platform, dot = true)
 
           Seq(
             Seq(s"""lazy val ${a.nameOn(p.platform)} = ${renderName(a.name)}.$pname"""),
@@ -225,7 +226,7 @@ class Renderer(protected val config: GenConfig, project: Project)
     ) ++ more ++ jvmOnlyFix ++ a.settings ++ project.sharedSettings
 
     val renderedSettings = renderSettings(sharedSettings, Platform.All)
-    val plugins = renderPlugins(a.plugins, Platform.All, dot = true)
+    val plugins = renderPlugins(a.plugins ++ project.globalPlugins, Platform.All, dot = true)
 
     val out = Seq(
       Seq(header),
@@ -241,22 +242,43 @@ class Renderer(protected val config: GenConfig, project: Project)
   }
 
   protected def renderPlugins(plugins: Plugins, platform: Platform, dot: Boolean): Seq[String] = {
-    val predicate = (p: Plugin) => p.platform == Platform.All || p.platform == platform
+    val predicate = (p: Plugin) => platform == Platform.All || p.platform == platform
 
-    val enabledPlugins = plugins.enabled.filter(predicate)
-    val enabled = if (enabledPlugins.nonEmpty) {
-      Seq(enabledPlugins.map(_.name).mkString("enablePlugins(", ", ", ")"))
+    val enabledPlugins = plugins.enabled.filter(predicate).distinct
+    val disabledPlugins = plugins.disabled.filter(predicate).distinct
+
+    val conflictingNames = enabledPlugins.map(_.name).toSet.intersect(disabledPlugins.map(_.name).toSet).map {
+      name =>
+        name -> project.pluginConflictRules(name)
+    }.toMap
+
+
+    val enabledPlugins0 = enabledPlugins.filter(p => conflictingNames.get(p.name) match {
+      case Some(value) =>
+        value
+      case None =>
+        true
+    })
+    val disabledPlugins0 = disabledPlugins.filter(p => conflictingNames.get(p.name) match {
+      case Some(value) =>
+        !value
+      case None =>
+        true
+    })
+
+
+    val enabled = if (enabledPlugins0.nonEmpty) {
+      Seq(enabledPlugins0.map(_.name).distinct.mkString("enablePlugins(", ", ", ")"))
     } else {
       Seq.empty
     }
 
-    val disabledPlugins = plugins.disabled.filter(predicate)
-
-    val disabled = if (disabledPlugins.nonEmpty) {
-      Seq(disabledPlugins.map(_.name).mkString("disablePlugins(", ", ", ")"))
+    val disabled = if (disabledPlugins0.nonEmpty) {
+      Seq(disabledPlugins0.map(_.name).distinct.mkString("disablePlugins(", ", ", ")"))
     } else {
       Seq.empty
     }
+
 
     val out = enabled ++ disabled
     if (dot) {
@@ -273,10 +295,24 @@ class Renderer(protected val config: GenConfig, project: Project)
       case None =>
         "settings"
     }
-    settings.filter(s => s.scope.platform == platform || s.scope.platform == Platform.All).map(renderSetting).map(_.shift(2)).mkString(s".$p(\n", ",\n", "\n)").shift(2)
+    settings
+      .filter(s => s.scope.platform == platform || s.scope.platform == Platform.All)
+      .map(renderSetting)
+      .map(_.shift(2))
+      .mkString(s".$p(\n", ",\n", "\n)")
+      .shift(2)
   }
 
   protected def renderSetting(settingDef: SettingDef): String = {
+    settingDef match {
+      case settingDef: SettingDef.KVSettingDef =>
+        renderKVSetting(settingDef)
+      case SettingDef.RawSettingDef(value, _) =>
+        value
+    }
+  }
+
+  protected def renderKVSetting(settingDef: SettingDef.KVSettingDef): String = {
     val name = settingDef.name
 
     val in = settingDef.scope.scope match {
@@ -428,7 +464,7 @@ class Renderer(protected val config: GenConfig, project: Project)
     artDeps
   }
 
-  protected def renderVersion(v: Version): String = {
+  def renderVersion(v: Version): String = {
     v match {
       case Version.VConst(value) =>
         stringLit(value)

@@ -68,6 +68,10 @@ object LibraryType {
   case object Auto extends LibraryType
 }
 
+case class SbtPlugin(group: String, artifact: String, version: Version)
+object SbtPlugin {
+  def apply(group: String, artifact: String, version: String): SbtPlugin = new SbtPlugin(group, artifact, Version.VConst(version))
+}
 case class Library(group: String, artifact: String, version: Version, kind: LibraryType)
 object Library {
   def apply(group: String, artifact: String, version: String, kind: LibraryType = LibraryType.Auto): Library = new Library(group, artifact, Version.VConst(version), kind)
@@ -140,6 +144,9 @@ case class Project(
                     sharedRootSettings: Seq[SettingDef] = Seq.empty,
                     imports: Seq[Import] = Seq.empty,
                     globalLibs: Seq[ScopedLibrary] = Seq.empty,
-                    plugins: Plugins = Plugins(Seq.empty, Seq.empty),
+                    rootPlugins: Plugins = Plugins(Seq.empty, Seq.empty),
+                    globalPlugins: Plugins = Plugins(Seq.empty, Seq.empty),
+                    pluginConflictRules: Map[String, Boolean] = Map.empty,
+                    appendPlugins: Seq[SbtPlugin] = Seq.empty,
                   )
 

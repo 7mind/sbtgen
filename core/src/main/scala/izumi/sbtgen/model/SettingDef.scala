@@ -13,19 +13,24 @@ object SettingScope {
 
 case class FullSettingScope(scope: SettingScope, platform: Platform)
 
+
 sealed trait SettingDef {
-  def name: String
-
-  def op: SettingOp
-
   def scope: FullSettingScope
 }
 
 object SettingDef {
 
-  case class UnscopedSettingDef(name: String, op: SettingOp, value: Const, scope: FullSettingScope) extends SettingDef
+  sealed trait KVSettingDef extends SettingDef {
+    def name: String
 
-  case class ScopedSettingDef(name: String, op: SettingOp, defs: Seq[(SettingKey, Const)], scope: FullSettingScope) extends SettingDef
+    def op: SettingOp
+  }
+
+  case class RawSettingDef(value: String, scope: FullSettingScope = FullSettingScope(SettingScope.Compile, Platform.All)) extends SettingDef
+
+  case class UnscopedSettingDef(name: String, op: SettingOp, value: Const, scope: FullSettingScope) extends KVSettingDef
+
+  case class ScopedSettingDef(name: String, op: SettingOp, defs: Seq[(SettingKey, Const)], scope: FullSettingScope) extends KVSettingDef
 
 }
 

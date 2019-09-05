@@ -97,7 +97,7 @@ object Entrypoint {
       "project/build.properties" -> s"sbt.version = ${config.settings.sbtVersion}"
     )
 
-    val moreFiles = makeMoreBoilerplate(config)
+    val moreFiles = makeMoreBoilerplate(config, project, renderer)
 
     val target = Paths.get(config.output)
 
@@ -115,7 +115,7 @@ object Entrypoint {
     }
   }
 
-  protected def makeMoreBoilerplate(config: GenConfig): Map[String, String] = {
+  protected def makeMoreBoilerplate(config: GenConfig, project: Project, renderer: Renderer): Map[String, String] = {
     if (config.jvmOnly) {
       Map.empty
     } else {
@@ -142,11 +142,21 @@ object Entrypoint {
              |""".stripMargin)
       }
 
+      b.append('\n')
+      b.append("/" * 80)
+      b.append('\n')
+      b.append('\n')
+
+      project.appendPlugins.foreach {
+        p =>
+          b.append(s"""addSbtPlugin(${renderer.stringLit(p.group)} % ${renderer.stringLit(p.artifact)} % ${renderer.renderVersion(p.version)})""")
+      }
+
       Map("project/plugins.sbt" -> b.mkString)
     }
   }
 
-  protected def makeRenderer(config: GenConfig, project: Project) = {
+  protected def makeRenderer(config: GenConfig, project: Project): Renderer = {
     new Renderer(config, project)
   }
 }
