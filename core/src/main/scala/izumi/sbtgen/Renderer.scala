@@ -50,7 +50,7 @@ class Renderer(protected val config: GenConfig, project: Project)
     val settings = project.settings.filter(_.scope.platform == Platform.All).map(renderSetting)
 
     val imports = Seq(project.imports.map(i => s"import ${i.value}").mkString("\n"))
-    val plugins = renderPlugins(project.rootPlugins, Platform.All, dot = false)
+    val plugins = renderPlugins(project.rootPlugins, Platform.All, dot = false, inclusive = true)
 
     Seq(
       imports,
@@ -144,7 +144,7 @@ class Renderer(protected val config: GenConfig, project: Project)
 
         val header = s"""lazy val ${renderName(name.value)} = (project in file(${stringLit(path.mkString("/"))}))"""
         val names = agg.map(_.shift(2)).mkString(".aggregate(\n", ",\n", "\n)").shift(2)
-        val p = renderPlugins(plugins, platform, dot = true)
+        val p = renderPlugins(plugins, platform, dot = true, inclusive = true)
         (Seq(header, s) ++ p ++ Seq(names)).mkString("\n")
     }
     aggDefs
@@ -226,7 +226,7 @@ class Renderer(protected val config: GenConfig, project: Project)
     ) ++ more ++ jvmOnlyFix ++ a.settings ++ project.sharedSettings
 
     val renderedSettings = renderSettings(sharedSettings, Platform.All)
-    val plugins = renderPlugins(a.plugins ++ project.globalPlugins, Platform.All, dot = true)
+    val plugins = renderPlugins(a.plugins ++ project.globalPlugins, Platform.All, dot = true, inclusive = a.isJvmOnly)
 
     val out = Seq(
       Seq(header),
@@ -241,8 +241,8 @@ class Renderer(protected val config: GenConfig, project: Project)
     out.mkString("\n")
   }
 
-  protected def renderPlugins(plugins: Plugins, platform: Platform, dot: Boolean): Seq[String] = {
-    val predicate = (p: Plugin) => platform == Platform.All || p.platform == platform
+  protected def renderPlugins(plugins: Plugins, platform: Platform, dot: Boolean, inclusive: Boolean = false): Seq[String] = {
+    val predicate = (p: Plugin) => (inclusive && platform == Platform.All) || p.platform == platform
 
     val enabledPlugins = plugins.enabled.filter(predicate).distinct
     val disabledPlugins = plugins.disabled.filter(predicate).distinct
