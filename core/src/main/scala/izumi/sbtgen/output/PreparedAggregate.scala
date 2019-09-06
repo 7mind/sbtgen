@@ -1,6 +1,6 @@
 package izumi.sbtgen.output
 
-import izumi.sbtgen.model.{ArtifactId, Platform, Plugins}
+import izumi.sbtgen.model.{ArtifactId, Platform, Plugins, SettingDef}
 
 case class PreparedAggregate(
                               id: ArtifactId,
@@ -11,4 +11,5 @@ case class PreparedAggregate(
                               isRoot: Boolean = false,
                               enableSharedSettings: Boolean = true,
                               dontIncludeInSuperAgg: Boolean = false,
+                              settings: Seq[SettingDef] = Seq.empty,
                             )

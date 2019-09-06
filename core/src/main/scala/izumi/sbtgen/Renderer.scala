@@ -95,6 +95,7 @@ class Renderer(protected val config: GenConfig, project: Project)
           project.globalPlugins,
           enableSharedSettings = es,
           dontIncludeInSuperAgg = di,
+          settings = a.settings,
         ))
       } else {
         Seq.empty
@@ -118,6 +119,7 @@ class Renderer(protected val config: GenConfig, project: Project)
           project.globalPlugins,
           enableSharedSettings = es,
           dontIncludeInSuperAgg = di,
+          settings = a.settings,
         ))
       } else {
         Seq.empty
@@ -140,6 +142,7 @@ class Renderer(protected val config: GenConfig, project: Project)
           project.globalPlugins,
           enableSharedSettings = es,
           dontIncludeInSuperAgg = di,
+          settings = a.settings,
         ))
       } else {
         Seq.empty
@@ -154,6 +157,7 @@ class Renderer(protected val config: GenConfig, project: Project)
       project.globalPlugins,
       enableSharedSettings = es,
       dontIncludeInSuperAgg = di,
+      settings = a.settings,
     )) ++ jvmOnly ++ jsOnly ++ nativeOnly
   }
 
@@ -168,7 +172,7 @@ class Renderer(protected val config: GenConfig, project: Project)
 
 
     val aggDefs = aggregates.map {
-      case PreparedAggregate(name, path, agg, platform, plugins, isRoot, enableSharedSettings, _) =>
+      case PreparedAggregate(name, path, agg, platform, plugins, isRoot, enableSharedSettings, _, localSettings) =>
         val hack = if (isRoot) {
           project.sharedRootSettings
         } else if (enableSharedSettings) {
@@ -177,7 +181,7 @@ class Renderer(protected val config: GenConfig, project: Project)
           Seq.empty
         }
 
-        val s = renderSettings(settings ++ hack, Platform.All)
+        val s = renderSettings(settings ++ localSettings ++ hack, Platform.All)
 
         val header = s"""lazy val ${renderName(name.value)} = (project in file(${stringLit(path.mkString("/"))}))"""
         val names = agg.map(_.shift(2)).mkString(".aggregate(\n", ",\n", "\n)").shift(2)
