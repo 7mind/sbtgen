@@ -37,7 +37,8 @@ class Renderer(protected val config: GenConfig, project: Project)
               Seq(".")
           }
 
-          PreparedAggregate(ArtifactId(name), path, group.map(a => renderName(a.id)), p, project.globalPlugins, isRoot = p == Platform.All)
+          val aggregatedIds = group.filterNot(_.dontIncludeInSuperAgg).map(a => renderName(a.id))
+          PreparedAggregate(ArtifactId(name), path, aggregatedIds, p, project.globalPlugins, isRoot = p == Platform.All)
       }
 
     val allAggregates = (aggs ++ superAgg).filterNot(_.aggregatedNames.isEmpty)
@@ -63,6 +64,8 @@ class Renderer(protected val config: GenConfig, project: Project)
   }
 
   protected def renderAgg(a: Aggregate): Seq[PreparedAggregate] = {
+    val es = a.enableSharedSettings
+    val di = a.dontIncludeInSuperAgg
     val fullAgg = a.filteredArtifacts.flatMap {
       a =>
         if (a.isJvmOnly) {
@@ -84,7 +87,15 @@ class Renderer(protected val config: GenConfig, project: Project)
           }
       }
       if (jvmAgg.nonEmpty) {
-        Seq(output.PreparedAggregate(ArtifactId(a.name.value + "-jvm"), a.pathPrefix ++ Seq(".agg-jvm"), jvmAgg, Platform.Jvm, project.globalPlugins))
+        Seq(output.PreparedAggregate(
+          ArtifactId(a.name.value + "-jvm"),
+          a.pathPrefix ++ Seq(".agg-jvm"),
+          jvmAgg,
+          Platform.Jvm,
+          project.globalPlugins,
+          enableSharedSettings = es,
+          dontIncludeInSuperAgg = di,
+        ))
       } else {
         Seq.empty
       }
@@ -99,7 +110,15 @@ class Renderer(protected val config: GenConfig, project: Project)
 
       }
       if (jsAgg.nonEmpty) {
-        Seq(output.PreparedAggregate(ArtifactId(a.name.value + "-js"), a.pathPrefix ++ Seq(".agg-js"), jsAgg, Platform.Js, project.globalPlugins))
+        Seq(output.PreparedAggregate(
+          ArtifactId(a.name.value + "-js"),
+          a.pathPrefix ++ Seq(".agg-js"),
+          jsAgg,
+          Platform.Js,
+          project.globalPlugins,
+          enableSharedSettings = es,
+          dontIncludeInSuperAgg = di,
+        ))
       } else {
         Seq.empty
       }
@@ -113,13 +132,29 @@ class Renderer(protected val config: GenConfig, project: Project)
           a.platforms.filter(_.platform == Platform.Native).map(p => a.nameOn(p.platform))
       }
       if (nativeAgg.nonEmpty) {
-        Seq(output.PreparedAggregate(ArtifactId(a.name.value + "-native"), a.pathPrefix ++ Seq(".agg-native"), nativeAgg, Platform.Native, project.globalPlugins))
+        Seq(output.PreparedAggregate(
+          ArtifactId(a.name.value + "-native"),
+          a.pathPrefix ++ Seq(".agg-native"),
+          nativeAgg,
+          Platform.Native,
+          project.globalPlugins,
+          enableSharedSettings = es,
+          dontIncludeInSuperAgg = di,
+        ))
       } else {
         Seq.empty
       }
     }
 
-    Seq(output.PreparedAggregate(a.name, a.pathPrefix, fullAgg, Platform.All, project.globalPlugins)) ++ jvmOnly ++ jsOnly ++ nativeOnly
+    Seq(output.PreparedAggregate(
+      a.name,
+      a.pathPrefix,
+      fullAgg,
+      Platform.All,
+      project.globalPlugins,
+      enableSharedSettings = es,
+      dontIncludeInSuperAgg = di,
+    )) ++ jvmOnly ++ jsOnly ++ nativeOnly
   }
 
 
@@ -133,11 +168,13 @@ class Renderer(protected val config: GenConfig, project: Project)
 
 
     val aggDefs = aggregates.map {
-      case PreparedAggregate(name, path, agg, platform, plugins, isRoot) =>
+      case PreparedAggregate(name, path, agg, platform, plugins, isRoot, enableSharedSettings, _) =>
         val hack = if (isRoot) {
           project.sharedRootSettings
-        } else {
+        } else if (enableSharedSettings) {
           project.sharedAggSettings
+        } else {
+          Seq.empty
         }
 
         val s = renderSettings(settings ++ hack, Platform.All)

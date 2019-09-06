@@ -103,6 +103,8 @@ case class Aggregate(
                       pathPrefix: Seq[String] = Seq.empty,
                       groups: Set[Group] = Set.empty,
                       defaultPlatforms: Seq[PlatformEnv] = Seq.empty,
+                      enableSharedSettings: Boolean = true,
+                      dontIncludeInSuperAgg: Boolean = false,
                     ) {
   def merge: Aggregate = {
     val newArtifacts = artifacts.map {

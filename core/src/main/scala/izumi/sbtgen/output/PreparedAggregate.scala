@@ -9,4 +9,6 @@ case class PreparedAggregate(
                               target: Platform,
                               plugins: Plugins,
                               isRoot: Boolean = false,
+                              enableSharedSettings: Boolean = true,
+                              dontIncludeInSuperAgg: Boolean = false,
                             )
