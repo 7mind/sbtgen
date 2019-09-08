@@ -75,7 +75,7 @@ class Renderer(protected val config: GenConfig, project: Project)
         }
     }
 
-    val jvmOnly = if (config.jvmOnly) {
+    val jvmOnly = if (!config.jvm) {
       Seq.empty
     } else {
       val jvmAgg = a.filteredArtifacts.flatMap {
@@ -102,7 +102,7 @@ class Renderer(protected val config: GenConfig, project: Project)
       }
     }
 
-    val jsOnly = if (config.jvmOnly || !config.js) {
+    val jsOnly = if (!config.js) {
       Seq.empty
     } else {
       val jsAgg = a.filteredArtifacts.flatMap {
@@ -126,7 +126,7 @@ class Renderer(protected val config: GenConfig, project: Project)
       }
     }
 
-    val nativeOnly = if (config.jvmOnly || !config.native) {
+    val nativeOnly = if (!config.native) {
       Seq.empty
     } else {
       val nativeAgg = a.filteredArtifacts.flatMap {
