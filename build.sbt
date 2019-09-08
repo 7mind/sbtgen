@@ -30,9 +30,8 @@ releaseProcess := Seq[ReleaseStep](
   pushChanges // : ReleaseStep, also checks that an upstream branch is properly configured
 )
 
-// publishTo in ThisBuild := sonatypePublishTo.value
 publishTo in ThisBuild := (if (!isSnapshot.value) {
-  Some(Opts.resolver.sonatypeReleases) //Some(Resolver.file("local-publish", new File("target/local-repo")))
+  sonatypePublishToBundle.value
 } else {
   Some(Opts.resolver.sonatypeSnapshots)
 })
