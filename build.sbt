@@ -32,7 +32,7 @@ releaseProcess := Seq[ReleaseStep](
 
 // publishTo in ThisBuild := sonatypePublishTo.value
 publishTo in ThisBuild := (if (!isSnapshot.value) {
-  Some(Resolver.file("local-publish", new File("target/local-repo")))
+  Some(Opts.resolver.sonatypeReleases) //Some(Resolver.file("local-publish", new File("target/local-repo")))
 } else {
   Some(Opts.resolver.sonatypeSnapshots)
 })
