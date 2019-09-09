@@ -20,16 +20,19 @@ $ exists lib/yyy
 # build
 > +clean
 > +test:compile
-$ exists app/just-app/target/scala-2.12/test-classes-exposed
-$ exists app/legacy-app/target/scala-2.11/test-classes-exposed
--$ exists app/just-app/target/scala-2.11/test-classes-exposed
--$ exists app/legacy-app/target/scala-2.12/test-classes-exposed
 > +test
 > +package
 > +plugins
 
 # check convenience helpers
-> preserveTargets test
-$ exists app/just-app/target.test
+#> preserveTargets test
+#$ exists app/just-app/target.test
 > rmDirs target.test
 -$ exists app/just-app/target.test
+
+
+#$ exists app/just-app/target/scala-2.12/test-classes-exposed
+#$ exists app/legacy-app/target/scala-2.11/test-classes-exposed
+#-$ exists app/just-app/target/scala-2.11/test-classes-exposed
+#-$ exists app/legacy-app/target/scala-2.12/test-classes-exposed
+

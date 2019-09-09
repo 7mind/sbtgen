@@ -1,8 +1,11 @@
 import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 
 turbo in ThisBuild := true
+classLoaderLayeringStrategy in ThisBuild := ClassLoaderLayeringStrategy.ScalaLibrary
+
 name := "izumi-sbtgen"
-organization in ThisBuild := "io.7mind.izumi.sbtgen"
+organization in ThisBuild := "io.7mind.izumi.sbt"
+
 publishMavenStyle in ThisBuild := true
 homepage in ThisBuild := Some(url("https://izumi.7mind.io"))
 licenses in ThisBuild := Seq("BSD-style" -> url("http://www.opensource.org/licenses/bsd-license.php"))
@@ -10,10 +13,7 @@ developers in ThisBuild := List(
   Developer(id = "7mind", name = "Septimal Mind", url = url("https://github.com/7mind"), email = "team@7mind.io"),
 )
 scmInfo in ThisBuild := Some(ScmInfo(url("https://github.com/7mind/sbtgen"), "scm:git:https://github.com/7mind/sbtgen.git"))
-
 credentials in ThisBuild += Credentials(file(".secrets/credentials.sonatype-nexus.properties"))
-
-classLoaderLayeringStrategy in ThisBuild := ClassLoaderLayeringStrategy.ScalaLibrary
 
 sonatypeProfileName := "io.7mind"
 releaseProcess := Seq[ReleaseStep](
@@ -39,7 +39,7 @@ publishTo in ThisBuild := (if (!isSnapshot.value) {
 
 lazy val core = (project in file("core"))
   .settings(
-    crossScalaVersions := Seq("2.13.0", "2.12.9"),
+    crossScalaVersions := Seq(ScalaVersions.scala_213, ScalaVersions.scala_212),
     scalaVersion := crossScalaVersions.value.head,
     //    libraryDependencies += "com.github.scopt" %% "scopt" % "4.0.0-RC2",
     libraryDependencies += "com.github.scopt" %% "scopt" % "3.7.1",
@@ -49,7 +49,7 @@ lazy val core = (project in file("core"))
 
 lazy val `sbt-izumi-deps` = (project in file("sbt/sbt-izumi-deps"))
   .settings(
-    crossScalaVersions := Seq("2.12.9"),
+    crossScalaVersions := Seq(ScalaVersions.scala_212),
     scalaVersion := crossScalaVersions.value.head,
     sbtPlugin := true,
     libraryDependencies ++= Seq(
@@ -59,7 +59,7 @@ lazy val `sbt-izumi-deps` = (project in file("sbt/sbt-izumi-deps"))
 
 lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
   .settings(
-    crossScalaVersions := Seq("2.12.9"),
+    crossScalaVersions := Seq(ScalaVersions.scala_212),
     scalaVersion := crossScalaVersions.value.head,
     sbtPlugin := true,
     libraryDependencies ++= Seq(
@@ -97,24 +97,41 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
 
   )
 
+lazy val `sbt-tests` = (project in file("sbt/sbt-tests"))
+  .dependsOn(`sbt-izumi`, `sbt-izumi-deps`)
+  .enablePlugins(ScriptedPlugin)
+  .settings(
+    crossScalaVersions := Seq(ScalaVersions.scala_212),
+    scalaVersion := crossScalaVersions.value.head,
+    sbtPlugin := true,
+    libraryDependencies ++= Seq(
+      "org.scala-sbt" % "sbt" % sbtVersion.value
+    ),
+    skip in publish := true,
+    scriptedLaunchOpts := {
+      Seq(
+        scriptedLaunchOpts.value,
+        Seq(
+          "-Xmx1024M",
+          "-Dplugin.version=" + version.value,
+        ),
+        Option(System.getProperty("sbt.ivy.home"))
+          .toSeq
+          .flatMap(value =>  Seq(s"-Dsbt.ivy.home=$value", s"-Divy.home=$value")),
+      ).flatten,
+    },
+    scriptedBufferLog := false,
 
-//lazy val example = (project in file("example"))
-//  .dependsOn(core)
-//  .settings(
-//    mainClass := Some("izumi.sbtgen.Main"),
-//    skip in publish := true,
-//  )
+  )
 
 lazy val `sbtgen-root` = (project in file("."))
   .aggregate(
     core,
     `sbt-izumi-deps`,
     `sbt-izumi`,
-    //example,
-    //sbtgen,
   )
   .settings(
-    scalaVersion := "2.12.9",
+    scalaVersion := ScalaVersions.scala_212,
     crossScalaVersions := Nil,
     skip in publish := true,
   )
