@@ -8,10 +8,8 @@ trait IzumiEnvironmentBase extends AutoPlugin {
   override def requires: Plugins = super.requires &&
     plugins.IzumiBuildManifestPlugin &&
     plugins.IzumiConvenienceTasksPlugin &&
-    plugins.IzumiDslPlugin &&
     plugins.IzumiPropertiesPlugin &&
-    plugins.IzumiResolverPlugin &&
-    plugins.IzumiInheritedTestScopesPlugin
+    plugins.IzumiResolverPlugin
 }
 
 object IzumiEnvironmentPlugin extends IzumiEnvironmentBase

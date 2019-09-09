@@ -2,19 +2,21 @@ package izumi.sbt.plugins.optional
 
 import java.io.File
 
-import izumi.sbt.plugins.optional.IzumiPublishingPlugin.Keys.publishTargets
-import izumi.sbt.plugins.optional.IzumiPublishingPlugin.MavenTarget
-import coursier.Fetch.Metadata
 import coursier._
+import coursier.cache.{Cache, FileCache}
 import coursier.core.Authentication
 import coursier.maven.MavenRepository
 import coursier.util._
+import izumi.sbt.plugins.optional.IzumiPublishingPlugin.Keys.publishTargets
+import izumi.sbt.plugins.optional.IzumiPublishingPlugin.MavenTarget
 import sbt.Keys.{target, _}
 import sbt.internal.util.ConsoleLogger
 import sbt.io.{CopyOptions, IO}
 import sbt.librarymanagement.ModuleID
 import sbt.librarymanagement.ivy.{DirectCredentials, FileCredentials}
 import sbt.{AutoPlugin, Def, settingKey, taskKey, librarymanagement => lm}
+
+import scala.concurrent.ExecutionContext
 
 object IzumiFetchPlugin extends AutoPlugin {
 
@@ -51,7 +53,7 @@ object IzumiFetchPlugin extends AutoPlugin {
 
       (resolvers.value ++ defaultResolvers).collect {
         case m: lm.MavenRepository =>
-          m.toCoursier(credentials.value)
+          m.toCoursier(sbt.Keys.credentials.value)
       }
     }
     , resolveArtifacts := Def.task {
@@ -154,29 +156,10 @@ class CoursierFetch {
   protected val logger: ConsoleLogger = ConsoleLogger()
 
   def resolve(repositories: Seq[MavenRepository], modules: Seq[Dependency]): Seq[File] = {
-    import scala.concurrent.ExecutionContext.Implicits.global
-    val allRepos = Seq(Cache.ivy2Local) ++ repositories
-    logger.info(s"Repositories: ${allRepos.mkString("\n- ", "\n- ", "")}")
-    val start: Resolution = Resolution(modules.toSet)
-    val fetch: Metadata[Task] = Fetch.from(allRepos, Cache.fetch[Task]())
-    val resolution = start.process.run(fetch).unsafeRun()
+    Fetch[Task]()
+      .addDependencies(modules :_*)
+      .run()
 
-    verifyResult(resolution)
-
-    val localArtifacts: Seq[Either[FileError, File]] = Gather[Task].gather(
-      resolution.artifacts().map(Cache.file[Task](_).run)
-    ).unsafeRun()
-
-    localArtifacts.map(_.right.get)
   }
 
-  protected def verifyResult(resolution: Resolution): Unit = {
-    if (resolution.errors.nonEmpty) {
-      throw new IllegalStateException(s"Fetch finished with ${resolution.errors.size} errors: ${resolution.errors.mkString("\n")}")
-    }
-
-    if (resolution.conflicts.nonEmpty) {
-      throw new IllegalStateException(s"Fetch finished with ${resolution.conflicts.size} conflicts: ${resolution.conflicts.mkString("\n")}")
-    }
-  }
 }

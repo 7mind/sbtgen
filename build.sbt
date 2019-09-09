@@ -34,7 +34,6 @@ publishTo in ThisBuild := (if (!isSnapshot.value) {
   Some(Opts.resolver.sonatypeSnapshots)
 })
 
-libraryDependencies in ThisBuild += "org.scalatest" %% "scalatest" % "3.0.8" % "test"
 
 lazy val core = (project in file("core"))
   .settings(
@@ -43,6 +42,7 @@ lazy val core = (project in file("core"))
     //    libraryDependencies += "com.github.scopt" %% "scopt" % "4.0.0-RC2",
     libraryDependencies += "com.github.scopt" %% "scopt" % "3.7.1",
     libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+    libraryDependencies in ThisBuild += "org.scalatest" %% "scalatest" % "3.0.8" % "test",
   )
 
 //lazy val sbtgen = (project in file("sbtgen"))
@@ -54,27 +54,68 @@ lazy val core = (project in file("core"))
 //  )
 
 lazy val `sbt-izumi-deps` = (project in file("sbt/sbt-izumi-deps"))
-  .dependsOn(core)
   .settings(
     crossScalaVersions := Seq("2.12.9"),
     scalaVersion := crossScalaVersions.value.head,
+    sbtPlugin := true,
     libraryDependencies ++= Seq(
       "org.scala-sbt" % "sbt" % sbtVersion.value
     ),
-    sbtPlugin := true
   )
 
-lazy val example = (project in file("example"))
-  .dependsOn(core)
+lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
   .settings(
-    mainClass := Some("izumi.sbtgen.Main"),
-    skip in publish := true,
+    crossScalaVersions := Seq("2.12.9"),
+    scalaVersion := crossScalaVersions.value.head,
+    sbtPlugin := true,
+    libraryDependencies ++= Seq(
+      "org.scala-sbt" % "sbt" % sbtVersion.value,
+      "io.get-coursier" %% "coursier" % "2.0.0-RC3-3",
+    ),
+    sbtPlugin := true,
+
+    // https://github.com/scoverage/sbt-scoverage
+    addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.0"),
+
+    // http://www.scala-sbt.org/sbt-pgp/
+    addSbtPlugin("com.jsuereth" % "sbt-pgp" % "2.0.0-M2"),
+
+    // https://github.com/sbt/sbt-git
+    addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "1.0.0"),
+
+    // http://www.scalastyle.org/sbt.html
+    addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "1.0.0"),
+
+    // https://github.com/orrsella/sbt-stats
+    addSbtPlugin("com.orrsella" % "sbt-stats" % "1.0.7"),
+
+    // https://github.com/xerial/sbt-sonatype
+    addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.6"),
+
+    // https://github.com/sbt/sbt-release
+    addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.11"),
+
+    // https://github.com/jrudolph/sbt-dependency-graph
+    addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.9.2"),
+
+    // https://github.com/sbt/sbt-duplicates-finder
+    addSbtPlugin("org.scala-sbt" % "sbt-duplicates-finder" % "0.8.1"),
+
   )
+
+
+//lazy val example = (project in file("example"))
+//  .dependsOn(core)
+//  .settings(
+//    mainClass := Some("izumi.sbtgen.Main"),
+//    skip in publish := true,
+//  )
 
 lazy val `sbtgen-root` = (project in file("."))
   .aggregate(
     core,
-    `sbt-izumi-deps`
+    `sbt-izumi-deps`,
+    `sbt-izumi`,
     //example,
     //sbtgen,
   )

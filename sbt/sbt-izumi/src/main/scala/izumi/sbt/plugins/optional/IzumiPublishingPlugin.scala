@@ -2,7 +2,6 @@ package izumi.sbt.plugins.optional
 
 import izumi.sbt.plugins.IzumiPropertiesPlugin
 import com.typesafe.sbt.pgp.PgpKeys._
-import laughedelic.sbt.PublishMore
 import sbt.Keys.{credentials, resolvers, _}
 import sbt.internal.util.ConsoleLogger
 import sbt.io.syntax
@@ -12,8 +11,6 @@ import sbt.sbtpgp.Compat.publishSignedConfigurationTask
 import sbt.{AutoPlugin, Credentials, MavenRepository, _}
 
 object IzumiPublishingPlugin extends AutoPlugin {
-
-  override def requires = super.requires && PublishMore
 
   case class MavenTarget(id: String, credentials: Credentials, repo: MavenRepository)
 
@@ -35,8 +32,6 @@ object IzumiPublishingPlugin extends AutoPlugin {
     , snapshotResolvers := Seq(Opts.resolver.sonatypeSnapshots)
   )
 
-  import laughedelic.sbt.PublishMore.autoImport._
-
   override lazy val projectSettings = Seq(
     publishConfiguration := withOverwrite(publishConfiguration.value, isSnapshot.value)
     , publishSignedConfiguration := withOverwrite(publishSignedConfigurationTask.value, isSnapshot.value)
@@ -49,7 +44,6 @@ object IzumiPublishingPlugin extends AutoPlugin {
         Opts.resolver.sonatypeStaging
     }
     , credentials ++= publishTargets.value.map(_.credentials)
-    , publishResolvers ++= publishTargets.value.map(_.repo)
     , resolvers ++= {
       val releaseRepositories = releaseResolvers.value
       val snapshotRepositories = snapshotResolvers.value
