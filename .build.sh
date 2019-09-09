@@ -99,6 +99,10 @@ case $i in
         build
     ;;
 
+    scripted)
+        scripted
+    ;;
+
     publish)
         publish
     ;;
