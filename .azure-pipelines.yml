@@ -1,0 +1,27 @@
+# https://aka.ms/yaml
+
+trigger:
+  tags:
+    include:
+      - v*
+  branches:
+    include:
+      - develop
+
+variables:
+  - group: security-tokens
+  - name: COURSIER_CACHE
+    value: $(Pipeline.Workspace)/.coursier
+  - name: IVY_CACHE_FOLDER
+    value: $(Pipeline.Workspace)/.ivy2
+
+jobs:
+  - template: .azure-dockerstep.yml
+    parameters:
+      jobs:
+        - job: build_212
+          displayName: 'Tests and Coverage: 2.12'
+          steps:
+            - script: |
+                bash .build.sh build scripted
+                bash .build.sh secrets publish
