@@ -9,7 +9,7 @@ trigger:
       - develop
 
 variables:
-  - group: security-tokens
+  - group: security-tokens-sbtgen
   - name: COURSIER_CACHE
     value: $(Pipeline.Workspace)/.coursier
   - name: IVY_CACHE_FOLDER
@@ -20,8 +20,9 @@ jobs:
     parameters:
       jobs:
         - job: build_212
-          displayName: 'Tests and Coverage: 2.12'
+          displayName: 'Test & Publish'
           steps:
             - script: |
                 bash .build.sh build scripted
+              - script: |
                 bash .build.sh secrets publish
