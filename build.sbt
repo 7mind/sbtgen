@@ -49,21 +49,19 @@ lazy val core = (project in file("core"))
 
 lazy val `sbt-izumi-deps` = (project in file("sbt/sbt-izumi-deps"))
   .settings(
+    crossSbtVersions := Seq(sbtVersion.value),
     crossScalaVersions := Seq(ScalaVersions.scala_212),
     scalaVersion := crossScalaVersions.value.head,
     sbtPlugin := true,
-    libraryDependencies ++= Seq(
-      "org.scala-sbt" % "sbt" % sbtVersion.value
-    ),
   )
 
 lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
   .settings(
     crossScalaVersions := Seq(ScalaVersions.scala_212),
     scalaVersion := crossScalaVersions.value.head,
+    crossSbtVersions := Seq(sbtVersion.value),
     sbtPlugin := true,
     libraryDependencies ++= Seq(
-      "org.scala-sbt" % "sbt" % sbtVersion.value,
       "io.get-coursier" %% "coursier" % "2.0.0-RC3-3",
     ),
     sbtPlugin := true,
@@ -101,6 +99,7 @@ lazy val `sbt-tests` = (project in file("sbt/sbt-tests"))
   .dependsOn(`sbt-izumi`, `sbt-izumi-deps`)
   .enablePlugins(ScriptedPlugin)
   .settings(
+    crossSbtVersions := Seq(sbtVersion.value),
     crossScalaVersions := Seq(ScalaVersions.scala_212),
     scalaVersion := crossScalaVersions.value.head,
     sbtPlugin := true,

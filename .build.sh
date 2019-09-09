@@ -32,7 +32,7 @@ function publish {
   if [[ "$CI_BRANCH" == "develop" ]] ; then
     csbt +clean +package +publishSigned
   else
-    csbt +clean +package +publishSigned +sonatypeBundleRelease
+    csbt +clean +package +publishSigned sonatypeBundleRelease
   fi
 }
 
