@@ -1,0 +1,10 @@
+-Xmx4G
+-XX:ReservedCodeCacheSize=256m
+-XX:MaxMetaspaceSize=3G
+
+-XX:+OmitStackTraceInFastThrow
+-XX:SoftRefLRUPolicyMSPerMB=50
+-Dsun.io.useCanonCaches=false
+-noverify
+-server
+-XX:MaxInlineLevel=18

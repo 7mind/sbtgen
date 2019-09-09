@@ -1,6 +1,5 @@
-package izumi.sbtgen.example
+package izumi.sbtgen
 
-import izumi.sbtgen.Entrypoint
 import izumi.sbtgen.model.GlobalSettings
 import org.scalatest.WordSpec
 
@@ -11,8 +10,10 @@ class SbtGenTest extends WordSpec {
         groupId = "io.7mind"
       )
 
-      Entrypoint.main(TestProject.izumi, settings, Seq("-o", "../izumi-r2"))
-      Entrypoint.main(TestProject.izumi, settings, Seq("--js", "-o", "../izumi-r2"))
+      val out = Seq.empty
+      // Seq("-o", "../izumi-r2")
+      Entrypoint.main(TestProject.izumi, settings, out)
+      Entrypoint.main(TestProject.izumi, settings, Seq("--js") ++ out)
     }
   }
 }

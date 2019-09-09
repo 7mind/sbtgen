@@ -13,6 +13,8 @@ scmInfo in ThisBuild := Some(ScmInfo(url("https://github.com/7mind/sbtgen"), "sc
 
 credentials in ThisBuild += Credentials(file(".secrets/credentials.sonatype-nexus.properties"))
 
+classLoaderLayeringStrategy in ThisBuild := ClassLoaderLayeringStrategy.ScalaLibrary
+
 sonatypeProfileName := "io.7mind"
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies, // : ReleaseStep
@@ -44,14 +46,6 @@ lazy val core = (project in file("core"))
     libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
     libraryDependencies in ThisBuild += "org.scalatest" %% "scalatest" % "3.0.8" % "test",
   )
-
-//lazy val sbtgen = (project in file("sbtgen"))
-//  .dependsOn(core)
-//  .settings(
-//    crossScalaVersions := Seq("2.12.9"),
-//    scalaVersion := crossScalaVersions.value.head,
-//    libraryDependencies += "com.lihaoyi" % "ammonite" % "1.6.9-19-827dffe" cross CrossVersion.full
-//  )
 
 lazy val `sbt-izumi-deps` = (project in file("sbt/sbt-izumi-deps"))
   .settings(

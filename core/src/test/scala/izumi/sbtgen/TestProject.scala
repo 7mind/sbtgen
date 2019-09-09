@@ -1,4 +1,4 @@
-package izumi.sbtgen.example
+package izumi.sbtgen
 
 import izumi.sbtgen.model.SettingDef.RawSettingDef
 import izumi.sbtgen.model._
