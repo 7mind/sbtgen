@@ -23,6 +23,6 @@ jobs:
           displayName: 'Test & Publish'
           steps:
             - script: |
-              bash .build.sh build scripted
+                bash .build.sh build scripted
             - script: |
-              bash .build.sh secrets publish
+                bash .build.sh secrets publish
