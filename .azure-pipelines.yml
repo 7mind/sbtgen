@@ -24,5 +24,5 @@ jobs:
           steps:
             - script: |
                 bash .build.sh build scripted
-              - script: |
-                bash .build.sh secrets publish
+            - script: |
+              bash .build.sh secrets publish
