@@ -18,7 +18,6 @@ case class Config(
                  )
 
 
-
 object Entrypoint {
   def main(project: Project, settings: GlobalSettings, args: Seq[String]): Unit = {
     val parser1 = new OptionParser[Config]("sbtgen") {
@@ -48,39 +47,39 @@ object Entrypoint {
         .action((x, c) => c.copy(groups = c.groups + Group(x)))
         .text("use only groups specified")
     }
-//    val builder = OParser.builder[Config]
-//    val parser1 = {
-//      import builder._
-//      OParser.sequence(
-//        programName("sbtgen"),
-//        head("sbtgen"),
-//
-//        opt[Unit]("nojvm")
-//          .action((_, c) => c.copy(withJvm = false))
-//          .text("disable jvm projects"),
-//        opt[Unit]("js")
-//          .action((_, c) => c.copy(withSjs = true))
-//          .text("enable js projects"),
-//        opt[Unit]("native")
-//          .action((_, c) => c.copy(withSnat = true))
-//          .text("enable native projects"),
-//        opt[Unit]("nta")
-//          .action((_, c) => c.copy(publishTests = false))
-//          .text("don't publish test artifacts"),
-//        opt[Unit]('d', "debug")
-//          .action((_, c) => c.copy(withSnat = true))
-//          .text("enable debug output"),
-//        opt[Unit]('t', "isolate-tests")
-//          .action((_, c) => c.copy(mergeTestScopes = false))
-//          .text("enable debug output"),
-//        opt[String]('o', "output")
-//          .action((x, c) => c.copy(output = x))
-//          .text("output directory"),
-//        opt[String]('u', "use")
-//          .action((x, c) => c.copy(groups = c.groups + Group(x)))
-//          .text("use only groups specified"),
-//      )
-//    }
+    //    val builder = OParser.builder[Config]
+    //    val parser1 = {
+    //      import builder._
+    //      OParser.sequence(
+    //        programName("sbtgen"),
+    //        head("sbtgen"),
+    //
+    //        opt[Unit]("nojvm")
+    //          .action((_, c) => c.copy(withJvm = false))
+    //          .text("disable jvm projects"),
+    //        opt[Unit]("js")
+    //          .action((_, c) => c.copy(withSjs = true))
+    //          .text("enable js projects"),
+    //        opt[Unit]("native")
+    //          .action((_, c) => c.copy(withSnat = true))
+    //          .text("enable native projects"),
+    //        opt[Unit]("nta")
+    //          .action((_, c) => c.copy(publishTests = false))
+    //          .text("don't publish test artifacts"),
+    //        opt[Unit]('d', "debug")
+    //          .action((_, c) => c.copy(withSnat = true))
+    //          .text("enable debug output"),
+    //        opt[Unit]('t', "isolate-tests")
+    //          .action((_, c) => c.copy(mergeTestScopes = false))
+    //          .text("enable debug output"),
+    //        opt[String]('o', "output")
+    //          .action((x, c) => c.copy(output = x))
+    //          .text("output directory"),
+    //        opt[String]('u', "use")
+    //          .action((x, c) => c.copy(groups = c.groups + Group(x)))
+    //          .text("use only groups specified"),
+    //      )
+    //    }
 
     parser1.parse(args, Config()) match {
       case Some(config) =>
@@ -143,44 +142,40 @@ object Entrypoint {
   }
 
   protected def makeMoreBoilerplate(config: GenConfig, project: Project, renderer: Renderer): Map[String, String] = {
-    if (config.jvmOnly) {
-      Map.empty
-    } else {
-      val b = new StringBuilder()
+    val b = new StringBuilder()
 
-      if (config.js) {
-        b.append(
-          s"""// https://www.scala-js.org/
-             |addSbtPlugin("org.scala-js" % "sbt-scalajs" % "${config.settings.scalaJsVersion}")
-             |
-             |// https://github.com/portable-scala/sbt-crossproject
-             |addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % "${config.settings.crossProjectVersion}")
-             |
-             |// https://scalacenter.github.io/scalajs-bundler/
-             |addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "${config.settings.bundlerVersion}")
-             |""".stripMargin)
-      }
-
-      if (config.native) {
-        b.append(
-          s"""addSbtPlugin("org.portable-scala" % "sbt-scala-native-crossproject" % "${config.settings.crossProjectVersion}")
-             |
-             |addSbtPlugin("org.scala-native"   % "sbt-scala-native"              % "${config.settings.scalaNativeVersion}")
-             |""".stripMargin)
-      }
-
-      b.append('\n')
-      b.append("/" * 80)
-      b.append('\n')
-      b.append('\n')
-
-      project.appendPlugins.foreach {
-        p =>
-          b.append(s"""addSbtPlugin(${renderer.stringLit(p.group)} % ${renderer.stringLit(p.artifact)} % ${renderer.renderVersion(p.version)})""")
-      }
-
-      Map("project/plugins.sbt" -> b.mkString)
+    if (config.js) {
+      b.append(
+        s"""// https://www.scala-js.org/
+           |addSbtPlugin("org.scala-js" % "sbt-scalajs" % "${config.settings.scalaJsVersion}")
+           |
+           |// https://github.com/portable-scala/sbt-crossproject
+           |addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % "${config.settings.crossProjectVersion}")
+           |
+           |// https://scalacenter.github.io/scalajs-bundler/
+           |addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "${config.settings.bundlerVersion}")
+           |""".stripMargin)
     }
+
+    if (config.native) {
+      b.append(
+        s"""addSbtPlugin("org.portable-scala" % "sbt-scala-native-crossproject" % "${config.settings.crossProjectVersion}")
+           |
+           |addSbtPlugin("org.scala-native"   % "sbt-scala-native"              % "${config.settings.scalaNativeVersion}")
+           |""".stripMargin)
+    }
+
+    b.append('\n')
+    b.append("/" * 80)
+    b.append('\n')
+    b.append('\n')
+
+    project.appendPlugins.foreach {
+      p =>
+        b.append(s"""addSbtPlugin(${renderer.stringLit(p.group)} % ${renderer.stringLit(p.artifact)} % ${renderer.renderVersion(p.version)})""")
+    }
+
+    Map("project/plugins.sbt" -> b.mkString)
   }
 
   protected def makeRenderer(config: GenConfig, project: Project): Renderer = {
