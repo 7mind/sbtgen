@@ -37,7 +37,7 @@ publishTo in ThisBuild := (if (!isSnapshot.value) {
 })
 
 
-lazy val core = (project in file("core"))
+lazy val sbtgen = (project in file("sbtgen"))
   .settings(
     crossScalaVersions := Seq(ScalaVersions.scala_213, ScalaVersions.scala_212),
     scalaVersion := crossScalaVersions.value.head,
@@ -125,7 +125,7 @@ lazy val `sbt-tests` = (project in file("sbt/sbt-tests"))
 
 lazy val `sbtgen-root` = (project in file("."))
   .aggregate(
-    core,
+    sbtgen,
     `sbt-izumi-deps`,
     `sbt-izumi`,
   )
