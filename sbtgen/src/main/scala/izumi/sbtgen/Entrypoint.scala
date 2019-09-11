@@ -132,12 +132,14 @@ object Entrypoint {
         val targetFile = target.resolve(n)
         targetFile.getParent.toFile.mkdirs()
         Files.write(targetFile, c.getBytes(StandardCharsets.UTF_8))
-        println(
-          s"""$n:
-             |
-             |$c
-             |""".stripMargin)
-
+        if (config.debug) {
+          println(
+            s"""$n:
+               |
+               |$c
+               |""".stripMargin
+          )
+        }
     }
   }
 
