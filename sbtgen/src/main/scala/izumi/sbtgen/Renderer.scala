@@ -72,7 +72,7 @@ class Renderer(protected val config: GenConfig, project: Project)
         if (a.isJvmOnly) {
           Seq(renderName(a.name))
         } else {
-          a.platforms.map(p => a.nameOn(p.platform))
+          a.platforms.filter(p => platformEnabled(p.platform)).map(p => a.nameOn(p.platform))
         }
     }
 

@@ -43,7 +43,7 @@ trait WithArtifactExt {
           if (a.supportsPlatform(x)) {
             a.name.value + platformName(x).toUpperCase
           } else {
-            throw new RuntimeException(s"Project do not support platform: $a / $platform")
+            throw new RuntimeException(s"Project do not support platform `$platform`: $a")
           }
 
 

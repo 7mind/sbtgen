@@ -10,10 +10,13 @@ class SbtGenTest extends WordSpec {
         groupId = "io.7mind"
       )
 
-      val out = Seq.empty
-//      val out = Seq("-o", "../izumi-r2.wip")
+      val out = Seq()
+//      val out = Seq("-d")
+//      val out = Seq("-d", "-o", "../izumi-r2.wip")
       Entrypoint.main(Izumi.izumi, settings, out)
       Entrypoint.main(Izumi.izumi, settings, Seq("--js") ++ out)
+      Entrypoint.main(Izumi.izumi, settings, Seq("--native") ++ out)
+      Entrypoint.main(Izumi.izumi, settings, Seq("--js", "--native") ++ out)
     }
   }
 }
