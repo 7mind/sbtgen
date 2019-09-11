@@ -10,7 +10,7 @@ case class Config(
                    withJvm: Boolean = true,
                    withSjs: Boolean = false,
                    withSnat: Boolean = false,
-                   debug: Boolean = true,
+                   debug: Boolean = false,
                    mergeTestScopes: Boolean = true,
                    output: String = "test-out",
                    groups: Set[Group] = Set.empty,
@@ -35,11 +35,11 @@ object Entrypoint {
         .action((_, c) => c.copy(publishTests = false))
         .text("don't publish test artifacts")
       opt[Unit]('d', "debug")
-        .action((_, c) => c.copy(withSnat = true))
+        .action((_, c) => c.copy(debug = true))
         .text("enable debug output")
       opt[Unit]('t', "isolate-tests")
         .action((_, c) => c.copy(mergeTestScopes = false))
-        .text("enable debug output")
+        .text("don't inherit test scopes")
       opt[String]('o', "output")
         .action((x, c) => c.copy(output = x))
         .text("output directory")
