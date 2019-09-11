@@ -3,7 +3,6 @@ package izumi.sbt.plugins.optional
 import java.io.File
 
 import coursier._
-import coursier.cache.{Cache, FileCache}
 import coursier.core.Authentication
 import coursier.maven.MavenRepository
 import coursier.util._
@@ -15,8 +14,6 @@ import sbt.io.{CopyOptions, IO}
 import sbt.librarymanagement.ModuleID
 import sbt.librarymanagement.ivy.{DirectCredentials, FileCredentials}
 import sbt.{AutoPlugin, Def, settingKey, taskKey, librarymanagement => lm}
-
-import scala.concurrent.ExecutionContext
 
 object IzumiFetchPlugin extends AutoPlugin {
 

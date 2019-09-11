@@ -1,6 +1,5 @@
 package izumi.sbtgen
 
-import izumi.sbtgen.model.SettingDef.RawSettingDef
 import izumi.sbtgen.model._
 
 object V {
@@ -45,7 +44,8 @@ object V {
   val scala_java_time = "2.0.0-RC3"
 }
 
-object TestProject {
+
+object Izumi {
 
   object Deps {
     final val collection_compat = Library("org.scala-lang.modules", "scala-collection-compat", V.collection_compat)
@@ -77,6 +77,7 @@ object TestProject {
     final val boopickle = Library("io.suzaku", "boopickle", "1.3.1") in Scope.Compile.all
     final val jawn = Library("org.typelevel", "jawn-parser", V.jawn, LibraryType.AutoJvm)
 
+    final val scala_sbt = Library("org.scala-sbt", "sbt", Version.VExpr("sbtVersion.value"), LibraryType.Invariant)
     final val scala_compiler = Library("org.scala-lang", "scala-compiler", Version.VExpr("scalaVersion.value"), LibraryType.Invariant)
     final val scala_library = Library("org.scala-lang", "scala-library", Version.VExpr("scalaVersion.value"), LibraryType.Invariant)
     final val scala_reflect = Library("org.scala-lang", "scala-reflect", Version.VExpr("scalaVersion.value"), LibraryType.Invariant)
@@ -97,17 +98,32 @@ object TestProject {
 
     final val fastparse = Library("com.lihaoyi", "fastparse", V.fastparse) in Scope.Compile.all
 
+    final val http4s_client = Seq(
+      Library("org.http4s", "http4s-blaze-client", V.http4s),
+    )
+
+    val http4s_server = Seq(
+      Library("org.http4s", "http4s-dsl", V.http4s),
+      Library("org.http4s", "http4s-circe", V.http4s),
+      Library( "org.http4s", "http4s-blaze-server", V.http4s),
+    )
+
+    val http4s_all = (http4s_server ++ http4s_client)
+
+    val asynchttpclient = Library("org.asynchttpclient", "async-http-client", V.asynchttpclient, LibraryType.Invariant)
   }
 
   import Deps._
 
   final val scala212 = ScalaVersion("2.12.9")
+  final val scala212doc = ScalaVersion("2.12.8")
   final val scala213 = ScalaVersion("2.13.0")
 
   object Groups {
     final val fundamentals = Set(Group("fundamentals"))
     final val distage = Set(Group("distage"))
     final val logstage = Set(Group("logstage"))
+    final val docs = Set(Group("docs"))
   }
 
   object Targets {
@@ -115,7 +131,10 @@ object TestProject {
     private val jvmPlatform = PlatformEnv(
       Platform.Jvm,
       targetScala,
-      //plugins = Projects.root.plugins
+    )
+    private val jvmPlatform212 = PlatformEnv(
+      Platform.Jvm,
+      Seq(scala212doc),
     )
     private val jsPlatform = PlatformEnv(
       Platform.Js,
@@ -124,10 +143,10 @@ object TestProject {
         "coverageEnabled" := false,
         "scalaJSModuleKind" in(SettingScope.Project, Platform.Js) := "ModuleKind.CommonJSModule".raw,
       ),
-      //plugins = Plugins(Seq(Plugin("ScalaJSBundlerPlugin", Platform.Js))),
     )
     final val cross = Seq(jvmPlatform, jsPlatform)
     final val jvm = Seq(jvmPlatform)
+    final val jvmDocs = Seq(jvmPlatform212)
   }
 
   final val assemblyPluginJvm = Plugin("AssemblyPlugin", Platform.Jvm)
@@ -153,100 +172,38 @@ object TestProject {
         "scalaVersion" := "crossScalaVersions.value.head".raw,
       )
 
-      final val sharedRootSettings = Seq(
+      final val docSettings = Seq(
+        "crossScalaVersions" := Seq(scala212doc.value),
+        "scalaVersion" := "crossScalaVersions.value.head".raw,
+      )
+
+      final val sharedRootSettings = Defaults.SharedOptions ++ Seq(
         "crossScalaVersions" := "Nil".raw,
         "scalaVersion" := Targets.targetScala.head.value,
-        "publishMavenStyle" in SettingScope.Build := true,
         "organization" in SettingScope.Build := "io.7mind.izumi",
-        "publishMavenStyle" in SettingScope.Build := true,
         "homepage" in SettingScope.Build := """Some(url("https://izumi.7mind.io"))""".raw,
         "licenses" in SettingScope.Build := """Seq("BSD-style" -> url("http://www.opensource.org/licenses/bsd-license.php"))""".raw,
         "developers" in SettingScope.Build := """List(
           Developer(id = "7mind", name = "Septimal Mind", url = url("https://github.com/7mind"), email = "team@7mind.io"),
         )""".raw,
         "scmInfo" in SettingScope.Build := """Some(ScmInfo(url("https://github.com/7mind/izumi"), "scm:git:https://github.com/7mind/izumi.git"))""".raw,
-        "scalacOptions" in SettingScope.Build ++= Seq(
-          "-encoding", "UTF-8",
-          "-target:jvm-1.8",
-          "-feature",
-          "-unchecked",
-          "-deprecation",
-          "-language:higherKinds",
-        ),
-        "javacOptions" in SettingScope.Build ++= Seq(
-          "-encoding", "UTF-8",
-          "-source", "1.8",
-          "-target", "1.8",
-          "-deprecation",
-          "-parameters",
-          "-Xlint:all",
-          "-XDignore.symbol.file"
-        ),
+
         "scalacOptions" in SettingScope.Build += """s"-Xmacro-settings:product-version=${version.value}"""".raw,
         "scalacOptions" in SettingScope.Build += """s"-Xmacro-settings:product-group=${organization.value}"""".raw,
         "scalacOptions" in SettingScope.Build += """s"-Xmacro-settings:sbt-version=${sbtVersion.value}"""".raw,
         "scalacOptions" in SettingScope.Build += """s"-Xmacro-settings:scala-version=${scalaVersion.value}"""".raw,
         "scalacOptions" in SettingScope.Build += s"""${"\""*3}-Xmacro-settings:scalatest-version=${V.scalatest}${"\""*3}""".raw,
         "scalacOptions" in SettingScope.Build += s"""${"\""*3}-Xmacro-settings:scala-versions=${Targets.targetScala.map(_.value).mkString(":")}${"\""*3}""".raw,
-        RawSettingDef("""scalacOptions in ThisBuild ++= Seq("-Ybackend-parallelism", math.max(1, sys.runtime.availableProcessors() - 1).toString)"""),
+        SettingDef.RawSettingDef("""scalacOptions in ThisBuild ++= Seq("-Ybackend-parallelism", math.max(1, sys.runtime.availableProcessors() - 1).toString)"""),
       )
+
 
       final val sharedSettings = Seq(
         "testOptions" in SettingScope.Test += """Tests.Argument("-oDF")""".raw,
         "scalacOptions" ++= Seq(
-          SettingKey(Some(scala212), None) := Seq(
-            "-Ypartial-unification"
-            , "-Xsource:2.13"
-            , "-Ybackend-parallelism", math.max(1, sys.runtime.availableProcessors() / 2).toString
-            , "-opt-warnings:_"
-            , "-Ywarn-unused:_"
-            , "-Yno-adapted-args"
-            , "-explaintypes" // Explain type errors in more detail.
-            , "-Xlint:adapted-args" // Warn if an argument list is modified to match the receiver.
-            , "-Xlint:by-name-right-associative" // By-name parameter of right associative operator.
-            , "-Xlint:constant" // Evaluation of a constant arithmetic expression results in an error.
-            , "-Xlint:delayedinit-select" // Selecting member of DelayedInit.
-            , "-Xlint:doc-detached" // A Scaladoc comment appears to be detached from its element.
-            , "-Xlint:inaccessible" // Warn about inaccessible types in method signatures.
-            , "-Xlint:infer-any" // Warn when a type argument is inferred to be `Any`.
-            , "-Xlint:missing-interpolator" // A string literal appears to be missing an interpolator id.
-            , "-Xlint:nullary-override" // Warn when non-nullary `def f()' overrides nullary `def f'.
-            , "-Xlint:nullary-unit" // Warn when nullary methods return Unit.
-            , "-Xlint:option-implicit" // Option.apply used implicit view.
-            , "-Xlint:package-object-classes" // Class or object defined in package object.
-            , "-Xlint:poly-implicit-overload" // Parameterized overloaded implicit methods are not visible as view bounds.
-            , "-Xlint:private-shadow" // A private field (or class parameter) shadows a superclass field.
-            , "-Xlint:stars-align" // Pattern sequence wildcard must align with sequence component.
-            , "-Xlint:type-parameter-shadow" // A local type parameter shadows a type already in scope.
-            , "-Xlint:unsound-match" // Pattern match may not be typesafe.
-
-            , "-opt-warnings:_" //2.12 only
-            , "-Ywarn-extra-implicit"        // Warn when more than one implicit parameter section is defined.
-            , "-Ywarn-unused:_"              // Enable or disable specific `unused' warnings: `_' for all, `-Ywarn-unused:help' to list choices.
-            , "-Ywarn-adapted-args" // Warn if an argument list is modified to match the receiver.
-            , "-Ywarn-dead-code" // Warn when dead code is identified.
-            , "-Ywarn-inaccessible" // Warn about inaccessible types in method signatures.
-            , "-Ywarn-infer-any" // Warn when a type argument is inferred to be `Any`.
-            , "-Ywarn-nullary-override" // Warn when non-nullary `def f()' overrides nullary `def f'.
-            , "-Ywarn-nullary-unit" // Warn when nullary methods return Unit.
-            , "-Ywarn-numeric-widen" // Warn when numerics are widened.
-            //, "-Ywarn-self-implicit"
-            , "-Ywarn-unused-import" // Warn when imports are unused.
-            , "-Ywarn-value-discard" // Warn when non-Unit expression results are unused.
-          ),
-          SettingKey(Some(scala213), None) := Seq(
-            //        "-Xsource:2.14", // Delay -Xsource:2.14 due to spurious warnings https://github.com/scala/bug/issues/11639
-            "-Xsource:2.13",
-            "-explaintypes",
-            "-Wdead-code",
-            "-Wextra-implicit",
-            "-Wnumeric-widen",
-            "-Woctal-literal",
-            //        "-Wself-implicit", // Spurious warnings for any top-level implicit, including scala.language._
-            "-Wvalue-discard",
-            "-Wunused:_",
-            "-Xlint:_",
-          ),
+          SettingKey(Some(scala212), None) := Defaults.Scala212Options,
+          SettingKey(Some(scala212doc), None) := Defaults.Scala212Options,
+          SettingKey(Some(scala213), None) := Defaults.Scala213Options,
           SettingKey.Default := Const.EmptySeq
         ),
       )
@@ -316,6 +273,23 @@ object TestProject {
       final val compiler = ArtifactId("idealingua-v1-compiler")
     }
 
+    object docs {
+      final val id = ArtifactId("doc")
+      final val basePath = Seq("doc")
+
+      final lazy val microsite = ArtifactId("microsite")
+    }
+
+    object sbtplugins {
+      final val id = ArtifactId("sbt-plugins")
+      final val basePath = Seq("sbt-plugins")
+
+      final val settings = Seq(
+        "sbtPlugin" := true,
+      )
+
+      final lazy val izumi_deps = ArtifactId("sbt-izumi-deps")
+    }
   }
 
 
@@ -519,14 +493,20 @@ object TestProject {
         Projects.fundamentals.basics ++ Seq(Projects.fundamentals.bio, Projects.fundamentals.fundamentalsJsonCirce).map(_ in Scope.Compile.all),
       ),
       Artifact(
+        Projects.idealingua.runtimeRpcHttp4s,
+        (http4s_all ++ Seq(asynchttpclient)).map(_ in Scope.Compile.all),
+        Seq(Projects.idealingua.runtimeRpcScala, Projects.logstage.core, Projects.logstage.adapterSlf4j).map(_ in Scope.Compile.all) ++
+          Seq(Projects.idealingua.testDefs).map(_ in Scope.Test.jvm),
+        platforms = Targets.jvm,
+      ),
+      Artifact(
         Projects.idealingua.transpilers,
         Seq(scala_xml, scalameta),
         Projects.fundamentals.basics ++
           Seq(Projects.fundamentals.fundamentalsJsonCirce, Projects.idealingua.core, Projects.idealingua.runtimeRpcScala).map(_ in Scope.Compile.all) ++
-          Seq(Projects.idealingua.testDefs, Projects.idealingua.runtimeRpcTypescript, Projects.idealingua.runtimeRpcGo, Projects.idealingua.runtimeRpcCSharp).map(_ in Scope.Compile.jvm),
+          Seq(Projects.idealingua.testDefs, Projects.idealingua.runtimeRpcTypescript, Projects.idealingua.runtimeRpcGo, Projects.idealingua.runtimeRpcCSharp).map(_ in Scope.Test.jvm),
         settings = forkTests
       ),
-
       Artifact(
         Projects.idealingua.testDefs,
         Seq.empty,
@@ -579,7 +559,7 @@ object TestProject {
               |      val art = (artifact in(Compile, assembly)).value
               |      art.withClassifier(Some("assembly"))
               |}""".stripMargin.raw,
-          RawSettingDef("addArtifact(artifact in(Compile, assembly), assembly)")
+          SettingDef.RawSettingDef("addArtifact(artifact in(Compile, assembly), assembly)")
         )
       ),
     ),
@@ -588,6 +568,104 @@ object TestProject {
     defaultPlatforms = Targets.cross,
   )
 
+  val all = Seq(fundamentals, distage, logstage)
+
+  final lazy val docs = Aggregate(
+    Projects.docs.id,
+    Seq(
+      Artifact(
+        Projects.docs.microsite,
+        (cats_all ++ zio_all ++ http4s_all).map(_ in Scope.Compile.all),
+        all.flatMap(_.artifacts).map(_.name in Scope.Compile.all).distinct,
+        plugins = Plugins(Seq(
+          Plugin("ScalaUnidocPlugin"),
+          Plugin("ParadoxSitePlugin"),
+          Plugin("SitePlugin"),
+          Plugin("GhpagesPlugin"),
+          Plugin("ParadoxMaterialThemePlugin"),
+          Plugin("PreprocessPlugin"),
+          Plugin("MdocPlugin")
+        ), Seq(Plugin("ScoverageSbtPlugin"))),
+        settings = Projects.root.docSettings ++ Seq(
+          "coverageEnabled" := false,
+          "skip" in SettingScope.Raw("publish") := true,
+          "DocKeys.prefix" := """{if (isSnapshot.value) {
+            "latest/snapshot"
+          } else {
+            "latest/release"
+          }}""".raw,
+          "previewFixedPort" := "Some(9999)".raw,
+          "git.remoteRepo" := "git@github.com:7mind/izumi-microsite.git",
+          "classLoaderLayeringStrategy" in SettingScope.Raw("Compile") := "ClassLoaderLayeringStrategy.Flat".raw,
+          "mdocIn" := """baseDirectory.value / "src/main/tut"""".raw,
+          "sourceDirectory" in SettingScope.Raw("Paradox") := "mdocOut.value".raw,
+          "mdocExtraArguments" ++= Seq(" --no-link-hygiene"),
+          "mappings" in SettingScope.Raw("SitePlugin.autoImport.makeSite") := """{
+            (mappings in SitePlugin.autoImport.makeSite)
+              .dependsOn(mdoc.toTask(" "))
+              .value
+          }""".raw,
+          "version" in SettingScope.Raw("Paradox") := "version.value".raw,
+
+          SettingDef.RawSettingDef("ParadoxMaterialThemePlugin.paradoxMaterialThemeSettings(Paradox)"),
+          SettingDef.RawSettingDef("addMappingsToSiteDir(mappings in(ScalaUnidoc, packageDoc), siteSubdirName in ScalaUnidoc)"),
+          SettingDef.RawSettingDef("unidocProjectFilter in(ScalaUnidoc, unidoc) := inAggregates(`izumi-jvm`, transitive=true)"),
+
+          SettingDef.RawSettingDef("""paradoxMaterialTheme in Paradox ~= {
+            _.withCopyright("7mind.io")
+              .withRepository(uri("https://github.com/7mind/izumi"))
+            //        .withColor("222", "434343")
+          }"""),
+          "siteSubdirName" in SettingScope.Raw("ScalaUnidoc") := """s"${DocKeys.prefix.value}/api"""".raw,
+          "siteSubdirName" in SettingScope.Raw("Paradox") := """s"${DocKeys.prefix.value}/doc"""".raw,
+          SettingDef.RawSettingDef("""paradoxProperties ++= Map(
+            "scaladoc.izumi.base_url" -> s"/${DocKeys.prefix.value}/api/com/github/pshirshov/",
+            "scaladoc.base_url" -> s"/${DocKeys.prefix.value}/api/",
+            "izumi.version" -> version.value,
+          )"""),
+          SettingDef.RawSettingDef("""excludeFilter in ghpagesCleanSite :=
+            new FileFilter {
+              def accept(f: File): Boolean = {
+                (f.toPath.startsWith(ghpagesRepository.value.toPath.resolve("latest")) && !f.toPath.startsWith(ghpagesRepository.value.toPath.resolve(DocKeys.prefix.value))) ||
+                  (ghpagesRepository.value / "CNAME").getCanonicalPath == f.getCanonicalPath ||
+                  (ghpagesRepository.value / ".nojekyll").getCanonicalPath == f.getCanonicalPath ||
+                  (ghpagesRepository.value / "index.html").getCanonicalPath == f.getCanonicalPath ||
+                  (ghpagesRepository.value / "README.md").getCanonicalPath == f.getCanonicalPath ||
+                  f.toPath.startsWith((ghpagesRepository.value / "media").toPath) ||
+                  f.toPath.startsWith((ghpagesRepository.value / "v0.5.50-SNAPSHOT").toPath)
+              }
+            }""")
+        )
+      ),
+    ),
+    pathPrefix = Projects.docs.basePath,
+    groups = Groups.docs,
+    defaultPlatforms = Targets.jvmDocs,
+    dontIncludeInSuperAgg = true,
+    enableSharedSettings = false,
+    settings = Projects.root.docSettings,
+  )
+
+  final lazy val sbtplugins = Aggregate(
+    Projects.sbtplugins.id,
+    Seq(
+      Artifact(
+        Projects.sbtplugins.izumi_deps,
+        Seq.empty,
+        Seq.empty,
+        settings = Projects.sbtplugins.settings ++ Seq(
+          SettingDef.RawSettingDef("""withBuildInfo("izumi.sbt.deps", "Izumi")""")
+        ),
+      ),
+    ),
+    pathPrefix = Projects.sbtplugins.basePath,
+    groups = Groups.docs,
+    defaultPlatforms = Targets.jvm,
+    dontIncludeInSuperAgg = true,
+    enableSharedSettings = false,
+  )
+
+
   val izumi: Project = Project(
     Projects.root.id,
     Seq(
@@ -595,14 +673,14 @@ object TestProject {
       distage,
       logstage,
       idealingua,
+      docs,
+      sbtplugins,
     ),
     Projects.root.settings,
     Projects.root.sharedSettings,
     Projects.root.sharedAggSettings,
     Projects.root.sharedRootSettings,
-    Seq(
-      Import("sbt.Keys._")
-    ),
+    Seq.empty,
     Seq(
       ScopedLibrary(projector, FullDependencyScope(Scope.Compile, Platform.All), compilerPlugin = true),
       collection_compat in Scope.Compile.all,
