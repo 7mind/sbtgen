@@ -1,9 +1,9 @@
 package izumi.sbtgen
 
 import izumi.sbtgen.impl.{WithArtifactExt, WithBasicRenderers, WithProjectIndex}
-import izumi.sbtgen.tools.IzString._
 import izumi.sbtgen.model._
 import izumi.sbtgen.output.PreparedAggregate
+import izumi.sbtgen.tools.IzString._
 
 
 class Renderer(protected val config: GenConfig, project: Project)
@@ -282,8 +282,19 @@ class Renderer(protected val config: GenConfig, project: Project)
     out.mkString("\n")
   }
 
+  def isPlatformEnabled(p: Platform): Boolean = p match {
+    case Platform.All =>
+      true
+    case Platform.Jvm =>
+      config.jvm
+    case Platform.Js =>
+      config.js
+    case Platform.Native =>
+      config.native
+  }
+
   protected def renderPlugins(plugins: Plugins, platform: Platform, dot: Boolean, inclusive: Boolean = false): Seq[String] = {
-    val predicate = (p: Plugin) => (inclusive && platform == Platform.All) || p.platform == platform
+    val predicate = (p: Plugin) => (inclusive && platform == Platform.All && isPlatformEnabled(p.platform)) || p.platform == platform
 
     val enabledPlugins = plugins.enabled.filter(predicate).distinct
     val disabledPlugins = plugins.disabled.filter(predicate).distinct

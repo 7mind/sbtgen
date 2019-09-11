@@ -11,7 +11,7 @@ class SbtGenTest extends WordSpec {
       )
 
       val out = Seq.empty
-      // Seq("-o", "../izumi-r2")
+//      val out = Seq("-o", "../izumi-r2.wip")
       Entrypoint.main(TestProject.izumi, settings, out)
       Entrypoint.main(TestProject.izumi, settings, Seq("--js") ++ out)
     }
