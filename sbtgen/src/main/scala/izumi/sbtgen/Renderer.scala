@@ -1,6 +1,7 @@
 package izumi.sbtgen
 
 import izumi.sbtgen.impl.{WithArtifactExt, WithBasicRenderers, WithProjectIndex}
+import izumi.sbtgen.model.Platform.BasePlatform
 import izumi.sbtgen.model._
 import izumi.sbtgen.output.PreparedAggregate
 import izumi.sbtgen.tools.IzString._
@@ -32,7 +33,7 @@ class Renderer(protected val config: GenConfig, project: Project)
           val name = (project.name.value +: id.toSeq).mkString("-")
           val path = id match {
             case Some(x) =>
-              Seq(".", ".agg-" + x.toLowerCase)
+              Seq(".agg", ".agg-" + x.toLowerCase)
             case None =>
               Seq(".")
           }
@@ -75,79 +76,9 @@ class Renderer(protected val config: GenConfig, project: Project)
         }
     }
 
-    val jvmOnly = if (!config.jvm) {
-      Seq.empty
-    } else {
-      val jvmAgg = a.filteredArtifacts.flatMap {
-        a =>
-          if (a.isJvmOnly) {
-            Seq(renderName(a.name))
-          } else {
-            a.platforms.filter(_.platform == Platform.Jvm).map(p => a.nameOn(p.platform))
-          }
-      }
-      if (jvmAgg.nonEmpty) {
-        Seq(output.PreparedAggregate(
-          ArtifactId(a.name.value + "-jvm"),
-          a.pathPrefix ++ Seq(".agg-jvm"),
-          jvmAgg,
-          Platform.Jvm,
-          project.globalPlugins,
-          enableSharedSettings = es,
-          dontIncludeInSuperAgg = di,
-          settings = a.settings,
-        ))
-      } else {
-        Seq.empty
-      }
-    }
-
-    val jsOnly = if (!config.js) {
-      Seq.empty
-    } else {
-      val jsAgg = a.filteredArtifacts.flatMap {
-        a =>
-          a.platforms.filter(_.platform == Platform.Js).map(p => a.nameOn(p.platform))
-
-      }
-      if (jsAgg.nonEmpty) {
-        Seq(output.PreparedAggregate(
-          ArtifactId(a.name.value + "-js"),
-          a.pathPrefix ++ Seq(".agg-js"),
-          jsAgg,
-          Platform.Js,
-          project.globalPlugins,
-          enableSharedSettings = es,
-          dontIncludeInSuperAgg = di,
-          settings = a.settings,
-        ))
-      } else {
-        Seq.empty
-      }
-    }
-
-    val nativeOnly = if (!config.native) {
-      Seq.empty
-    } else {
-      val nativeAgg = a.filteredArtifacts.flatMap {
-        a =>
-          a.platforms.filter(_.platform == Platform.Native).map(p => a.nameOn(p.platform))
-      }
-      if (nativeAgg.nonEmpty) {
-        Seq(output.PreparedAggregate(
-          ArtifactId(a.name.value + "-native"),
-          a.pathPrefix ++ Seq(".agg-native"),
-          nativeAgg,
-          Platform.Native,
-          project.globalPlugins,
-          enableSharedSettings = es,
-          dontIncludeInSuperAgg = di,
-          settings = a.settings,
-        ))
-      } else {
-        Seq.empty
-      }
-    }
+    val jvmOnly = mkAgg(a, Platform.Jvm, es, di)
+    val jsOnly = mkAgg(a, Platform.Js, es, di)
+    val nativeOnly = mkAgg(a, Platform.Native, es, di)
 
     Seq(output.PreparedAggregate(
       a.name,
@@ -162,6 +93,37 @@ class Renderer(protected val config: GenConfig, project: Project)
   }
 
 
+  private def mkAgg(a: Aggregate, platform: BasePlatform, es: Boolean, di: Boolean): Seq[PreparedAggregate] = {
+    if (!isPlatformEnabled(platform)) {
+      Seq.empty
+    } else {
+      val jvmAgg = a.filteredArtifacts.flatMap {
+        a =>
+          if (a.isJvmOnly) {
+            Seq(renderName(a.name))
+          } else {
+            a.platforms.filter(_.platform == platform).map(p => a.nameOn(p.platform))
+          }
+      }
+      if (jvmAgg.nonEmpty) {
+        val artname = Seq(a.name.value, platformName(platform))
+        val id = ArtifactId(artname.mkString("-"))
+        Seq(output.PreparedAggregate(
+          id,
+          Seq(".agg", (a.pathPrefix ++ artname).mkString("-")),
+          jvmAgg,
+          platform,
+          project.globalPlugins,
+          enableSharedSettings = es,
+          dontIncludeInSuperAgg = di,
+          settings = a.settings,
+        ))
+      } else {
+        Seq.empty
+      }
+    }
+  }
+
   protected def renderAggregateProjects(aggregates: Seq[PreparedAggregate]): Seq[String] = {
     val settings = Seq(
       //      "publish" := "{}".raw,
@@ -169,7 +131,6 @@ class Renderer(protected val config: GenConfig, project: Project)
       //      "skip in publish" := true,
       "skip" in SettingScope.Raw("publish") := true,
     )
-
 
     val aggDefs = aggregates.map {
       case PreparedAggregate(name, path, agg, platform, plugins, isRoot, enableSharedSettings, _, localSettings) =>
