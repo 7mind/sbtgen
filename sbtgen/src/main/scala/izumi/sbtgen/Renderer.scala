@@ -218,7 +218,7 @@ class Renderer(protected val config: GenConfig, project: Project)
       Seq(
         "unmanagedSourceDirectories" in SettingScope.Compile += """baseDirectory.value / ".jvm/src/main/scala" """.raw,
         "unmanagedSourceDirectories" in SettingScope.Test += """baseDirectory.value / ".jvm/src/test/scala" """.raw,
-      )
+      ) ++ a.platforms.filter(_.platform == Platform.Jvm).flatMap(_.settings)
     } else {
       Seq.empty
     }
