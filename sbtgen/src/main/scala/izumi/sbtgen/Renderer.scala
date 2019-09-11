@@ -308,8 +308,9 @@ class Renderer(protected val config: GenConfig, project: Project)
       case None =>
         "settings"
     }
+
     settings
-      .filter(s => s.scope.platform == platform || s.scope.platform == Platform.All)
+      .filter(s => s.scope.platform == platform || s.scope.platform == Platform.All || (config.jvmOnly && platform == Platform.All && s.scope.platform == Platform.Jvm) )
       .map(renderSetting)
       .map(_.shift(2))
       .mkString(s".$p(\n", ",\n", "\n)")
