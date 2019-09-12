@@ -1,5 +1,6 @@
 package izumi.sbtgen
 
+import izumi.sbtgen.model.LibSetting.Exclusion
 import izumi.sbtgen.model._
 
 object V {
@@ -84,7 +85,7 @@ object Izumi {
     final val scala_xml = Library("org.scala-lang.modules", "scala-xml", V.scala_xml) in Scope.Compile.all
     final val scalameta = Library("org.scalameta", "scalameta", V.scalameta) in Scope.Compile.all
 
-    final val cglib_nodep = Library("cglib", "cglib-nodep", V.cglib_nodep, LibraryType.Invariant) in Scope.Compile.jvm
+    final val cglib_nodep = Library("cglib", "cglib-nodep", V.cglib_nodep, LibraryType.Invariant).more(LibSetting.Exclusions(Seq(Exclusion("xxx", "yyy")))) in Scope.Compile.jvm
 
 
     final val projector = Library("org.typelevel", "kind-projector", "0.10.3", LibraryType.AutoJvm)

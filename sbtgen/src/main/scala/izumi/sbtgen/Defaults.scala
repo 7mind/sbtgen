@@ -22,6 +22,11 @@ object Defaults {
       "-Xlint:all",
       "-XDignore.symbol.file"
     ),
+    "scalacOptions" in SettingScope.Build ++= Seq(
+      """s"-Xmacro-settings:product-version=${version.value}"""".raw,
+      """s"-Xmacro-settings:product-group=${organization.value}"""".raw,
+      """s"-Xmacro-settings:sbt-version=${sbtVersion.value}"""".raw,
+    )
   )
   
   final val Scala212Options = Seq(
@@ -85,10 +90,9 @@ object Defaults {
   )
 
   final val SbtMeta = Seq(
-    "scalacOptions" += """s"-Xmacro-settings:product-version=${version.value}"""".raw,
-    "scalacOptions" += """s"-Xmacro-settings:product-group=${organization.value}"""".raw,
-    "scalacOptions" += """s"-Xmacro-settings:sbt-version=${sbtVersion.value}"""".raw,
-    "scalacOptions" += """s"-Xmacro-settings:scala-version=${scalaVersion.value}"""".raw,
-    "scalacOptions" += """s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"""".raw,
+    "scalacOptions" ++= Seq(
+      """s"-Xmacro-settings:scala-version=${scalaVersion.value}"""".raw,
+      """s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"""".raw,
+    )
   )
 }

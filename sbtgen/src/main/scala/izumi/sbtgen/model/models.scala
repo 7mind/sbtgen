@@ -74,9 +74,50 @@ case class SbtPlugin(group: String, artifact: String, version: Version)
 object SbtPlugin {
   def apply(group: String, artifact: String, version: String): SbtPlugin = new SbtPlugin(group, artifact, Version.VConst(version))
 }
-case class Library(group: String, artifact: String, version: Version, kind: LibraryType)
+
+sealed trait LibSetting
+object LibSetting {
+  case class Exclusion(group: String, artifact: String)
+  case class Exclusions(exclusions: Seq[Exclusion]) extends LibSetting
+  case class Raw(value: String) extends LibSetting
+}
+
+
+case class Library(group: String, artifact: String, version: Version, kind: LibraryType, more: Option[LibSetting]) {
+  def more(settings: LibSetting): Library = this.copy(more = Some(settings))
+}
+
+
 object Library {
-  def apply(group: String, artifact: String, version: String, kind: LibraryType = LibraryType.Auto): Library = new Library(group, artifact, Version.VConst(version), kind)
+  def apply(
+             group: String,
+             artifact: String,
+             version: Version,
+             kind: LibraryType
+           ): Library = {
+    new Library(
+      group,
+      artifact,
+      version,
+      kind,
+      None
+    )
+  }
+
+  def apply(
+             group: String,
+             artifact: String,
+             version: String,
+             kind: LibraryType = LibraryType.Auto
+           ): Library = {
+    new Library(
+      group,
+      artifact,
+      Version.VConst(version),
+      kind,
+      None
+    )
+  }
 }
 
 case class FullDependencyScope(scope: Scope, platform: Platform)

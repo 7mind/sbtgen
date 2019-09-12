@@ -311,7 +311,7 @@ class Renderer(protected val config: GenConfig, project: Project)
     }
 
     settings
-      .filter(s => s.scope.platform == platform || s.scope.platform == Platform.All || (config.jvmOnly && platform == Platform.All && s.scope.platform == Platform.Jvm) )
+      .filter(s => s.scope.platform == platform || s.scope.platform == Platform.All || (config.jvmOnly && platform == Platform.All && s.scope.platform == Platform.Jvm))
       .map(renderSetting)
       .map(_.shift(2))
       .mkString(s".$p(\n", ",\n", "\n)")
@@ -462,7 +462,31 @@ class Renderer(protected val config: GenConfig, project: Project)
                 Seq("%", "Test")
             }
 
-            val out = (Seq(stringLit(d.dependency.group), sep, stringLit(d.dependency.artifact), "%", renderVersion(d.dependency.version)) ++ suffix).mkString(" ")
+            val more = d.dependency.more match {
+              case Some(value) =>
+                value match {
+                  case LibSetting.Exclusions(exclusions) =>
+                    exclusions.map(e => s"exclude(${stringLit(e.group)}, ${stringLit(e.artifact)})")
+                  case LibSetting.Raw(value) =>
+                    Seq(value)
+                }
+              case None =>
+                Seq.empty
+            }
+
+            val out = Seq(
+              Seq(
+                stringLit(d.dependency.group),
+                sep,
+                stringLit(d.dependency.artifact),
+                "%",
+                renderVersion(d.dependency.version)
+              ),
+              suffix,
+              more,
+            )
+              .flatten
+              .mkString(" ")
 
             if (d.compilerPlugin) {
               s"compilerPlugin($out)".raw

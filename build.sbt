@@ -6,7 +6,6 @@ classLoaderLayeringStrategy in ThisBuild := ClassLoaderLayeringStrategy.ScalaLib
 name := "izumi-sbtgen"
 organization in ThisBuild := "io.7mind.izumi.sbt"
 
-publishMavenStyle in ThisBuild := true
 homepage in ThisBuild := Some(url("https://izumi.7mind.io"))
 licenses in ThisBuild := Seq("BSD-style" -> url("http://www.opensource.org/licenses/bsd-license.php"))
 developers in ThisBuild := List(
@@ -14,7 +13,6 @@ developers in ThisBuild := List(
 )
 scmInfo in ThisBuild := Some(ScmInfo(url("https://github.com/7mind/sbtgen"), "scm:git:https://github.com/7mind/sbtgen.git"))
 credentials in ThisBuild += Credentials(file(".secrets/credentials.sonatype-nexus.properties"))
-
 
 sonatypeProfileName := "io.7mind"
 releaseProcess := Seq[ReleaseStep](
@@ -144,6 +142,7 @@ lazy val `sbt-tests` = (project in file("sbt/sbt-tests"))
 lazy val `sbtgen-root` = (project in file("."))
   .aggregate(
     sbtgen,
+    sbtmeta,
     `sbt-izumi-deps`,
     `sbt-izumi`,
   )
