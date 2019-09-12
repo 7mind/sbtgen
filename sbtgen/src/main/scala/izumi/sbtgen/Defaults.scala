@@ -78,4 +78,17 @@ object Defaults {
     "-Wunused:_",
     "-Xlint:_",
   )
+
+  final val SbtGenPlugins = Seq(
+    SbtPlugin("io.7mind.izumi.sbt", "sbt-izumi", Version.SbtGen),
+    SbtPlugin("io.7mind.izumi.sbt", "sbt-izumi-deps", Version.SbtGen),
+  )
+
+  final val SbtMeta = Seq(
+    "scalacOptions" += """s"-Xmacro-settings:product-version=${version.value}"""".raw,
+    "scalacOptions" += """s"-Xmacro-settings:product-group=${organization.value}"""".raw,
+    "scalacOptions" += """s"-Xmacro-settings:sbt-version=${sbtVersion.value}"""".raw,
+    "scalacOptions" += """s"-Xmacro-settings:scala-version=${scalaVersion.value}"""".raw,
+    "scalacOptions" += """s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"""".raw,
+  )
 }

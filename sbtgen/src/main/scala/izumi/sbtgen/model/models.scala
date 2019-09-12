@@ -9,6 +9,8 @@ object Version {
 
   case class VExpr(value: String) extends Version
 
+  case object SbtGen extends Version
+
 }
 
 sealed trait Scope {

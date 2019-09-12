@@ -175,6 +175,8 @@ object Entrypoint {
     project.appendPlugins.foreach {
       p =>
         b.append(s"""addSbtPlugin(${renderer.stringLit(p.group)} % ${renderer.stringLit(p.artifact)} % ${renderer.renderVersion(p.version)})""")
+        b.append('\n')
+        b.append('\n')
     }
 
     Map("project/plugins.sbt" -> b.mkString)

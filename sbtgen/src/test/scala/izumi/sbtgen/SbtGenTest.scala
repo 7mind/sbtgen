@@ -1,6 +1,7 @@
 package izumi.sbtgen
 
 import izumi.sbtgen.model.GlobalSettings
+import izumi.sbtgen.sbtmeta.SbtgenMeta
 import org.scalatest.WordSpec
 
 class SbtGenTest extends WordSpec {
@@ -10,13 +11,17 @@ class SbtGenTest extends WordSpec {
         groupId = "io.7mind"
       )
 
-      val out = Seq()
-//      val out = Seq("-d")
+      var out: Seq[String] = Seq()
+//      out = Seq("-d")
 //      val out = Seq("-d", "-o", "../izumi-r2.wip")
       Entrypoint.main(Izumi.izumi, settings, out)
-      Entrypoint.main(Izumi.izumi, settings, Seq("--js") ++ out)
-      Entrypoint.main(Izumi.izumi, settings, Seq("--native") ++ out)
-      Entrypoint.main(Izumi.izumi, settings, Seq("--js", "--native") ++ out)
+//      Entrypoint.main(Izumi.izumi, settings, Seq("--js") ++ out)
+//      Entrypoint.main(Izumi.izumi, settings, Seq("--native") ++ out)
+//      Entrypoint.main(Izumi.izumi, settings, Seq("--js", "--native") ++ out)
+    }
+
+    "extract build meta" in {
+      assert(SbtgenMeta.extractScalaVersions().nonEmpty)
     }
   }
 }

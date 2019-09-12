@@ -15,6 +15,7 @@ developers in ThisBuild := List(
 scmInfo in ThisBuild := Some(ScmInfo(url("https://github.com/7mind/sbtgen"), "scm:git:https://github.com/7mind/sbtgen.git"))
 credentials in ThisBuild += Credentials(file(".secrets/credentials.sonatype-nexus.properties"))
 
+
 sonatypeProfileName := "io.7mind"
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies, // : ReleaseStep
@@ -37,7 +38,17 @@ publishTo in ThisBuild := (if (!isSnapshot.value) {
 })
 
 
+lazy val sbtmeta = (project in file("sbtmeta"))
+  .settings(
+    crossScalaVersions := Seq(ScalaVersions.scala_213, ScalaVersions.scala_212),
+    scalaVersion := crossScalaVersions.value.head,
+    libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value % Optional,
+
+
+  )
+
 lazy val sbtgen = (project in file("sbtgen"))
+  .dependsOn(sbtmeta)
   .settings(
     crossScalaVersions := Seq(ScalaVersions.scala_213, ScalaVersions.scala_212),
     scalaVersion := crossScalaVersions.value.head,
@@ -45,6 +56,13 @@ lazy val sbtgen = (project in file("sbtgen"))
     libraryDependencies += "com.github.scopt" %% "scopt" % "3.7.1",
     libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
     libraryDependencies in ThisBuild += "org.scalatest" %% "scalatest" % "3.0.8" % "test",
+    scalacOptions ++= Seq(
+      s"-Xmacro-settings:product-version=${version.value}",
+      s"-Xmacro-settings:product-group=${organization.value}",
+      s"-Xmacro-settings:sbt-version=${sbtVersion.value}",
+      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}",
+    ),
   )
 
 lazy val `sbt-izumi-deps` = (project in file("sbt/sbt-izumi-deps"))

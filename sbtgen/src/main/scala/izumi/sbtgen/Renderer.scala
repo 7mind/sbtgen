@@ -4,6 +4,7 @@ import izumi.sbtgen.impl.{WithArtifactExt, WithBasicRenderers, WithProjectIndex}
 import izumi.sbtgen.model.Platform.BasePlatform
 import izumi.sbtgen.model._
 import izumi.sbtgen.output.PreparedAggregate
+import izumi.sbtgen.sbtmeta.SbtgenMeta
 import izumi.sbtgen.tools.IzString._
 
 
@@ -484,6 +485,8 @@ class Renderer(protected val config: GenConfig, project: Project)
         stringLit(value)
       case Version.VExpr(value) =>
         value
+      case Version.SbtGen =>
+        stringLit(SbtgenMeta.extractSbtProjectVersion().getOrElse("UNKNOWN-SBTGEN"))
     }
   }
 
@@ -502,7 +505,12 @@ class Renderer(protected val config: GenConfig, project: Project)
       Seq(sharedArtDeps
         .map {
           d =>
-            val ad = index(d.name)
+            val ad = index.get(d.name) match {
+              case Some(value) =>
+                value
+              case None =>
+                throw new RuntimeException(s"Unknown dependency: ${d.name}")
+            }
             val name = targetPlatform match {
               case Platform.All if a.isJvmOnly =>
                 ad.nameOn(Platform.Jvm)
