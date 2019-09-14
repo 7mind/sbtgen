@@ -83,7 +83,7 @@ class Renderer(protected val config: GenConfig, project: Project)
 
     Seq(output.PreparedAggregate(
       a.name,
-      a.pathPrefix,
+      Seq(".agg", (a.pathPrefix ++ Seq(a.name.value)).mkString("-")),
       fullAgg,
       Platform.All,
       project.globalPlugins,
