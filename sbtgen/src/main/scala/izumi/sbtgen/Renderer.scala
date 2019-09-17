@@ -7,6 +7,8 @@ import izumi.sbtgen.output.PreparedAggregate
 import izumi.sbtgen.sbtmeta.SbtgenMeta
 import izumi.sbtgen.tools.IzString._
 
+import scala.collection.mutable
+
 
 class Renderer(protected val config: GenConfig, project: Project)
   extends WithProjectIndex
@@ -14,6 +16,7 @@ class Renderer(protected val config: GenConfig, project: Project)
     with WithArtifactExt {
   private val aggregates: Seq[Aggregate] = project.aggregates.map(_.merge)
   protected val index: Map[ArtifactId, Artifact] = makeIndex(aggregates)
+  protected val settingsCache = new mutable.HashMap[String, Int]()
 
   def render(): Seq[String] = {
     val artifacts = aggregates.flatMap(_.filteredArtifacts).map(renderArtifact)
@@ -55,12 +58,18 @@ class Renderer(protected val config: GenConfig, project: Project)
     val imports = Seq(project.imports.map(i => s"import ${i.value}").mkString("\n"))
     val plugins = renderPlugins(project.rootPlugins, Platform.All, dot = false, inclusive = true)
 
+    val sc = settingsCache.toSeq.sortBy(_._2).map {
+      case (s, idx) =>
+        s"lazy val ${cacheIdxName(idx)} = Def.setting { $s }"
+    }
+
     Seq(
       imports,
       plugins,
       settings,
       artifacts,
-      aggDefs
+      aggDefs,
+      sc,
     )
       .flatten
   }
@@ -356,11 +365,17 @@ class Renderer(protected val config: GenConfig, project: Project)
 
     val out = settingDef match {
       case u: SettingDef.UnscopedSettingDef =>
-        renderConst(u.value)
+
+        if (u.value.isInstanceOf[Const.CRaw]) {
+          renderConst(u.value)
+        } else {
+          cached(renderConst(u.value))
+        }
+
       case s: SettingDef.ScopedSettingDef =>
 
 
-        s
+        val r = s
           .defs
           .toSeq
           .map {
@@ -384,9 +399,31 @@ class Renderer(protected val config: GenConfig, project: Project)
           .mkString(
             "{ (isSnapshot.value, scalaVersion.value) match {\n", "\n", "\n} }"
           )
+
+
+        if (s.defs.exists(_._2.isInstanceOf[Const.CRaw])) {
+          r
+        } else {
+          cached(r)
+        }
     }
+
+
     val all = Seq(name) ++ in ++ Seq(op, out)
     all.mkString(" ")
+  }
+
+  def cached(s: String): String = {
+    if (config.compactify) {
+      val idx = settingsCache.getOrElseUpdate(s, settingsCache.size)
+      cacheIdxName(idx) + ".value"
+    } else {
+      s
+    }
+  }
+
+  private def cacheIdxName(idx: Int) = {
+    s"setting_${idx}"
   }
 
   protected def renderConst(const: Const): String = {

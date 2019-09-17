@@ -15,6 +15,7 @@ case class Config(
                    output: String = "test-out",
                    groups: Set[Group] = Set.empty,
                    publishTests: Boolean = true,
+                   compactify: Boolean = false,
                  )
 
 
@@ -37,6 +38,9 @@ object Entrypoint {
       opt[Unit]('d', "debug")
         .action((_, c) => c.copy(debug = true))
         .text("enable debug output")
+      opt[Unit]('c', "compactify")
+        .action((_, c) => c.copy(compactify = true))
+        .text("deduplicate repetative settings")
       opt[Unit]('t', "isolate-tests")
         .action((_, c) => c.copy(mergeTestScopes = false))
         .text("don't inherit test scopes")
@@ -93,6 +97,7 @@ object Entrypoint {
           config.output,
           config.groups,
           config.publishTests,
+          config.compactify,
         )
 
         try {
