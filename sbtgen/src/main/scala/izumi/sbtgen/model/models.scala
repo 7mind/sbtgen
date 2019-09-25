@@ -39,18 +39,13 @@ case class ScalaVersion(value: String)
 sealed trait Platform
 
 object Platform {
-
   sealed trait BasePlatform extends Platform
 
   case object Jvm extends BasePlatform
-
   case object Js extends BasePlatform
-
   case object Native extends BasePlatform
 
   case object All extends Platform
-
-
 }
 
 case class PlatformEnv(

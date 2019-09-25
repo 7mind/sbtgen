@@ -9,11 +9,14 @@ import izumi.sbtgen.tools.IzString._
 
 import scala.collection.mutable
 
-
-class Renderer(protected val config: GenConfig, project: Project)
+class Renderer(
+                protected val config: GenConfig,
+                project: Project,
+              )
   extends WithProjectIndex
     with WithBasicRenderers
     with WithArtifactExt {
+
   private val aggregates: Seq[Aggregate] = project.aggregates.map(_.merge)
   protected val index: Map[ArtifactId, Artifact] = makeIndex(aggregates)
   protected val settingsCache = new mutable.HashMap[String, Int]()
@@ -21,9 +24,9 @@ class Renderer(protected val config: GenConfig, project: Project)
   def render(): Seq[String] = {
     val artifacts = aggregates.flatMap(_.filteredArtifacts).map(renderArtifact)
 
-    val aggs = aggregates.flatMap(renderAgg)
+    val filteredAggs = aggregates.flatMap(renderAgg).filterNot(_.aggregatedNames.isEmpty)
 
-    val superAgg = aggs
+    val superAgg = filteredAggs
       .groupBy(_.target)
       .toSeq
       .map {
@@ -46,7 +49,7 @@ class Renderer(protected val config: GenConfig, project: Project)
           PreparedAggregate(ArtifactId(name), path, aggregatedIds, p, project.globalPlugins, isRoot = p == Platform.All)
       }
 
-    val allAggregates = (aggs ++ superAgg).filterNot(_.aggregatedNames.isEmpty)
+    val allAggregates = (filteredAggs ++ superAgg).filterNot(_.aggregatedNames.isEmpty)
     assert(allAggregates.nonEmpty, "All aggregates were filtered out")
     val aggDefs = renderAggregateProjects(allAggregates)
 
@@ -74,10 +77,10 @@ class Renderer(protected val config: GenConfig, project: Project)
       .flatten
   }
 
-  protected def renderAgg(a: Aggregate): Seq[PreparedAggregate] = {
-    val es = a.enableSharedSettings
-    val di = a.dontIncludeInSuperAgg
-    val fullAgg = a.filteredArtifacts.flatMap {
+  protected def renderAgg(aggregate: Aggregate): Seq[PreparedAggregate] = {
+    val es = aggregate.enableSharedSettings
+    val di = aggregate.dontIncludeInSuperAgg
+    val fullAgg = aggregate.filteredArtifacts.flatMap {
       a =>
         if (a.isJvmOnly) {
           Seq(renderName(a.name))
@@ -86,22 +89,21 @@ class Renderer(protected val config: GenConfig, project: Project)
         }
     }
 
-    val jvmOnly = mkAgg(a, Platform.Jvm, es, di)
-    val jsOnly = mkAgg(a, Platform.Js, es, di)
-    val nativeOnly = mkAgg(a, Platform.Native, es, di)
+    val jvmOnly = mkAgg(aggregate, Platform.Jvm, es, di)
+    val jsOnly = mkAgg(aggregate, Platform.Js, es, di)
+    val nativeOnly = mkAgg(aggregate, Platform.Native, es, di)
 
     Seq(output.PreparedAggregate(
-      a.name,
-      Seq(".agg", (a.pathPrefix ++ Seq(a.name.value)).mkString("-")),
+      aggregate.name,
+      Seq(".agg", (aggregate.pathPrefix :+ aggregate.name.value).mkString("-")),
       fullAgg,
       Platform.All,
       project.globalPlugins,
       enableSharedSettings = es,
       dontIncludeInSuperAgg = di,
-      settings = a.settings,
+      settings = aggregate.settings,
     )) ++ jvmOnly ++ jsOnly ++ nativeOnly
   }
-
 
   private def mkAgg(a: Aggregate, platform: BasePlatform, es: Boolean, di: Boolean): Seq[PreparedAggregate] = {
     if (!isPlatformEnabled(platform)) {
@@ -255,15 +257,17 @@ class Renderer(protected val config: GenConfig, project: Project)
     out.mkString("\n")
   }
 
-  def isPlatformEnabled(p: Platform): Boolean = p match {
-    case Platform.All =>
-      true
-    case Platform.Jvm =>
-      config.jvm
-    case Platform.Js =>
-      config.js
-    case Platform.Native =>
-      config.native
+  def isPlatformEnabled(p: Platform): Boolean = {
+    p match {
+      case Platform.All =>
+        true
+      case Platform.Jvm =>
+        config.jvm
+      case Platform.Js =>
+        config.js
+      case Platform.Native =>
+        config.native
+    }
   }
 
   protected def renderPlugins(plugins: Plugins, platform: Platform, dot: Boolean, inclusive: Boolean = false): Seq[String] = {
@@ -276,7 +280,6 @@ class Renderer(protected val config: GenConfig, project: Project)
       name =>
         name -> project.pluginConflictRules(name)
     }.toMap
-
 
     val enabledPlugins0 = enabledPlugins.filter(p => conflictingNames.get(p.name) match {
       case Some(value) =>
@@ -291,7 +294,6 @@ class Renderer(protected val config: GenConfig, project: Project)
         true
     })
 
-
     val enabled = if (enabledPlugins0.nonEmpty) {
       Seq(enabledPlugins0.map(_.name).distinct.mkString("enablePlugins(", ", ", ")"))
     } else {
@@ -303,7 +305,6 @@ class Renderer(protected val config: GenConfig, project: Project)
     } else {
       Seq.empty
     }
-
 
     val out = enabled ++ disabled
     if (dot) {
@@ -400,14 +401,12 @@ class Renderer(protected val config: GenConfig, project: Project)
             "{ (isSnapshot.value, scalaVersion.value) match {\n", "\n", "\n} }"
           )
 
-
         if (s.defs.exists(_._2.isInstanceOf[Const.CRaw])) {
           r
         } else {
           cached(r)
         }
     }
-
 
     val all = Seq(name) ++ in ++ Seq(op, out)
     all.mkString(" ")
@@ -605,6 +604,5 @@ class Renderer(protected val config: GenConfig, project: Project)
     }
     artDeps
   }
-
 
 }

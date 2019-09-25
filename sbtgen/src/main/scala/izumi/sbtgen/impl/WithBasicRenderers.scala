@@ -15,5 +15,4 @@ trait WithBasicRenderers {
       '"' + s + '"'
     }
   }
-
 }

@@ -18,9 +18,10 @@ case class Config(
                    compactify: Boolean = false,
                  )
 
-
 object Entrypoint {
-  def main(project: Project, settings: GlobalSettings, args: Seq[String]): Unit = {
+  def main(project: Project, settings: GlobalSettings, args: Seq[String],
+           renderer: (GenConfig, Project) => Renderer = makeRenderer,
+          ): Unit = {
     val parser1 = new OptionParser[Config]("sbtgen") {
       head("sbtgen")
       opt[Unit]("nojvm")
@@ -101,7 +102,7 @@ object Entrypoint {
         )
 
         try {
-          run(cfg, project)
+          run(cfg, project, renderer(cfg, project))
         } catch {
           case e: Throwable =>
             e.printStackTrace()
@@ -114,8 +115,7 @@ object Entrypoint {
     }
   }
 
-  final def run(config: GenConfig, project: Project): Unit = {
-    val renderer = makeRenderer(config, project)
+  final def run(config: GenConfig, project: Project, renderer: Renderer): Unit = {
     val artifacts = renderer.render()
     val main = if (!config.jvmOnly) {
       Seq("import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}") ++ artifacts
@@ -148,7 +148,7 @@ object Entrypoint {
     }
   }
 
-  protected def makeMoreBoilerplate(config: GenConfig, project: Project, renderer: Renderer): Map[String, String] = {
+  private def makeMoreBoilerplate(config: GenConfig, project: Project, renderer: Renderer): Map[String, String] = {
     val b = new StringBuilder()
 
     if (config.js) {
@@ -187,7 +187,7 @@ object Entrypoint {
     Map("project/plugins.sbt" -> b.mkString)
   }
 
-  protected def makeRenderer(config: GenConfig, project: Project): Renderer = {
+  private def makeRenderer(config: GenConfig, project: Project): Renderer = {
     new Renderer(config, project)
   }
 }

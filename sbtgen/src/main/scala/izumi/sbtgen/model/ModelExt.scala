@@ -5,14 +5,13 @@ import izumi.sbtgen.model.SettingDef.{ScopedSettingDef, UnscopedSettingDef}
 trait ModelExt {
 
   implicit class SettingKeyExt(s: SettingKey) {
-    def :=(const: Const): (SettingKey, Const) = {
-      (s, const)
-    }
+    def :=(const: Const): (SettingKey, Const) = (s, const)
   }
 
-  trait WithSettingsDsl {
-    protected val s: String
-    protected val scope: FullSettingScope
+  trait WithSettingsDsl extends Any {
+    protected def s: String
+    protected def scope: FullSettingScope
+
     def :=(const: Const): UnscopedSettingDef = {
       UnscopedSettingDef(s, SettingOp.Assign, const, scope)
     }
@@ -63,8 +62,6 @@ trait ModelExt {
 
     def raw: Const = Const.CRaw(s)
   }
-
-
 
   implicit class ArtifactIdExt(id: ArtifactId) {
     def in(scope: FullDependencyScope): ScopedDependency = {
