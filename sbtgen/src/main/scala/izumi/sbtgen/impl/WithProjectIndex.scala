@@ -9,13 +9,12 @@ trait WithProjectIndex {
     projects
       .flatMap(_.artifacts)
       .groupBy(_.name)
-      .mapValues {
-        a =>
+      .map {
+        case (k, a) =>
           if (a.size > 1) {
             throw new RuntimeException(s"Duplicated names: $a")
           }
-          a.head
+          k -> a.head
       }
-      .toMap
   }
 }

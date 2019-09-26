@@ -28,15 +28,15 @@ object Defaults {
       """s"-Xmacro-settings:sbt-version=${sbtVersion.value}"""".raw,
     )
   )
-  
+
   final val Scala212Options = Seq(
-    "-Ypartial-unification"
-    , "-Xsource:2.13"
+    "-Xsource:2.13"
     , "-Ybackend-parallelism", math.max(1, sys.runtime.availableProcessors() / 2).toString
-    , "-opt-warnings:_"
-    , "-Ywarn-unused:_"
-    , "-Yno-adapted-args"
     , "-explaintypes" // Explain type errors in more detail.
+
+    , "-Ypartial-unification" // 2.12 only
+    , "-Yno-adapted-args" // 2.12 only
+
     , "-Xlint:adapted-args" // Warn if an argument list is modified to match the receiver.
     , "-Xlint:by-name-right-associative" // By-name parameter of right associative operator.
     , "-Xlint:constant" // Evaluation of a constant arithmetic expression results in an error.
@@ -71,17 +71,21 @@ object Defaults {
   )
 
   final val Scala213Options = Seq(
+    //        "-Xsource:3.0", // is available
     //        "-Xsource:2.14", // Delay -Xsource:2.14 due to spurious warnings https://github.com/scala/bug/issues/11639
     "-Xsource:2.13",
-    "-explaintypes",
+    "-Ybackend-parallelism", math.max(1, sys.runtime.availableProcessors() / 2).toString,
+    "-explaintypes", // Explain type errors in more detail.
+
+    "-Xlint:_",
+
+    "-Wunused:_",
     "-Wdead-code",
     "-Wextra-implicit",
     "-Wnumeric-widen",
     "-Woctal-literal",
     //        "-Wself-implicit", // Spurious warnings for any top-level implicit, including scala.language._
     "-Wvalue-discard",
-    "-Wunused:_",
-    "-Xlint:_",
   )
 
   final val SbtGenPlugins = Seq(

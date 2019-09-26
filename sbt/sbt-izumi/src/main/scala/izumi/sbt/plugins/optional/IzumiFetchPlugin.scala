@@ -157,6 +157,7 @@ class CoursierFetch {
   def resolve(repositories: Seq[MavenRepository], modules: Seq[Dependency]): Seq[File] = {
     Fetch[Task]()
       .addDependencies(modules :_*)
+      .addRepositories(repositories: _*)
       .run()
 
   }

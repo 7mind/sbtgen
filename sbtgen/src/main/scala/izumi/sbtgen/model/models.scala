@@ -1,7 +1,5 @@
 package izumi.sbtgen.model
 
-import scala.language.implicitConversions
-
 sealed trait Version
 object Version {
 

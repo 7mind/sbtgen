@@ -19,9 +19,13 @@ case class Config(
                  )
 
 object Entrypoint {
-  def main(project: Project, settings: GlobalSettings, args: Seq[String],
-           renderer: (GenConfig, Project) => Renderer = makeRenderer,
+  def main(
+            project: Project,
+            settings: GlobalSettings,
+            args: Seq[String],
+            renderer: (GenConfig, Project) => Renderer = new Renderer(_, _),
           ): Unit = {
+
     val parser1 = new OptionParser[Config]("sbtgen") {
       head("sbtgen")
       opt[Unit]("nojvm")
@@ -52,39 +56,6 @@ object Entrypoint {
         .action((x, c) => c.copy(groups = c.groups + Group(x)))
         .text("use only groups specified")
     }
-    //    val builder = OParser.builder[Config]
-    //    val parser1 = {
-    //      import builder._
-    //      OParser.sequence(
-    //        programName("sbtgen"),
-    //        head("sbtgen"),
-    //
-    //        opt[Unit]("nojvm")
-    //          .action((_, c) => c.copy(withJvm = false))
-    //          .text("disable jvm projects"),
-    //        opt[Unit]("js")
-    //          .action((_, c) => c.copy(withSjs = true))
-    //          .text("enable js projects"),
-    //        opt[Unit]("native")
-    //          .action((_, c) => c.copy(withSnat = true))
-    //          .text("enable native projects"),
-    //        opt[Unit]("nta")
-    //          .action((_, c) => c.copy(publishTests = false))
-    //          .text("don't publish test artifacts"),
-    //        opt[Unit]('d', "debug")
-    //          .action((_, c) => c.copy(withSnat = true))
-    //          .text("enable debug output"),
-    //        opt[Unit]('t', "isolate-tests")
-    //          .action((_, c) => c.copy(mergeTestScopes = false))
-    //          .text("enable debug output"),
-    //        opt[String]('o', "output")
-    //          .action((x, c) => c.copy(output = x))
-    //          .text("output directory"),
-    //        opt[String]('u', "use")
-    //          .action((x, c) => c.copy(groups = c.groups + Group(x)))
-    //          .text("use only groups specified"),
-    //      )
-    //    }
 
     parser1.parse(args, Config()) match {
       case Some(config) =>
@@ -125,7 +96,7 @@ object Entrypoint {
 
     val files = Map(
       "build.sbt" -> main.mkString("\n\n"),
-      "project/build.properties" -> s"sbt.version = ${config.settings.sbtVersion}"
+      "project/build.properties" -> s"sbt.version = ${config.settings.sbtVersion}",
     )
 
     val moreFiles = makeMoreBoilerplate(config, project, renderer)
@@ -142,10 +113,10 @@ object Entrypoint {
             s"""$n:
                |
                |$c
-               |""".stripMargin
+               |""".stripMargin,
           )
         }
-    }
+    },
   }
 
   private def makeMoreBoilerplate(config: GenConfig, project: Project, renderer: Renderer): Map[String, String] = {
@@ -187,7 +158,38 @@ object Entrypoint {
     Map("project/plugins.sbt" -> b.mkString)
   }
 
-  private def makeRenderer(config: GenConfig, project: Project): Renderer = {
-    new Renderer(config, project)
-  }
+  // scopt-4.0
+  //    val builder = OParser.builder[Config]
+  //    val parser1 = {
+  //      import builder._
+  //      OParser.sequence(
+  //        programName("sbtgen"),
+  //        head("sbtgen"),
+  //
+  //        opt[Unit]("nojvm")
+  //          .action((_, c) => c.copy(withJvm = false))
+  //          .text("disable jvm projects"),
+  //        opt[Unit]("js")
+  //          .action((_, c) => c.copy(withSjs = true))
+  //          .text("enable js projects"),
+  //        opt[Unit]("native")
+  //          .action((_, c) => c.copy(withSnat = true))
+  //          .text("enable native projects"),
+  //        opt[Unit]("nta")
+  //          .action((_, c) => c.copy(publishTests = false))
+  //          .text("don't publish test artifacts"),
+  //        opt[Unit]('d', "debug")
+  //          .action((_, c) => c.copy(withSnat = true))
+  //          .text("enable debug output"),
+  //        opt[Unit]('t', "isolate-tests")
+  //          .action((_, c) => c.copy(mergeTestScopes = false))
+  //          .text("enable debug output"),
+  //        opt[String]('o', "output")
+  //          .action((x, c) => c.copy(output = x))
+  //          .text("output directory"),
+  //        opt[String]('u', "use")
+  //          .action((x, c) => c.copy(groups = c.groups + Group(x)))
+  //          .text("use only groups specified"),
+  //      )
+  //    }
 }

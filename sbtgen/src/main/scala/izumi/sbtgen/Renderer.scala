@@ -3,7 +3,6 @@ package izumi.sbtgen
 import izumi.sbtgen.impl.{WithArtifactExt, WithBasicRenderers, WithProjectIndex}
 import izumi.sbtgen.model.Platform.BasePlatform
 import izumi.sbtgen.model._
-import izumi.sbtgen.output.PreparedAggregate
 import izumi.sbtgen.sbtmeta.SbtgenMeta
 import izumi.sbtgen.tools.IzString._
 
@@ -20,6 +19,18 @@ class Renderer(
   private val aggregates: Seq[Aggregate] = project.aggregates.map(_.merge)
   protected val index: Map[ArtifactId, Artifact] = makeIndex(aggregates)
   protected val settingsCache = new mutable.HashMap[String, Int]()
+
+  case class PreparedAggregate(
+                                id: ArtifactId,
+                                pathPrefix: Seq[String],
+                                aggregatedNames: Seq[String],
+                                target: Platform,
+                                plugins: Plugins,
+                                isRoot: Boolean = false,
+                                enableSharedSettings: Boolean = true,
+                                dontIncludeInSuperAgg: Boolean = false,
+                                settings: Seq[SettingDef] = Seq.empty,
+                              )
 
   def render(): Seq[String] = {
     val artifacts = aggregates.flatMap(_.filteredArtifacts).map(renderArtifact)
@@ -73,8 +84,7 @@ class Renderer(
       artifacts,
       aggDefs,
       sc,
-    )
-      .flatten
+    ).flatten
   }
 
   protected def renderAgg(aggregate: Aggregate): Seq[PreparedAggregate] = {
@@ -93,7 +103,7 @@ class Renderer(
     val jsOnly = mkAgg(aggregate, Platform.Js, es, di)
     val nativeOnly = mkAgg(aggregate, Platform.Native, es, di)
 
-    Seq(output.PreparedAggregate(
+    Seq(PreparedAggregate(
       aggregate.name,
       Seq(".agg", (aggregate.pathPrefix :+ aggregate.name.value).mkString("-")),
       fullAgg,
@@ -105,11 +115,11 @@ class Renderer(
     )) ++ jvmOnly ++ jsOnly ++ nativeOnly
   }
 
-  private def mkAgg(a: Aggregate, platform: BasePlatform, es: Boolean, di: Boolean): Seq[PreparedAggregate] = {
+  private def mkAgg(agg: Aggregate, platform: BasePlatform, sharedSettings: Boolean, disableSuperAgg: Boolean): Seq[PreparedAggregate] = {
     if (!isPlatformEnabled(platform)) {
       Seq.empty
     } else {
-      val jvmAgg = a.filteredArtifacts.flatMap {
+      val jvmAgg = agg.filteredArtifacts.flatMap {
         a =>
           if (a.isJvmOnly) {
             Seq(renderName(a.name))
@@ -118,17 +128,17 @@ class Renderer(
           }
       }
       if (jvmAgg.nonEmpty) {
-        val artname = Seq(a.name.value, platformName(platform))
+        val artname = Seq(agg.name.value, platformName(platform))
         val id = ArtifactId(artname.mkString("-"))
-        Seq(output.PreparedAggregate(
+        Seq(PreparedAggregate(
           id,
-          Seq(".agg", (a.pathPrefix ++ artname).mkString("-")),
+          Seq(".agg", (agg.pathPrefix ++ artname).mkString("-")),
           jvmAgg,
           platform,
           project.globalPlugins,
-          enableSharedSettings = es,
-          dontIncludeInSuperAgg = di,
-          settings = a.settings,
+          enableSharedSettings = sharedSettings,
+          dontIncludeInSuperAgg = disableSuperAgg,
+          settings = agg.settings,
         ))
       } else {
         Seq.empty
@@ -138,9 +148,6 @@ class Renderer(
 
   protected def renderAggregateProjects(aggregates: Seq[PreparedAggregate]): Seq[String] = {
     val settings = Seq(
-      //      "publish" := "{}".raw,
-      //      "publishLocal" := "{}".raw,
-      //      "skip in publish" := true,
       "skip" in SettingScope.Raw("publish") := true,
     )
 
@@ -184,7 +191,7 @@ class Renderer(
             val prefix = platformName(p.platform)
             val settings = Seq(
               "scalaVersion" := "crossScalaVersions.value.head".raw,
-              "crossScalaVersions" := p.language.map(_.value)
+              "crossScalaVersions" := p.language.map(_.value),
             ) ++ p.settings ++ a.settings
             Seq(renderSettings(settings, p.platform, Some(prefix)))
         }
@@ -202,7 +209,7 @@ class Renderer(
             Seq(s"""lazy val ${a.nameOn(p.platform)} = ${renderName(a.name)}.$pname"""),
             formatDeps(a, p.platform).map(_.shift(2)),
             formatLibDeps(a, p.platform),
-            plugins
+            plugins,
           )
             .flatten
             .mkString("\n")
@@ -251,7 +258,7 @@ class Renderer(
       formatDeps(a, Platform.All),
       formatLibDeps(a, Platform.All),
       platforms,
-      platformProjects
+      platformProjects,
     ).flatten
 
     out.mkString("\n")
@@ -308,7 +315,7 @@ class Renderer(
 
     val out = enabled ++ disabled
     if (dot) {
-      out.map(s => '.' + s).map(_.shift(2))
+      out.map(s => s".$s").map(_.shift(2))
     } else {
       out
     }
@@ -398,7 +405,7 @@ class Renderer(
           }
           .map(_.shift(2))
           .mkString(
-            "{ (isSnapshot.value, scalaVersion.value) match {\n", "\n", "\n} }"
+            "{ (isSnapshot.value, scalaVersion.value) match {\n", "\n", "\n} }",
           )
 
         if (s.defs.exists(_._2.isInstanceOf[Const.CRaw])) {
@@ -458,80 +465,79 @@ class Renderer(
     }
   }
 
-  protected def formatLibDeps(a: Artifact, targetPlatform: Platform): Seq[String] = {
-    val deps = project.globalLibs ++ a.libs
+  protected def formatLibDeps(agg: Artifact, targetPlatform: Platform): Seq[String] = {
+    val deps = project.globalLibs ++ agg.libs
 
-    val sharedArtDeps = deps.filter(d => (a.isJvmOnly && targetPlatform == Platform.All) || d.scope.platform == targetPlatform)
+    val sharedArtDeps = deps.filter(d => (agg.isJvmOnly && targetPlatform == Platform.All) || d.scope.platform == targetPlatform)
 
     val artDeps = if (sharedArtDeps.nonEmpty) {
-      val deps = sharedArtDeps
-        .map {
-          d =>
-            val sep = d.dependency.kind match {
-              case LibraryType.AutoJvm =>
-                "%%"
-              case LibraryType.Invariant =>
-                "%"
-              case LibraryType.Auto =>
-                targetPlatform match {
-                  case Platform.Jvm =>
-                    "%%"
-                  case Platform.Js =>
-                    "%%%"
-                  case Platform.Native =>
-                    "%%%"
-                  case Platform.All if a.isJvmOnly =>
-                    "%%"
-                  case Platform.All =>
-                    "%%%"
-                }
-            }
+      val deps = sharedArtDeps.map {
+        lib =>
+          val sep = lib.dependency.kind match {
+            case LibraryType.AutoJvm =>
+              "%%"
+            case LibraryType.Invariant =>
+              "%"
+            case LibraryType.Auto =>
+              targetPlatform match {
+                case Platform.Jvm =>
+                  "%%"
+                case Platform.Js =>
+                  "%%%"
+                case Platform.Native =>
+                  "%%%"
+                case Platform.All if agg.isJvmOnly =>
+                  "%%"
+                case Platform.All =>
+                  "%%%"
+              }
+          }
 
-            val suffix = d.scope.scope match {
-              case Scope.Runtime =>
-                Seq("%", "Runtime")
-              case Scope.Optional =>
-                Seq("%", "Optional")
-              case Scope.Provided =>
-                Seq("%", "Provided")
-              case Scope.Compile =>
-                Seq.empty
-              case Scope.Test =>
-                Seq("%", "Test")
-            }
+          val suffix = lib.scope.scope match {
+            case Scope.Runtime =>
+              Seq("%", "Runtime")
+            case Scope.Optional =>
+              Seq("%", "Optional")
+            case Scope.Provided =>
+              Seq("%", "Provided")
+            case Scope.Compile =>
+              Seq.empty
+            case Scope.Test =>
+              Seq("%", "Test")
+          }
 
-            val more = d.dependency.more match {
-              case Some(value) =>
-                value match {
-                  case LibSetting.Exclusions(exclusions) =>
-                    exclusions.map(e => s"exclude(${stringLit(e.group)}, ${stringLit(e.artifact)})")
-                  case LibSetting.Raw(value) =>
-                    Seq(value)
-                }
-              case None =>
-                Seq.empty
-            }
+          val more = lib.dependency.more match {
+            case Some(value) =>
+              value match {
+                case LibSetting.Exclusions(exclusions) =>
+                  exclusions.map(e => s"exclude(${stringLit(e.group)}, ${stringLit(e.artifact)})")
+                case LibSetting.Raw(value) =>
+                  Seq(value)
+              }
+            case None =>
+              Seq.empty
+          }
 
-            val out = Seq(
-              Seq(
-                stringLit(d.dependency.group),
-                sep,
-                stringLit(d.dependency.artifact),
-                "%",
-                renderVersion(d.dependency.version)
-              ),
-              suffix,
-              more,
-            )
-              .flatten
-              .mkString(" ")
+          val out = Seq(
+            Seq(
+              stringLit(lib.dependency.group),
+              sep,
+              stringLit(lib.dependency.artifact),
+              "%",
+              renderVersion(lib.dependency.version),
+            ),
+            suffix,
+            more,
+          )
+            .flatten
+            .mkString(" ")
 
-            if (d.compilerPlugin) {
-              s"compilerPlugin($out)".raw
-            } else {
-              out.raw
-            }
-        }
+          if (lib.compilerPlugin) {
+            s"compilerPlugin($out)".raw
+          } else {
+            out.raw
+          }
+      }
       val settings = Seq("libraryDependencies" ++= deps)
 
       Seq(renderSettings(settings, targetPlatform))
@@ -597,7 +603,7 @@ class Renderer(
             s"$name % ${stringLit(scope)}"
         }
         .map(_.shift(2))
-        .mkString(s".dependsOn(\n", ",\n", "\n)").shift(2)
+        .mkString(s".dependsOn(\n", ",\n", "\n)").shift(2),
       )
     } else {
       Seq.empty
