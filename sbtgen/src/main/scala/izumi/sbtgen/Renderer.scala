@@ -33,7 +33,12 @@ class Renderer(
                               )
 
   def render(): Seq[String] = {
-    val artifacts = aggregates.flatMap(_.filteredArtifacts).map(renderArtifact)
+    val artifacts =
+      for {
+        agg <- aggregates
+        artifact <- agg.filteredArtifacts
+        rendered = renderArtifact(artifact, agg.sharedDeps)
+      } yield rendered
 
     val filteredAggs = aggregates.flatMap(renderAgg).filterNot(_.aggregatedNames.isEmpty)
 
@@ -171,7 +176,7 @@ class Renderer(
     aggDefs
   }
 
-  protected def renderArtifact(a: Artifact): String = {
+  protected def renderArtifact(a: Artifact, sharedDeps: Seq[ScopedDependency] = Seq.empty): String = {
     val path = (a.pathPrefix :+ a.name.value).mkString("/")
 
     val header = if (!a.isJvmOnly) {
@@ -207,7 +212,7 @@ class Renderer(
 
           Seq(
             Seq(s"""lazy val ${a.nameOn(p.platform)} = ${renderName(a.name)}.$pname"""),
-            formatDeps(a, p.platform).map(_.shift(2)),
+            formatDeps(a, p.platform, sharedDeps).map(_.shift(2)),
             formatLibDeps(a, p.platform),
             plugins,
           )
@@ -255,7 +260,7 @@ class Renderer(
       Seq(header),
       plugins,
       Seq(renderedSettings),
-      formatDeps(a, Platform.All),
+      formatDeps(a, Platform.All, sharedDeps),
       formatLibDeps(a, Platform.All),
       platforms,
       platformProjects,
@@ -558,8 +563,8 @@ class Renderer(
     }
   }
 
-  protected def formatDeps(a: Artifact, targetPlatform: Platform): Seq[String] = {
-    val deps = a.depends
+  protected def formatDeps(a: Artifact, targetPlatform: Platform, sharedDeps: Seq[ScopedDependency] = Seq.empty): Seq[String] = {
+    val deps = a.depends ++ sharedDeps
     val predicate = targetPlatform match {
       case platform: Platform.BasePlatform =>
         (d: ScopedDependency) => d.scope.platform == platform

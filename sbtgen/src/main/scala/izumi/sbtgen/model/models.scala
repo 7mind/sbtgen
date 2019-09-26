@@ -136,6 +136,7 @@ case class Artifact(
 case class Aggregate(
                       name: ArtifactId,
                       artifacts: Seq[Artifact],
+                      sharedDeps: Seq[ScopedDependency] = Seq.empty,
                       pathPrefix: Seq[String] = Seq.empty,
                       groups: Set[Group] = Set.empty,
                       defaultPlatforms: Seq[PlatformEnv] = Seq.empty,
