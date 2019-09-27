@@ -136,13 +136,16 @@ case class Artifact(
 case class Aggregate(
                       name: ArtifactId,
                       artifacts: Seq[Artifact],
-                      sharedDeps: Seq[ScopedDependency] = Seq.empty,
                       pathPrefix: Seq[String] = Seq.empty,
                       groups: Set[Group] = Set.empty,
                       defaultPlatforms: Seq[PlatformEnv] = Seq.empty,
                       settings: Seq[SettingDef] = Seq.empty,
                       enableSharedSettings: Boolean = true,
                       dontIncludeInSuperAgg: Boolean = false,
+                      sharedDeps: Seq[ScopedDependency] = Seq.empty,
+                      sharedLibs: Seq[ScopedLibrary] = Seq.empty,
+                      sharedPlugins: Plugins = Plugins(Seq.empty, Seq.empty),
+                      sharedSettings: Seq[SettingDef] = Seq.empty
                     ) {
   def merge: Aggregate = {
     val newArtifacts = artifacts.map {
@@ -157,7 +160,14 @@ case class Aggregate(
         } else {
           a.pathPrefix
         }
-        a.copy(platforms = newPlatforms, pathPrefix = newPrefix)
+        a.copy(
+          platforms = newPlatforms,
+          pathPrefix = newPrefix,
+          depends = a.depends ++ this.sharedDeps,
+          libs = a.libs ++ this.sharedLibs,
+          plugins = Plugins(a.plugins.enabled ++ this.sharedPlugins.enabled, a.plugins.disabled ++ this.sharedPlugins.disabled),
+          settings = a.settings ++ this.sharedSettings
+        )
     }
     this.copy(artifacts = newArtifacts)
   }
