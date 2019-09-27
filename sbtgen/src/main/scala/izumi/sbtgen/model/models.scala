@@ -1,5 +1,7 @@
 package izumi.sbtgen.model
 
+import scala.language.implicitConversions
+
 sealed trait Version
 object Version {
 
@@ -116,8 +118,16 @@ object Library {
 case class FullDependencyScope(scope: Scope, platform: Platform)
 
 case class ScopedLibrary(dependency: Library, scope: FullDependencyScope, compilerPlugin: Boolean = false)
+object ScopedLibrary {
+  implicit def fromLibrary(library: Library): ScopedLibrary = library in Scope.Compile.all
+  implicit def fromLibrarySeq(libraries: Seq[Library]): Seq[ScopedLibrary] = libraries.map(fromLibrary)
+}
 
 case class ScopedDependency(name: ArtifactId, scope: FullDependencyScope, mergeTestScopes: Boolean = false)
+object ScopedDependency {
+  implicit def fromDep(dep: ArtifactId): ScopedDependency = dep in Scope.Compile.all
+  implicit def fromDepSeq(deps: Seq[ArtifactId]): Seq[ScopedDependency] = deps.map(fromDep)
+}
 
 case class Group(name: String)
 
