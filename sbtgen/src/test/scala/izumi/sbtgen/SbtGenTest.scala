@@ -6,17 +6,17 @@ import org.scalatest.WordSpec
 
 class SbtGenTest extends WordSpec {
   "sbtgen" should {
-    "produce the same output in JVM" in {
+    "produce the same output in JVM-only" in {
       val settings = GlobalSettings(
         groupId = "io.7mind"
       )
 
-      val dir = "test-out-jvm/"
+      val dir = "target/test-out-jvm/"
       val out = Seq("-d", "-o", dir)
       Entrypoint.main(Izumi.izumi, settings, out)
 
       import scala.sys.process._
-      assert("diff -r test-out/ test/jvm/".!!.isEmpty)
+      assert(s"diff -r $dir/ test/jvm/".!!.isEmpty)
     }
 
     "produce the same output in JS" in {
@@ -24,12 +24,12 @@ class SbtGenTest extends WordSpec {
         groupId = "io.7mind"
       )
 
-      val dir = "test-out-js/"
+      val dir = "target/test-out-js/"
       val out = Seq("--js", "-d", "-o", dir)
       Entrypoint.main(Izumi.izumi, settings, out)
 
       import scala.sys.process._
-      assert("diff -r test-out-js/ test/js/".!!.isEmpty)
+      assert(s"diff -r $dir/ test/js/".!!.isEmpty)
     }
 
     "extract build meta" in {
