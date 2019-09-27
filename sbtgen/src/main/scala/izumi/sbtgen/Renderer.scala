@@ -508,16 +508,16 @@ class Renderer(
               Seq("%", stringLit(s))
           }
 
-          val more = lib.dependency.more match {
-            case Some(value) =>
+          val more = lib.dependency.more.flatMap {
+            value =>
               value match {
                 case LibSetting.Exclusions(exclusions) =>
                   exclusions.map(e => s"exclude(${stringLit(e.group)}, ${stringLit(e.artifact)})")
+                case LibSetting.Classifier(value) =>
+                  Seq(s"classifier ${stringLit(value)}")
                 case LibSetting.Raw(value) =>
                   Seq(value)
               }
-            case None =>
-              Seq.empty
           }
 
           val out = Seq(
