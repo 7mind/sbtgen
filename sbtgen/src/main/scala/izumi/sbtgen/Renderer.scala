@@ -504,6 +504,8 @@ class Renderer(
               Seq.empty
             case Scope.Test =>
               Seq("%", "Test")
+            case Scope.Raw(s) =>
+              Seq("%", stringLit(s))
           }
 
           val more = lib.dependency.more match {

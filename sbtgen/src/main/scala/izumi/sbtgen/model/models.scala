@@ -21,17 +21,12 @@ sealed trait Scope {
 }
 
 object Scope {
-
   case object Runtime extends Scope
-
   case object Optional extends Scope
-
   case object Provided extends Scope
-
   case object Compile extends Scope
-
   case object Test extends Scope
-
+  final case class Raw(s: String) extends Scope
 }
 
 case class ScalaVersion(value: String)
