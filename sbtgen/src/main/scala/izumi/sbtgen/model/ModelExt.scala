@@ -10,6 +10,7 @@ trait ModelExt {
 
   trait WithSettingsDsl extends Any {
     protected def s: String
+
     protected def scope: FullSettingScope
 
     def :=(const: Const): UnscopedSettingDef = {
@@ -58,9 +59,10 @@ trait ModelExt {
     override protected val scope: FullSettingScope = FullSettingScope(SettingScope.Project, Platform.All)
 
     def in(scope: SettingScope): ScopedSettingBuilder = new ScopedSettingBuilder(s, FullSettingScope(scope, Platform.All))
+
     def in(scope: SettingScope, platform: Platform): ScopedSettingBuilder = new ScopedSettingBuilder(s, FullSettingScope(scope, platform))
 
-    def raw: Const = Const.CRaw(s)
+    def raw: Const.CRaw = Const.CRaw(s)
   }
 
   implicit class ArtifactIdExt(id: ArtifactId) {

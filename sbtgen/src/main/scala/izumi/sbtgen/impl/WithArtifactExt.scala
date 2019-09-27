@@ -1,7 +1,7 @@
 package izumi.sbtgen.impl
 
 import izumi.sbtgen.model.Platform.BasePlatform
-import izumi.sbtgen.model.{Aggregate, Artifact, GenConfig, Platform}
+import izumi.sbtgen.model.{Aggregate, Artifact, GenConfig, Platform, PlatformEnv}
 
 trait WithArtifactExt {
   this: WithProjectIndex with WithBasicRenderers =>
@@ -30,7 +30,11 @@ trait WithArtifactExt {
     }
 
     def nameOn(platform: Platform): String = {
-      val n = platform match {
+      renderName(nameOn0(platform))
+    }
+
+    def nameOn0(platform: Platform): String = {
+      platform match {
         case Platform.All =>
           a.name.value
         case x: BasePlatform if isJvmOnly =>
@@ -46,11 +50,11 @@ trait WithArtifactExt {
             throw new RuntimeException(s"Project do not support platform `$platform`: $a")
           }
 
-
       }
-      renderName(n)
     }
   }
+
+  protected def platformEnabled(penv: PlatformEnv): Boolean = platformEnabled(penv.platform)
 
   protected def platformEnabled(p: Platform.BasePlatform): Boolean = {
     p match {

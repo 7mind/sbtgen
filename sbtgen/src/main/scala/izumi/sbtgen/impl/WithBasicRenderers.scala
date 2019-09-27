@@ -9,7 +9,7 @@ trait WithBasicRenderers {
 
   def stringLit(s: String): String = {
     if (s.contains("\"")) {
-      val q = "\""*3
+      val q = "\"" * 3
       q + s + q
     } else {
       '"'.toString + s + '"'

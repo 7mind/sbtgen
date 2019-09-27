@@ -6,19 +6,30 @@ import org.scalatest.WordSpec
 
 class SbtGenTest extends WordSpec {
   "sbtgen" should {
-    "produce some output" in {
+    "produce the same output in JVM" in {
       val settings = GlobalSettings(
         groupId = "io.7mind"
       )
 
-      var out: Seq[String] = Seq()
-      out = Seq("-d")
-//      val out = Seq("-d", "-o", "../izumi-r2.wip")
+      val dir = "test-out-jvm/"
+      val out = Seq("-d", "-o", dir)
       Entrypoint.main(Izumi.izumi, settings, out)
-//      Entrypoint.main(Izumi.izumi, settings, Seq("-u", "distage") ++ out)
-//      Entrypoint.main(Izumi.izumi, settings, Seq("--js") ++ out)
-//      Entrypoint.main(Izumi.izumi, settings, Seq("--native") ++ out)
-//      Entrypoint.main(Izumi.izumi, settings, Seq("--js", "--native") ++ out)
+
+      import scala.sys.process._
+      assert("diff -r test-out/ test/jvm/".!!.isEmpty)
+    }
+
+    "produce the same output in JS" in {
+      val settings = GlobalSettings(
+        groupId = "io.7mind"
+      )
+
+      val dir = "test-out-js/"
+      val out = Seq("--js", "-d", "-o", dir)
+      Entrypoint.main(Izumi.izumi, settings, out)
+
+      import scala.sys.process._
+      assert("diff -r test-out-js/ test/js/".!!.isEmpty)
     }
 
     "extract build meta" in {
