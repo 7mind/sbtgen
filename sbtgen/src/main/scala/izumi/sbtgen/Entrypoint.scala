@@ -53,6 +53,7 @@ object Entrypoint {
         .action((x, c) => c.copy(output = x))
         .text("output directory")
       opt[String]('u', "use")
+        .unbounded()
         .action((x, c) => c.copy(groups = c.groups + Group(x)))
         .text("use only groups specified")
     }
