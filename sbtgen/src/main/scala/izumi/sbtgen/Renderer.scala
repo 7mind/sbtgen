@@ -737,34 +737,33 @@ class Renderer(
             "%%%"
         }
     }
-  }
 
-          val suffix = lib.scope.scope match {
-            case Scope.Runtime =>
-              Seq("%", "Runtime")
-            case Scope.Optional =>
-              Seq("%", "Optional")
-            case Scope.Provided =>
-              Seq("%", "Provided")
-            case Scope.Compile =>
-              Seq.empty
-            case Scope.Test =>
-              Seq("%", "Test")
-            case Scope.Raw(s) =>
-              Seq("%", stringLit(s))
-          }
+    val suffix = lib.scope.scope match {
+      case Scope.Runtime =>
+        Seq("%", "Runtime")
+      case Scope.Optional =>
+        Seq("%", "Optional")
+      case Scope.Provided =>
+        Seq("%", "Provided")
+      case Scope.Compile =>
+        Seq.empty
+      case Scope.Test =>
+        Seq("%", "Test")
+      case Scope.Raw(s) =>
+        Seq("%", stringLit(s))
+    }
 
-          val exclusionsOrRaw = lib.dependency.more.flatMap {
-            value =>
-              value match {
-                case LibSetting.Exclusions(exclusions) =>
-                  exclusions.map(e => s"exclude(${stringLit(e.group)}, ${stringLit(e.artifact)})")
-                case LibSetting.Classifier(value) =>
-                  Seq(s"classifier ${stringLit(value)}")
-                case LibSetting.Raw(value) =>
-                  Seq(value)
-              }
-          }
+    val exclusionsOrRaw = lib.dependency.more.flatMap {
+      value =>
+        value match {
+          case LibSetting.Exclusions(exclusions) =>
+            exclusions.map(e => s"exclude(${stringLit(e.group)}, ${stringLit(e.artifact)})")
+          case LibSetting.Classifier(value) =>
+            Seq(s"classifier ${stringLit(value)}")
+          case LibSetting.Raw(value) =>
+            Seq(value)
+        }
+    }
 
     val depStr = Seq(stringLit(lib.dependency.group), sep, stringLit(lib.dependency.artifact), "%", renderVersion(lib.dependency.version))
 
@@ -810,7 +809,9 @@ class Renderer(
       case Some(value) =>
         value
       case None =>
-        throw new RuntimeException(s"Unknown dependency: ${d.name}")
+        throw new RuntimeException(s"Unknown dependency: ${
+          d.name
+        } ")
     }
     val name = targetPlatform match {
       case Platform.All if isJvmOnly =>
@@ -833,7 +834,9 @@ class Renderer(
           "test->compile;compile->compile"
         }
     }
-    s"$name % ${stringLit(scope)}"
+    s"$name % ${
+      stringLit(scope)
+    } "
   }
 
   protected def renderConst(const: Const): String = {
@@ -855,7 +858,11 @@ class Renderer(
           .toSeq
           .map {
             case (k, v) =>
-              s"${renderConst(k)} -> ${renderConst(v)}"
+              s"${
+                renderConst(k)
+              } -> ${
+                renderConst(v)
+              } "
           }
           .map(_.shift(2))
           .mkString("Map(\n", ",\n", "\n)")

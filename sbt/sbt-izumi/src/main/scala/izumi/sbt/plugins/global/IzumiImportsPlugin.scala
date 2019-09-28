@@ -20,7 +20,7 @@ object IzumiImportsPlugin extends AutoPlugin {
 
     val IzumiExposedTestScopesPlugin = plugins.optional.IzumiExposedTestScopesPlugin
     val IzumiFetchPlugin = plugins.optional.IzumiFetchPlugin
-    val IzumiPublishingPlugin =  plugins.optional.IzumiPublishingPlugin
+    val IzumiPublishingPlugin = plugins.optional.IzumiPublishingPlugin
   }
 
 }

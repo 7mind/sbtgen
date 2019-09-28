@@ -102,9 +102,10 @@ object IzumiExposedTestScopesPlugin extends AutoPlugin {
         }.foreach {
           case (sourceFile, _) =>
             val products = analysis.relations.products(sourceFile)
-            products.foreach { p =>
-              val targetProduct = targetExposed.resolve(classDirectory.toPath.relativize(p.toPath))
-              IO.copyFile(p, targetProduct.toFile)
+            products.foreach {
+              p =>
+                val targetProduct = targetExposed.resolve(classDirectory.toPath.relativize(p.toPath))
+                IO.copyFile(p, targetProduct.toFile)
             }
         }
     }
