@@ -15,14 +15,21 @@ case class FullSettingScope(scope: SettingScope, platform: Platform)
 
 sealed trait SettingDef {
   def scope: FullSettingScope
+
+  private[sbtgen] final def withPlatform(p: Platform): SettingDef = {
+    this match {
+      case s: SettingDef.RawSettingDef => s.copy(scope = scope.copy(platform = p))
+      case s: SettingDef.UnscopedSettingDef => s.copy(scope = scope.copy(platform = p))
+      case s: SettingDef.ScopedSettingDef => s.copy(scope = scope.copy(platform = p))
+    }
+  }
 }
 object SettingDef {
+  case class RawSettingDef(value: String, scope: FullSettingScope = FullSettingScope(SettingScope.Compile, Platform.All)) extends SettingDef
   sealed trait KVSettingDef extends SettingDef {
     def name: String
-
     def op: SettingOp
   }
-  case class RawSettingDef(value: String, scope: FullSettingScope = FullSettingScope(SettingScope.Compile, Platform.All)) extends SettingDef
   case class UnscopedSettingDef(name: String, op: SettingOp, value: Const, scope: FullSettingScope) extends KVSettingDef
   case class ScopedSettingDef(name: String, op: SettingOp, defs: Seq[(SettingKey, Const)], scope: FullSettingScope) extends KVSettingDef
 

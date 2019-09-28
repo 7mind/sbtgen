@@ -4,7 +4,7 @@ import izumi.sbtgen.model.Platform.BasePlatform
 import izumi.sbtgen.model.{Aggregate, Artifact, GenConfig, Platform, PlatformEnv}
 
 trait WithArtifactExt {
-  this: WithProjectIndex with WithBasicRenderers =>
+  this: WithBasicRenderers =>
 
   protected val config: GenConfig
 

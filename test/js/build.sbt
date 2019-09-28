@@ -6,6 +6,13 @@ disablePlugins(AssemblyPlugin)
 
 lazy val `fundamentals-collections` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("fundamentals/fundamentals-collections"))
   .settings(
+    libraryDependencies ++= Seq(
+      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
+      "org.scalatest" %%% "scalatest" % "3.0.8" % Test
+    )
+  )
+  .settings(
     organization := "io.7mind",
     testOptions in Test += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
@@ -98,13 +105,6 @@ lazy val `fundamentals-collections` = crossProject(JVMPlatform, JSPlatform).cros
       )
       case (_, _) => Seq.empty
     } }
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.0.8" % Test
-    )
   )
   .jvmSettings(
     scalaVersion := crossScalaVersions.value.head,
@@ -128,6 +128,16 @@ lazy val `fundamentals-collectionsJS` = `fundamentals-collections`.js
   .disablePlugins(AssemblyPlugin)
 
 lazy val `fundamentals-platform` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("fundamentals/fundamentals-platform"))
+  .dependsOn(
+    `fundamentals-collections` % "test->compile;compile->compile"
+  )
+  .settings(
+    libraryDependencies ++= Seq(
+      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
+      "org.scalatest" %%% "scalatest" % "3.0.8" % Test
+    )
+  )
   .settings(
     organization := "io.7mind",
     testOptions in Test += Tests.Argument("-oDF"),
@@ -221,16 +231,6 @@ lazy val `fundamentals-platform` = crossProject(JVMPlatform, JSPlatform).crossTy
       )
       case (_, _) => Seq.empty
     } }
-  )
-  .dependsOn(
-    `fundamentals-collections` % "test->compile;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.0.8" % Test
-    )
   )
   .jvmSettings(
     scalaVersion := crossScalaVersions.value.head,
@@ -246,10 +246,7 @@ lazy val `fundamentals-platform` = crossProject(JVMPlatform, JSPlatform).crossTy
       "2.13.0"
     ),
     coverageEnabled := false,
-    scalaJSModuleKind := ModuleKind.CommonJSModule,
-    npmDependencies in Compile ++= Seq(
-      (  "hash.js",  "1.1.7")
-    )
+    scalaJSModuleKind := ModuleKind.CommonJSModule
   )
 lazy val `fundamentals-platformJVM` = `fundamentals-platform`.jvm
   .disablePlugins(AssemblyPlugin)
@@ -258,6 +255,13 @@ lazy val `fundamentals-platformJS` = `fundamentals-platform`.js
   .disablePlugins(AssemblyPlugin)
 
 lazy val `fundamentals-functional` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("fundamentals/fundamentals-functional"))
+  .settings(
+    libraryDependencies ++= Seq(
+      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
+      "org.scalatest" %%% "scalatest" % "3.0.8" % Test
+    )
+  )
   .settings(
     organization := "io.7mind",
     testOptions in Test += Tests.Argument("-oDF"),
@@ -351,13 +355,6 @@ lazy val `fundamentals-functional` = crossProject(JVMPlatform, JSPlatform).cross
       )
       case (_, _) => Seq.empty
     } }
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.0.8" % Test
-    )
   )
   .jvmSettings(
     scalaVersion := crossScalaVersions.value.head,
@@ -381,6 +378,19 @@ lazy val `fundamentals-functionalJS` = `fundamentals-functional`.js
   .disablePlugins(AssemblyPlugin)
 
 lazy val `fundamentals-bio` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("fundamentals/fundamentals-bio"))
+  .dependsOn(
+    `fundamentals-functional` % "test->compile;compile->compile"
+  )
+  .settings(
+    libraryDependencies ++= Seq(
+      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
+      "org.scalatest" %%% "scalatest" % "3.0.8" % Test,
+      "org.typelevel" %%% "cats-core" % "2.0.0-RC1" % Optional,
+      "org.typelevel" %%% "cats-effect" % "2.0.0-RC1" % Optional,
+      "dev.zio" %%% "zio" % "1.0.0-RC11-1" % Optional
+    )
+  )
   .settings(
     organization := "io.7mind",
     testOptions in Test += Tests.Argument("-oDF"),
@@ -474,19 +484,6 @@ lazy val `fundamentals-bio` = crossProject(JVMPlatform, JSPlatform).crossType(Cr
       )
       case (_, _) => Seq.empty
     } }
-  )
-  .dependsOn(
-    `fundamentals-functional` % "test->compile;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.0.8" % Test,
-      "org.typelevel" %%% "cats-core" % "2.0.0-RC1" % Optional,
-      "org.typelevel" %%% "cats-effect" % "2.0.0-RC1" % Optional,
-      "dev.zio" %%% "zio" % "1.0.0-RC11-1" % Optional
-    )
   )
   .jvmSettings(
     scalaVersion := crossScalaVersions.value.head,
@@ -510,109 +507,6 @@ lazy val `fundamentals-bioJS` = `fundamentals-bio`.js
   .disablePlugins(AssemblyPlugin)
 
 lazy val `fundamentals-typesafe-config` = project.in(file("fundamentals/fundamentals-typesafe-config"))
-  .disablePlugins(AssemblyPlugin)
-  .settings(
-    organization := "io.7mind",
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    publishArtifact in (Test, packageBin) := true,
-    publishArtifact in (Test, packageDoc) := false,
-    publishArtifact in (Test, packageSrc) := true,
-    testOptions in Test += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Ypartial-unification",
-        "-Yno-adapted-args",
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard"
-      )
-      case (_, "2.12.8") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Ypartial-unification",
-        "-Yno-adapted-args",
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard"
-      )
-      case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
   .dependsOn(
     `fundamentals-platformJVM` % "test->compile;compile->compile",
     `fundamentals-functionalJVM` % "test->compile;compile->compile",
@@ -628,8 +522,122 @@ lazy val `fundamentals-typesafe-config` = project.in(file("fundamentals/fundamen
       "org.scala-lang" % "scala-reflect" % scalaVersion.value
     )
   )
+  .settings(
+    organization := "io.7mind",
+    testOptions in Test += Tests.Argument("-oDF"),
+    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+      case (_, "2.12.9") => Seq(
+        "-Xsource:2.13",
+        "-Ybackend-parallelism",
+        "8",
+        "-explaintypes",
+        "-Ypartial-unification",
+        "-Yno-adapted-args",
+        "-Xlint:adapted-args",
+        "-Xlint:by-name-right-associative",
+        "-Xlint:constant",
+        "-Xlint:delayedinit-select",
+        "-Xlint:doc-detached",
+        "-Xlint:inaccessible",
+        "-Xlint:infer-any",
+        "-Xlint:missing-interpolator",
+        "-Xlint:nullary-override",
+        "-Xlint:nullary-unit",
+        "-Xlint:option-implicit",
+        "-Xlint:package-object-classes",
+        "-Xlint:poly-implicit-overload",
+        "-Xlint:private-shadow",
+        "-Xlint:stars-align",
+        "-Xlint:type-parameter-shadow",
+        "-Xlint:unsound-match",
+        "-opt-warnings:_",
+        "-Ywarn-extra-implicit",
+        "-Ywarn-unused:_",
+        "-Ywarn-adapted-args",
+        "-Ywarn-dead-code",
+        "-Ywarn-inaccessible",
+        "-Ywarn-infer-any",
+        "-Ywarn-nullary-override",
+        "-Ywarn-nullary-unit",
+        "-Ywarn-numeric-widen",
+        "-Ywarn-unused-import",
+        "-Ywarn-value-discard"
+      )
+      case (_, "2.12.8") => Seq(
+        "-Xsource:2.13",
+        "-Ybackend-parallelism",
+        "8",
+        "-explaintypes",
+        "-Ypartial-unification",
+        "-Yno-adapted-args",
+        "-Xlint:adapted-args",
+        "-Xlint:by-name-right-associative",
+        "-Xlint:constant",
+        "-Xlint:delayedinit-select",
+        "-Xlint:doc-detached",
+        "-Xlint:inaccessible",
+        "-Xlint:infer-any",
+        "-Xlint:missing-interpolator",
+        "-Xlint:nullary-override",
+        "-Xlint:nullary-unit",
+        "-Xlint:option-implicit",
+        "-Xlint:package-object-classes",
+        "-Xlint:poly-implicit-overload",
+        "-Xlint:private-shadow",
+        "-Xlint:stars-align",
+        "-Xlint:type-parameter-shadow",
+        "-Xlint:unsound-match",
+        "-opt-warnings:_",
+        "-Ywarn-extra-implicit",
+        "-Ywarn-unused:_",
+        "-Ywarn-adapted-args",
+        "-Ywarn-dead-code",
+        "-Ywarn-inaccessible",
+        "-Ywarn-infer-any",
+        "-Ywarn-nullary-override",
+        "-Ywarn-nullary-unit",
+        "-Ywarn-numeric-widen",
+        "-Ywarn-unused-import",
+        "-Ywarn-value-discard"
+      )
+      case (_, "2.13.0") => Seq(
+        "-Xsource:2.13",
+        "-Ybackend-parallelism",
+        "8",
+        "-explaintypes",
+        "-Xlint:_",
+        "-Wunused:_",
+        "-Wdead-code",
+        "-Wextra-implicit",
+        "-Wnumeric-widen",
+        "-Woctal-literal",
+        "-Wvalue-discard"
+      )
+      case (_, _) => Seq.empty
+    } },
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    )
+  )
+  .disablePlugins(AssemblyPlugin)
 
 lazy val `fundamentals-reflection` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("fundamentals/fundamentals-reflection"))
+  .dependsOn(
+    `fundamentals-platform` % "test->compile;compile->compile",
+    `fundamentals-functional` % "test->compile;compile->compile",
+    `fundamentals-collections` % "test->compile;compile->compile"
+  )
+  .settings(
+    libraryDependencies ++= Seq(
+      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
+      "org.scalatest" %%% "scalatest" % "3.0.8" % Test,
+      "io.suzaku" %%% "boopickle" % "1.3.1",
+      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
+    )
+  )
   .settings(
     organization := "io.7mind",
     testOptions in Test += Tests.Argument("-oDF"),
@@ -723,20 +731,6 @@ lazy val `fundamentals-reflection` = crossProject(JVMPlatform, JSPlatform).cross
       )
       case (_, _) => Seq.empty
     } }
-  )
-  .dependsOn(
-    `fundamentals-platform` % "test->compile;compile->compile",
-    `fundamentals-functional` % "test->compile;compile->compile",
-    `fundamentals-collections` % "test->compile;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.0.8" % Test,
-      "io.suzaku" %%% "boopickle" % "1.3.1",
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
-    )
   )
   .jvmSettings(
     scalaVersion := crossScalaVersions.value.head,
@@ -760,6 +754,23 @@ lazy val `fundamentals-reflectionJS` = `fundamentals-reflection`.js
   .disablePlugins(AssemblyPlugin)
 
 lazy val `fundamentals-json-circe` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("fundamentals/fundamentals-json-circe"))
+  .dependsOn(
+    `fundamentals-platform` % "test->compile;compile->compile",
+    `fundamentals-functional` % "test->compile;compile->compile",
+    `fundamentals-collections` % "test->compile;compile->compile"
+  )
+  .settings(
+    libraryDependencies ++= Seq(
+      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
+      "org.scalatest" %%% "scalatest" % "3.0.8" % Test,
+      "io.circe" %%% "circe-core" % "0.12.0-RC4",
+      "io.circe" %%% "circe-parser" % "0.12.0-RC4",
+      "io.circe" %%% "circe-literal" % "0.12.0-RC4",
+      "io.circe" %%% "circe-generic-extras" % "0.12.0-RC4",
+      "io.circe" %%% "circe-derivation" % "0.12.0-M5"
+    )
+  )
   .settings(
     organization := "io.7mind",
     testOptions in Test += Tests.Argument("-oDF"),
@@ -853,23 +864,6 @@ lazy val `fundamentals-json-circe` = crossProject(JVMPlatform, JSPlatform).cross
       )
       case (_, _) => Seq.empty
     } }
-  )
-  .dependsOn(
-    `fundamentals-platform` % "test->compile;compile->compile",
-    `fundamentals-functional` % "test->compile;compile->compile",
-    `fundamentals-collections` % "test->compile;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.0.8" % Test,
-      "io.circe" %%% "circe-core" % "0.12.0-RC4",
-      "io.circe" %%% "circe-parser" % "0.12.0-RC4",
-      "io.circe" %%% "circe-literal" % "0.12.0-RC4",
-      "io.circe" %%% "circe-generic-extras" % "0.12.0-RC4",
-      "io.circe" %%% "circe-derivation" % "0.12.0-M5"
-    )
   )
   .jvmSettings(
     scalaVersion := crossScalaVersions.value.head,
@@ -898,109 +892,6 @@ lazy val `fundamentals-json-circeJS` = `fundamentals-json-circe`.js
   .disablePlugins(AssemblyPlugin)
 
 lazy val `distage-model` = project.in(file("distage/distage-model"))
-  .disablePlugins(AssemblyPlugin)
-  .settings(
-    organization := "io.7mind",
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    publishArtifact in (Test, packageBin) := true,
-    publishArtifact in (Test, packageDoc) := false,
-    publishArtifact in (Test, packageSrc) := true,
-    testOptions in Test += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Ypartial-unification",
-        "-Yno-adapted-args",
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard"
-      )
-      case (_, "2.12.8") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Ypartial-unification",
-        "-Yno-adapted-args",
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard"
-      )
-      case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
   .dependsOn(
     `fundamentals-platformJVM` % "test->compile;compile->compile",
     `fundamentals-functionalJVM` % "test->compile;compile->compile",
@@ -1018,19 +909,8 @@ lazy val `distage-model` = project.in(file("distage/distage-model"))
       "org.scala-lang" % "scala-reflect" % scalaVersion.value
     )
   )
-
-lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
-  .disablePlugins(AssemblyPlugin)
   .settings(
     organization := "io.7mind",
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    publishArtifact in (Test, packageBin) := true,
-    publishArtifact in (Test, packageDoc) := false,
-    publishArtifact in (Test, packageSrc) := true,
     testOptions in Test += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
@@ -1121,8 +1001,16 @@ lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
-    } }
+    } },
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    )
   )
+  .disablePlugins(AssemblyPlugin)
+
+lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
   .dependsOn(
     `fundamentals-platformJVM` % "test->compile;compile->compile",
     `fundamentals-functionalJVM` % "test->compile;compile->compile",
@@ -1137,19 +1025,8 @@ lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
       "cglib" % "cglib-nodep" % "3.3.0" exclude("xxx", "yyy")
     )
   )
-
-lazy val `distage-core` = project.in(file("distage/distage-core"))
-  .disablePlugins(AssemblyPlugin)
   .settings(
     organization := "io.7mind",
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    publishArtifact in (Test, packageBin) := true,
-    publishArtifact in (Test, packageDoc) := false,
-    publishArtifact in (Test, packageSrc) := true,
     testOptions in Test += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
@@ -1240,8 +1117,16 @@ lazy val `distage-core` = project.in(file("distage/distage-core"))
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
-    } }
+    } },
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    )
   )
+  .disablePlugins(AssemblyPlugin)
+
+lazy val `distage-core` = project.in(file("distage/distage-core"))
   .dependsOn(
     `distage-model` % "test->compile;compile->compile",
     `distage-proxy-cglib` % "test->compile;compile->compile"
@@ -1254,19 +1139,8 @@ lazy val `distage-core` = project.in(file("distage/distage-core"))
       "cglib" % "cglib-nodep" % "3.3.0" exclude("xxx", "yyy")
     )
   )
-
-lazy val `distage-config` = project.in(file("distage/distage-config"))
-  .disablePlugins(AssemblyPlugin)
   .settings(
     organization := "io.7mind",
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    publishArtifact in (Test, packageBin) := true,
-    publishArtifact in (Test, packageDoc) := false,
-    publishArtifact in (Test, packageSrc) := true,
     testOptions in Test += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
@@ -1357,8 +1231,16 @@ lazy val `distage-config` = project.in(file("distage/distage-config"))
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
-    } }
+    } },
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    )
   )
+  .disablePlugins(AssemblyPlugin)
+
+lazy val `distage-config` = project.in(file("distage/distage-config"))
   .dependsOn(
     `distage-model` % "test->compile;compile->compile",
     `fundamentals-typesafe-config` % "test->compile;compile->compile",
@@ -1372,19 +1254,8 @@ lazy val `distage-config` = project.in(file("distage/distage-config"))
       "com.typesafe" % "config" % "1.3.4"
     )
   )
-
-lazy val `distage-roles-api` = project.in(file("distage/distage-roles-api"))
-  .disablePlugins(AssemblyPlugin)
   .settings(
     organization := "io.7mind",
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    publishArtifact in (Test, packageBin) := true,
-    publishArtifact in (Test, packageDoc) := false,
-    publishArtifact in (Test, packageSrc) := true,
     testOptions in Test += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
@@ -1475,8 +1346,16 @@ lazy val `distage-roles-api` = project.in(file("distage/distage-roles-api"))
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
-    } }
+    } },
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    )
   )
+  .disablePlugins(AssemblyPlugin)
+
+lazy val `distage-roles-api` = project.in(file("distage/distage-roles-api"))
   .dependsOn(
     `distage-model` % "test->compile;compile->compile"
   )
@@ -1487,19 +1366,8 @@ lazy val `distage-roles-api` = project.in(file("distage/distage-roles-api"))
       "org.scalatest" %% "scalatest" % "3.0.8" % Test
     )
   )
-
-lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
-  .disablePlugins(AssemblyPlugin)
   .settings(
     organization := "io.7mind",
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    publishArtifact in (Test, packageBin) := true,
-    publishArtifact in (Test, packageDoc) := false,
-    publishArtifact in (Test, packageSrc) := true,
     testOptions in Test += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
@@ -1590,8 +1458,16 @@ lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
-    } }
+    } },
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    )
   )
+  .disablePlugins(AssemblyPlugin)
+
+lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
   .dependsOn(
     `distage-model` % "test->compile;compile->compile",
     `distage-core` % "test->compile,test",
@@ -1606,19 +1482,8 @@ lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
       "io.github.classgraph" % "classgraph" % "4.8.47"
     )
   )
-
-lazy val `distage-roles` = project.in(file("distage/distage-roles"))
-  .disablePlugins(AssemblyPlugin)
   .settings(
     organization := "io.7mind",
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    publishArtifact in (Test, packageBin) := true,
-    publishArtifact in (Test, packageDoc) := false,
-    publishArtifact in (Test, packageSrc) := true,
     testOptions in Test += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
@@ -1709,8 +1574,16 @@ lazy val `distage-roles` = project.in(file("distage/distage-roles"))
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
-    } }
+    } },
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    )
   )
+  .disablePlugins(AssemblyPlugin)
+
+lazy val `distage-roles` = project.in(file("distage/distage-roles"))
   .dependsOn(
     `distage-roles-api` % "test->compile;compile->compile",
     `logstage-di` % "test->compile;compile->compile",
@@ -1730,19 +1603,8 @@ lazy val `distage-roles` = project.in(file("distage/distage-roles"))
       "dev.zio" %% "zio" % "1.0.0-RC11-1" % Optional
     )
   )
-
-lazy val `distage-static` = project.in(file("distage/distage-static"))
-  .disablePlugins(AssemblyPlugin)
   .settings(
     organization := "io.7mind",
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    publishArtifact in (Test, packageBin) := true,
-    publishArtifact in (Test, packageDoc) := false,
-    publishArtifact in (Test, packageSrc) := true,
     testOptions in Test += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
@@ -1833,8 +1695,16 @@ lazy val `distage-static` = project.in(file("distage/distage-static"))
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
-    } }
+    } },
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    )
   )
+  .disablePlugins(AssemblyPlugin)
+
+lazy val `distage-static` = project.in(file("distage/distage-static"))
   .dependsOn(
     `distage-core` % "test->test;compile->compile",
     `distage-roles` % "test->compile,test"
@@ -1847,19 +1717,128 @@ lazy val `distage-static` = project.in(file("distage/distage-static"))
       "com.chuusai" %% "shapeless" % "2.3.3"
     )
   )
-
-lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
-  .disablePlugins(AssemblyPlugin)
   .settings(
     organization := "io.7mind",
+    testOptions in Test += Tests.Argument("-oDF"),
+    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+      case (_, "2.12.9") => Seq(
+        "-Xsource:2.13",
+        "-Ybackend-parallelism",
+        "8",
+        "-explaintypes",
+        "-Ypartial-unification",
+        "-Yno-adapted-args",
+        "-Xlint:adapted-args",
+        "-Xlint:by-name-right-associative",
+        "-Xlint:constant",
+        "-Xlint:delayedinit-select",
+        "-Xlint:doc-detached",
+        "-Xlint:inaccessible",
+        "-Xlint:infer-any",
+        "-Xlint:missing-interpolator",
+        "-Xlint:nullary-override",
+        "-Xlint:nullary-unit",
+        "-Xlint:option-implicit",
+        "-Xlint:package-object-classes",
+        "-Xlint:poly-implicit-overload",
+        "-Xlint:private-shadow",
+        "-Xlint:stars-align",
+        "-Xlint:type-parameter-shadow",
+        "-Xlint:unsound-match",
+        "-opt-warnings:_",
+        "-Ywarn-extra-implicit",
+        "-Ywarn-unused:_",
+        "-Ywarn-adapted-args",
+        "-Ywarn-dead-code",
+        "-Ywarn-inaccessible",
+        "-Ywarn-infer-any",
+        "-Ywarn-nullary-override",
+        "-Ywarn-nullary-unit",
+        "-Ywarn-numeric-widen",
+        "-Ywarn-unused-import",
+        "-Ywarn-value-discard"
+      )
+      case (_, "2.12.8") => Seq(
+        "-Xsource:2.13",
+        "-Ybackend-parallelism",
+        "8",
+        "-explaintypes",
+        "-Ypartial-unification",
+        "-Yno-adapted-args",
+        "-Xlint:adapted-args",
+        "-Xlint:by-name-right-associative",
+        "-Xlint:constant",
+        "-Xlint:delayedinit-select",
+        "-Xlint:doc-detached",
+        "-Xlint:inaccessible",
+        "-Xlint:infer-any",
+        "-Xlint:missing-interpolator",
+        "-Xlint:nullary-override",
+        "-Xlint:nullary-unit",
+        "-Xlint:option-implicit",
+        "-Xlint:package-object-classes",
+        "-Xlint:poly-implicit-overload",
+        "-Xlint:private-shadow",
+        "-Xlint:stars-align",
+        "-Xlint:type-parameter-shadow",
+        "-Xlint:unsound-match",
+        "-opt-warnings:_",
+        "-Ywarn-extra-implicit",
+        "-Ywarn-unused:_",
+        "-Ywarn-adapted-args",
+        "-Ywarn-dead-code",
+        "-Ywarn-inaccessible",
+        "-Ywarn-infer-any",
+        "-Ywarn-nullary-override",
+        "-Ywarn-nullary-unit",
+        "-Ywarn-numeric-widen",
+        "-Ywarn-unused-import",
+        "-Ywarn-value-discard"
+      )
+      case (_, "2.13.0") => Seq(
+        "-Xsource:2.13",
+        "-Ybackend-parallelism",
+        "8",
+        "-explaintypes",
+        "-Xlint:_",
+        "-Wunused:_",
+        "-Wdead-code",
+        "-Wextra-implicit",
+        "-Wnumeric-widen",
+        "-Woctal-literal",
+        "-Wvalue-discard"
+      )
+      case (_, _) => Seq.empty
+    } },
     scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
-    ),
-    publishArtifact in (Test, packageBin) := true,
-    publishArtifact in (Test, packageDoc) := false,
-    publishArtifact in (Test, packageSrc) := true,
+    )
+  )
+  .disablePlugins(AssemblyPlugin)
+
+lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
+  .dependsOn(
+    `distage-config` % "test->compile;compile->compile",
+    `distage-roles` % "test->compile;compile->compile",
+    `logstage-di` % "test->compile;compile->compile",
+    `distage-core` % "test->test;compile->compile",
+    `distage-plugins` % "test->test;compile->compile"
+  )
+  .settings(
+    libraryDependencies ++= Seq(
+      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+      "org.scalatest" %% "scalatest" % "3.0.8" % Test,
+      "org.scalatest" %% "scalatest" % "3.0.8",
+      "org.typelevel" %% "cats-core" % "2.0.0-RC1" % Test,
+      "org.typelevel" %% "cats-effect" % "2.0.0-RC1" % Test,
+      "dev.zio" %% "zio" % "1.0.0-RC11-1" % Test
+    )
+  )
+  .settings(
+    organization := "io.7mind",
     classLoaderLayeringStrategy in Test := ClassLoaderLayeringStrategy.Flat,
     testOptions in Test += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
@@ -1951,28 +1930,28 @@ lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
-    } }
+    } },
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    )
   )
+  .disablePlugins(AssemblyPlugin)
+
+lazy val `logstage-api` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("logstage/logstage-api"))
   .dependsOn(
-    `distage-config` % "test->compile;compile->compile",
-    `distage-roles` % "test->compile;compile->compile",
-    `logstage-di` % "test->compile;compile->compile",
-    `distage-core` % "test->test;compile->compile",
-    `distage-plugins` % "test->test;compile->compile"
+    `fundamentals-reflection` % "test->compile;compile->compile"
   )
   .settings(
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.0.8" % Test,
-      "org.scalatest" %% "scalatest" % "3.0.8",
-      "org.typelevel" %% "cats-core" % "2.0.0-RC1" % Test,
-      "org.typelevel" %% "cats-effect" % "2.0.0-RC1" % Test,
-      "dev.zio" %% "zio" % "1.0.0-RC11-1" % Test
+      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
+      "org.scalatest" %%% "scalatest" % "3.0.8" % Test,
+      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided,
+      "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC3"
     )
   )
-
-lazy val `logstage-api` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("logstage/logstage-api"))
   .settings(
     organization := "io.7mind",
     testOptions in Test += Tests.Argument("-oDF"),
@@ -2066,18 +2045,6 @@ lazy val `logstage-api` = crossProject(JVMPlatform, JSPlatform).crossType(CrossT
       )
       case (_, _) => Seq.empty
     } }
-  )
-  .dependsOn(
-    `fundamentals-reflection` % "test->compile;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.0.8" % Test,
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided,
-      "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC3"
-    )
   )
   .jvmSettings(
     scalaVersion := crossScalaVersions.value.head,
@@ -2101,6 +2068,23 @@ lazy val `logstage-apiJS` = `logstage-api`.js
   .disablePlugins(AssemblyPlugin)
 
 lazy val `logstage-core` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("logstage/logstage-core"))
+  .dependsOn(
+    `fundamentals-bio` % "test->compile;compile->compile",
+    `logstage-api` % "test->test;compile->compile"
+  )
+  .settings(
+    libraryDependencies ++= Seq(
+      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
+      "org.scalatest" %%% "scalatest" % "3.0.8" % Test,
+      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided,
+      "org.typelevel" %%% "cats-core" % "2.0.0-RC1" % Optional,
+      "dev.zio" %%% "zio" % "1.0.0-RC11-1" % Optional,
+      "org.typelevel" %%% "cats-core" % "2.0.0-RC1" % Test,
+      "org.typelevel" %%% "cats-effect" % "2.0.0-RC1" % Test,
+      "dev.zio" %%% "zio" % "1.0.0-RC11-1" % Test
+    )
+  )
   .settings(
     organization := "io.7mind",
     testOptions in Test += Tests.Argument("-oDF"),
@@ -2194,23 +2178,6 @@ lazy val `logstage-core` = crossProject(JVMPlatform, JSPlatform).crossType(Cross
       )
       case (_, _) => Seq.empty
     } }
-  )
-  .dependsOn(
-    `fundamentals-bio` % "test->compile;compile->compile",
-    `logstage-api` % "test->test;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.0.8" % Test,
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided,
-      "org.typelevel" %%% "cats-core" % "2.0.0-RC1" % Optional,
-      "dev.zio" %%% "zio" % "1.0.0-RC11-1" % Optional,
-      "org.typelevel" %%% "cats-core" % "2.0.0-RC1" % Test,
-      "org.typelevel" %%% "cats-effect" % "2.0.0-RC1" % Test,
-      "dev.zio" %%% "zio" % "1.0.0-RC11-1" % Test
-    )
   )
   .jvmSettings(
     scalaVersion := crossScalaVersions.value.head,
@@ -2234,6 +2201,17 @@ lazy val `logstage-coreJS` = `logstage-core`.js
   .disablePlugins(AssemblyPlugin)
 
 lazy val `logstage-rendering-circe` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("logstage/logstage-rendering-circe"))
+  .dependsOn(
+    `fundamentals-json-circe` % "test->compile;compile->compile",
+    `logstage-core` % "test->test;compile->compile"
+  )
+  .settings(
+    libraryDependencies ++= Seq(
+      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
+      "org.scalatest" %%% "scalatest" % "3.0.8" % Test
+    )
+  )
   .settings(
     organization := "io.7mind",
     testOptions in Test += Tests.Argument("-oDF"),
@@ -2327,17 +2305,6 @@ lazy val `logstage-rendering-circe` = crossProject(JVMPlatform, JSPlatform).cros
       )
       case (_, _) => Seq.empty
     } }
-  )
-  .dependsOn(
-    `fundamentals-json-circe` % "test->compile;compile->compile",
-    `logstage-core` % "test->test;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.0.8" % Test
-    )
   )
   .jvmSettings(
     scalaVersion := crossScalaVersions.value.head,
@@ -2361,109 +2328,6 @@ lazy val `logstage-rendering-circeJS` = `logstage-rendering-circe`.js
   .disablePlugins(AssemblyPlugin)
 
 lazy val `logstage-di` = project.in(file("logstage/logstage-di"))
-  .disablePlugins(AssemblyPlugin)
-  .settings(
-    organization := "io.7mind",
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    publishArtifact in (Test, packageBin) := true,
-    publishArtifact in (Test, packageDoc) := false,
-    publishArtifact in (Test, packageSrc) := true,
-    testOptions in Test += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Ypartial-unification",
-        "-Yno-adapted-args",
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard"
-      )
-      case (_, "2.12.8") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Ypartial-unification",
-        "-Yno-adapted-args",
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard"
-      )
-      case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
   .dependsOn(
     `logstage-config` % "test->compile;compile->compile",
     `distage-config` % "test->compile;compile->compile",
@@ -2478,19 +2342,8 @@ lazy val `logstage-di` = project.in(file("logstage/logstage-di"))
       "org.scalatest" %% "scalatest" % "3.0.8" % Test
     )
   )
-
-lazy val `logstage-config` = project.in(file("logstage/logstage-config"))
-  .disablePlugins(AssemblyPlugin)
   .settings(
     organization := "io.7mind",
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    publishArtifact in (Test, packageBin) := true,
-    publishArtifact in (Test, packageDoc) := false,
-    publishArtifact in (Test, packageSrc) := true,
     testOptions in Test += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
@@ -2581,8 +2434,16 @@ lazy val `logstage-config` = project.in(file("logstage/logstage-config"))
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
-    } }
+    } },
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    )
   )
+  .disablePlugins(AssemblyPlugin)
+
+lazy val `logstage-config` = project.in(file("logstage/logstage-config"))
   .dependsOn(
     `fundamentals-typesafe-config` % "test->compile;compile->compile",
     `logstage-coreJVM` % "test->compile;compile->compile"
@@ -2594,19 +2455,121 @@ lazy val `logstage-config` = project.in(file("logstage/logstage-config"))
       "org.scalatest" %% "scalatest" % "3.0.8" % Test
     )
   )
-
-lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-slf4j"))
-  .disablePlugins(AssemblyPlugin)
   .settings(
     organization := "io.7mind",
+    testOptions in Test += Tests.Argument("-oDF"),
+    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+      case (_, "2.12.9") => Seq(
+        "-Xsource:2.13",
+        "-Ybackend-parallelism",
+        "8",
+        "-explaintypes",
+        "-Ypartial-unification",
+        "-Yno-adapted-args",
+        "-Xlint:adapted-args",
+        "-Xlint:by-name-right-associative",
+        "-Xlint:constant",
+        "-Xlint:delayedinit-select",
+        "-Xlint:doc-detached",
+        "-Xlint:inaccessible",
+        "-Xlint:infer-any",
+        "-Xlint:missing-interpolator",
+        "-Xlint:nullary-override",
+        "-Xlint:nullary-unit",
+        "-Xlint:option-implicit",
+        "-Xlint:package-object-classes",
+        "-Xlint:poly-implicit-overload",
+        "-Xlint:private-shadow",
+        "-Xlint:stars-align",
+        "-Xlint:type-parameter-shadow",
+        "-Xlint:unsound-match",
+        "-opt-warnings:_",
+        "-Ywarn-extra-implicit",
+        "-Ywarn-unused:_",
+        "-Ywarn-adapted-args",
+        "-Ywarn-dead-code",
+        "-Ywarn-inaccessible",
+        "-Ywarn-infer-any",
+        "-Ywarn-nullary-override",
+        "-Ywarn-nullary-unit",
+        "-Ywarn-numeric-widen",
+        "-Ywarn-unused-import",
+        "-Ywarn-value-discard"
+      )
+      case (_, "2.12.8") => Seq(
+        "-Xsource:2.13",
+        "-Ybackend-parallelism",
+        "8",
+        "-explaintypes",
+        "-Ypartial-unification",
+        "-Yno-adapted-args",
+        "-Xlint:adapted-args",
+        "-Xlint:by-name-right-associative",
+        "-Xlint:constant",
+        "-Xlint:delayedinit-select",
+        "-Xlint:doc-detached",
+        "-Xlint:inaccessible",
+        "-Xlint:infer-any",
+        "-Xlint:missing-interpolator",
+        "-Xlint:nullary-override",
+        "-Xlint:nullary-unit",
+        "-Xlint:option-implicit",
+        "-Xlint:package-object-classes",
+        "-Xlint:poly-implicit-overload",
+        "-Xlint:private-shadow",
+        "-Xlint:stars-align",
+        "-Xlint:type-parameter-shadow",
+        "-Xlint:unsound-match",
+        "-opt-warnings:_",
+        "-Ywarn-extra-implicit",
+        "-Ywarn-unused:_",
+        "-Ywarn-adapted-args",
+        "-Ywarn-dead-code",
+        "-Ywarn-inaccessible",
+        "-Ywarn-infer-any",
+        "-Ywarn-nullary-override",
+        "-Ywarn-nullary-unit",
+        "-Ywarn-numeric-widen",
+        "-Ywarn-unused-import",
+        "-Ywarn-value-discard"
+      )
+      case (_, "2.13.0") => Seq(
+        "-Xsource:2.13",
+        "-Ybackend-parallelism",
+        "8",
+        "-explaintypes",
+        "-Xlint:_",
+        "-Wunused:_",
+        "-Wdead-code",
+        "-Wextra-implicit",
+        "-Wnumeric-widen",
+        "-Woctal-literal",
+        "-Wvalue-discard"
+      )
+      case (_, _) => Seq.empty
+    } },
     scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
-    ),
-    publishArtifact in (Test, packageBin) := true,
-    publishArtifact in (Test, packageDoc) := false,
-    publishArtifact in (Test, packageSrc) := true,
+    )
+  )
+  .disablePlugins(AssemblyPlugin)
+
+lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-slf4j"))
+  .dependsOn(
+    `logstage-coreJVM` % "test->test;compile->compile"
+  )
+  .settings(
+    libraryDependencies ++= Seq(
+      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+      "org.scalatest" %% "scalatest" % "3.0.8" % Test,
+      "org.slf4j" % "slf4j-api" % "1.7.28"
+    )
+  )
+  .settings(
+    organization := "io.7mind",
     compileOrder in Compile := CompileOrder.Mixed,
     compileOrder in Test := CompileOrder.Mixed,
     classLoaderLayeringStrategy in Test := ClassLoaderLayeringStrategy.Flat,
@@ -2700,124 +2663,16 @@ lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-s
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
-    } }
-  )
-  .dependsOn(
-    `logstage-coreJVM` % "test->test;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.0.8" % Test,
-      "org.slf4j" % "slf4j-api" % "1.7.28"
-    )
-  )
-
-lazy val `logstage-sink-slf4j` = project.in(file("logstage/logstage-sink-slf4j"))
-  .disablePlugins(AssemblyPlugin)
-  .settings(
-    organization := "io.7mind",
+    } },
     scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
-    ),
-    publishArtifact in (Test, packageBin) := true,
-    publishArtifact in (Test, packageDoc) := false,
-    publishArtifact in (Test, packageSrc) := true,
-    testOptions in Test += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Ypartial-unification",
-        "-Yno-adapted-args",
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard"
-      )
-      case (_, "2.12.8") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Ypartial-unification",
-        "-Yno-adapted-args",
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard"
-      )
-      case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard"
-      )
-      case (_, _) => Seq.empty
-    } }
+    )
   )
+  .disablePlugins(AssemblyPlugin)
+
+lazy val `logstage-sink-slf4j` = project.in(file("logstage/logstage-sink-slf4j"))
   .dependsOn(
     `logstage-apiJVM` % "test->compile;compile->compile",
     `logstage-coreJVM` % "test->compile,test"
@@ -2831,8 +2686,120 @@ lazy val `logstage-sink-slf4j` = project.in(file("logstage/logstage-sink-slf4j")
       "org.slf4j" % "slf4j-simple" % "1.7.28" % Test
     )
   )
+  .settings(
+    organization := "io.7mind",
+    testOptions in Test += Tests.Argument("-oDF"),
+    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+      case (_, "2.12.9") => Seq(
+        "-Xsource:2.13",
+        "-Ybackend-parallelism",
+        "8",
+        "-explaintypes",
+        "-Ypartial-unification",
+        "-Yno-adapted-args",
+        "-Xlint:adapted-args",
+        "-Xlint:by-name-right-associative",
+        "-Xlint:constant",
+        "-Xlint:delayedinit-select",
+        "-Xlint:doc-detached",
+        "-Xlint:inaccessible",
+        "-Xlint:infer-any",
+        "-Xlint:missing-interpolator",
+        "-Xlint:nullary-override",
+        "-Xlint:nullary-unit",
+        "-Xlint:option-implicit",
+        "-Xlint:package-object-classes",
+        "-Xlint:poly-implicit-overload",
+        "-Xlint:private-shadow",
+        "-Xlint:stars-align",
+        "-Xlint:type-parameter-shadow",
+        "-Xlint:unsound-match",
+        "-opt-warnings:_",
+        "-Ywarn-extra-implicit",
+        "-Ywarn-unused:_",
+        "-Ywarn-adapted-args",
+        "-Ywarn-dead-code",
+        "-Ywarn-inaccessible",
+        "-Ywarn-infer-any",
+        "-Ywarn-nullary-override",
+        "-Ywarn-nullary-unit",
+        "-Ywarn-numeric-widen",
+        "-Ywarn-unused-import",
+        "-Ywarn-value-discard"
+      )
+      case (_, "2.12.8") => Seq(
+        "-Xsource:2.13",
+        "-Ybackend-parallelism",
+        "8",
+        "-explaintypes",
+        "-Ypartial-unification",
+        "-Yno-adapted-args",
+        "-Xlint:adapted-args",
+        "-Xlint:by-name-right-associative",
+        "-Xlint:constant",
+        "-Xlint:delayedinit-select",
+        "-Xlint:doc-detached",
+        "-Xlint:inaccessible",
+        "-Xlint:infer-any",
+        "-Xlint:missing-interpolator",
+        "-Xlint:nullary-override",
+        "-Xlint:nullary-unit",
+        "-Xlint:option-implicit",
+        "-Xlint:package-object-classes",
+        "-Xlint:poly-implicit-overload",
+        "-Xlint:private-shadow",
+        "-Xlint:stars-align",
+        "-Xlint:type-parameter-shadow",
+        "-Xlint:unsound-match",
+        "-opt-warnings:_",
+        "-Ywarn-extra-implicit",
+        "-Ywarn-unused:_",
+        "-Ywarn-adapted-args",
+        "-Ywarn-dead-code",
+        "-Ywarn-inaccessible",
+        "-Ywarn-infer-any",
+        "-Ywarn-nullary-override",
+        "-Ywarn-nullary-unit",
+        "-Ywarn-numeric-widen",
+        "-Ywarn-unused-import",
+        "-Ywarn-value-discard"
+      )
+      case (_, "2.13.0") => Seq(
+        "-Xsource:2.13",
+        "-Ybackend-parallelism",
+        "8",
+        "-explaintypes",
+        "-Xlint:_",
+        "-Wunused:_",
+        "-Wdead-code",
+        "-Wextra-implicit",
+        "-Wnumeric-widen",
+        "-Woctal-literal",
+        "-Wvalue-discard"
+      )
+      case (_, _) => Seq.empty
+    } },
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    )
+  )
+  .disablePlugins(AssemblyPlugin)
 
 lazy val `idealingua-v1-model` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("idealingua-v1/idealingua-v1-model"))
+  .dependsOn(
+    `fundamentals-platform` % "test->compile;compile->compile",
+    `fundamentals-functional` % "test->compile;compile->compile",
+    `fundamentals-collections` % "test->compile;compile->compile"
+  )
+  .settings(
+    libraryDependencies ++= Seq(
+      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
+      "org.scalatest" %%% "scalatest" % "3.0.8" % Test
+    )
+  )
   .settings(
     organization := "io.7mind",
     testOptions in Test += Tests.Argument("-oDF"),
@@ -2926,18 +2893,6 @@ lazy val `idealingua-v1-model` = crossProject(JVMPlatform, JSPlatform).crossType
       )
       case (_, _) => Seq.empty
     } }
-  )
-  .dependsOn(
-    `fundamentals-platform` % "test->compile;compile->compile",
-    `fundamentals-functional` % "test->compile;compile->compile",
-    `fundamentals-collections` % "test->compile;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.0.8" % Test
-    )
   )
   .jvmSettings(
     scalaVersion := crossScalaVersions.value.head,
@@ -2961,6 +2916,21 @@ lazy val `idealingua-v1-modelJS` = `idealingua-v1-model`.js
   .disablePlugins(AssemblyPlugin)
 
 lazy val `idealingua-v1-core` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("idealingua-v1/idealingua-v1-core"))
+  .dependsOn(
+    `fundamentals-platform` % "test->compile;compile->compile",
+    `fundamentals-functional` % "test->compile;compile->compile",
+    `fundamentals-collections` % "test->compile;compile->compile",
+    `idealingua-v1-model` % "test->compile;compile->compile",
+    `fundamentals-reflection` % "test->compile;compile->compile"
+  )
+  .settings(
+    libraryDependencies ++= Seq(
+      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
+      "org.scalatest" %%% "scalatest" % "3.0.8" % Test,
+      "com.lihaoyi" %%% "fastparse" % "2.1.3"
+    )
+  )
   .settings(
     organization := "io.7mind",
     testOptions in Test += Tests.Argument("-oDF"),
@@ -3054,21 +3024,6 @@ lazy val `idealingua-v1-core` = crossProject(JVMPlatform, JSPlatform).crossType(
       )
       case (_, _) => Seq.empty
     } }
-  )
-  .dependsOn(
-    `fundamentals-platform` % "test->compile;compile->compile",
-    `fundamentals-functional` % "test->compile;compile->compile",
-    `fundamentals-collections` % "test->compile;compile->compile",
-    `idealingua-v1-model` % "test->compile;compile->compile",
-    `fundamentals-reflection` % "test->compile;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.0.8" % Test,
-      "com.lihaoyi" %%% "fastparse" % "2.1.3"
-    )
   )
   .jvmSettings(
     scalaVersion := crossScalaVersions.value.head,
@@ -3092,6 +3047,25 @@ lazy val `idealingua-v1-coreJS` = `idealingua-v1-core`.js
   .disablePlugins(AssemblyPlugin)
 
 lazy val `idealingua-v1-runtime-rpc-scala` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("idealingua-v1/idealingua-v1-runtime-rpc-scala"))
+  .dependsOn(
+    `fundamentals-platform` % "test->compile;compile->compile",
+    `fundamentals-functional` % "test->compile;compile->compile",
+    `fundamentals-collections` % "test->compile;compile->compile",
+    `fundamentals-bio` % "test->compile;compile->compile",
+    `fundamentals-json-circe` % "test->compile;compile->compile"
+  )
+  .settings(
+    libraryDependencies ++= Seq(
+      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
+      "org.scalatest" %%% "scalatest" % "3.0.8" % Test,
+      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided,
+      "org.typelevel" %%% "cats-core" % "2.0.0-RC1",
+      "org.typelevel" %%% "cats-effect" % "2.0.0-RC1",
+      "dev.zio" %%% "zio" % "1.0.0-RC11-1",
+      "dev.zio" %%% "zio-interop-cats" % "2.0.0.0-RC2"
+    )
+  )
   .settings(
     organization := "io.7mind",
     testOptions in Test += Tests.Argument("-oDF"),
@@ -3185,25 +3159,6 @@ lazy val `idealingua-v1-runtime-rpc-scala` = crossProject(JVMPlatform, JSPlatfor
       )
       case (_, _) => Seq.empty
     } }
-  )
-  .dependsOn(
-    `fundamentals-platform` % "test->compile;compile->compile",
-    `fundamentals-functional` % "test->compile;compile->compile",
-    `fundamentals-collections` % "test->compile;compile->compile",
-    `fundamentals-bio` % "test->compile;compile->compile",
-    `fundamentals-json-circe` % "test->compile;compile->compile"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.0.8" % Test,
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided,
-      "org.typelevel" %%% "cats-core" % "2.0.0-RC1",
-      "org.typelevel" %%% "cats-effect" % "2.0.0-RC1",
-      "dev.zio" %%% "zio" % "1.0.0-RC11-1",
-      "dev.zio" %%% "zio-interop-cats" % "2.0.0.0-RC2"
-    )
   )
   .jvmSettings(
     scalaVersion := crossScalaVersions.value.head,
@@ -3227,109 +3182,6 @@ lazy val `idealingua-v1-runtime-rpc-scalaJS` = `idealingua-v1-runtime-rpc-scala`
   .disablePlugins(AssemblyPlugin)
 
 lazy val `idealingua-v1-runtime-rpc-http4s` = project.in(file("idealingua-v1/idealingua-v1-runtime-rpc-http4s"))
-  .disablePlugins(AssemblyPlugin)
-  .settings(
-    organization := "io.7mind",
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    publishArtifact in (Test, packageBin) := true,
-    publishArtifact in (Test, packageDoc) := false,
-    publishArtifact in (Test, packageSrc) := true,
-    testOptions in Test += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Ypartial-unification",
-        "-Yno-adapted-args",
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard"
-      )
-      case (_, "2.12.8") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Ypartial-unification",
-        "-Yno-adapted-args",
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard"
-      )
-      case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
   .dependsOn(
     `idealingua-v1-runtime-rpc-scalaJVM` % "test->compile;compile->compile",
     `logstage-coreJVM` % "test->compile;compile->compile",
@@ -3348,8 +3200,6 @@ lazy val `idealingua-v1-runtime-rpc-http4s` = project.in(file("idealingua-v1/ide
       "org.asynchttpclient" % "async-http-client" % "2.10.1"
     )
   )
-
-lazy val `idealingua-v1-transpilers` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("idealingua-v1/idealingua-v1-transpilers"))
   .settings(
     organization := "io.7mind",
     testOptions in Test += Tests.Argument("-oDF"),
@@ -3442,8 +3292,16 @@ lazy val `idealingua-v1-transpilers` = crossProject(JVMPlatform, JSPlatform).cro
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
-    } }
+    } },
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    )
   )
+  .disablePlugins(AssemblyPlugin)
+
+lazy val `idealingua-v1-transpilers` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("idealingua-v1/idealingua-v1-transpilers"))
   .dependsOn(
     `fundamentals-platform` % "test->compile;compile->compile",
     `fundamentals-functional` % "test->compile;compile->compile",
@@ -3461,13 +3319,106 @@ lazy val `idealingua-v1-transpilers` = crossProject(JVMPlatform, JSPlatform).cro
       "org.scalameta" %%% "scalameta" % "4.2.3"
     )
   )
+  .settings(
+    organization := "io.7mind",
+    testOptions in Test += Tests.Argument("-oDF"),
+    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+      case (_, "2.12.9") => Seq(
+        "-Xsource:2.13",
+        "-Ybackend-parallelism",
+        "8",
+        "-explaintypes",
+        "-Ypartial-unification",
+        "-Yno-adapted-args",
+        "-Xlint:adapted-args",
+        "-Xlint:by-name-right-associative",
+        "-Xlint:constant",
+        "-Xlint:delayedinit-select",
+        "-Xlint:doc-detached",
+        "-Xlint:inaccessible",
+        "-Xlint:infer-any",
+        "-Xlint:missing-interpolator",
+        "-Xlint:nullary-override",
+        "-Xlint:nullary-unit",
+        "-Xlint:option-implicit",
+        "-Xlint:package-object-classes",
+        "-Xlint:poly-implicit-overload",
+        "-Xlint:private-shadow",
+        "-Xlint:stars-align",
+        "-Xlint:type-parameter-shadow",
+        "-Xlint:unsound-match",
+        "-opt-warnings:_",
+        "-Ywarn-extra-implicit",
+        "-Ywarn-unused:_",
+        "-Ywarn-adapted-args",
+        "-Ywarn-dead-code",
+        "-Ywarn-inaccessible",
+        "-Ywarn-infer-any",
+        "-Ywarn-nullary-override",
+        "-Ywarn-nullary-unit",
+        "-Ywarn-numeric-widen",
+        "-Ywarn-unused-import",
+        "-Ywarn-value-discard"
+      )
+      case (_, "2.12.8") => Seq(
+        "-Xsource:2.13",
+        "-Ybackend-parallelism",
+        "8",
+        "-explaintypes",
+        "-Ypartial-unification",
+        "-Yno-adapted-args",
+        "-Xlint:adapted-args",
+        "-Xlint:by-name-right-associative",
+        "-Xlint:constant",
+        "-Xlint:delayedinit-select",
+        "-Xlint:doc-detached",
+        "-Xlint:inaccessible",
+        "-Xlint:infer-any",
+        "-Xlint:missing-interpolator",
+        "-Xlint:nullary-override",
+        "-Xlint:nullary-unit",
+        "-Xlint:option-implicit",
+        "-Xlint:package-object-classes",
+        "-Xlint:poly-implicit-overload",
+        "-Xlint:private-shadow",
+        "-Xlint:stars-align",
+        "-Xlint:type-parameter-shadow",
+        "-Xlint:unsound-match",
+        "-opt-warnings:_",
+        "-Ywarn-extra-implicit",
+        "-Ywarn-unused:_",
+        "-Ywarn-adapted-args",
+        "-Ywarn-dead-code",
+        "-Ywarn-inaccessible",
+        "-Ywarn-infer-any",
+        "-Ywarn-nullary-override",
+        "-Ywarn-nullary-unit",
+        "-Ywarn-numeric-widen",
+        "-Ywarn-unused-import",
+        "-Ywarn-value-discard"
+      )
+      case (_, "2.13.0") => Seq(
+        "-Xsource:2.13",
+        "-Ybackend-parallelism",
+        "8",
+        "-explaintypes",
+        "-Xlint:_",
+        "-Wunused:_",
+        "-Wdead-code",
+        "-Wextra-implicit",
+        "-Wnumeric-widen",
+        "-Woctal-literal",
+        "-Wvalue-discard"
+      )
+      case (_, _) => Seq.empty
+    } }
+  )
   .jvmSettings(
     scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
-    ),
-    fork in Test := true
+    )
   )
   .jsSettings(
     scalaVersion := crossScalaVersions.value.head,
@@ -3479,120 +3430,17 @@ lazy val `idealingua-v1-transpilers` = crossProject(JVMPlatform, JSPlatform).cro
     scalaJSModuleKind := ModuleKind.CommonJSModule
   )
 lazy val `idealingua-v1-transpilersJVM` = `idealingua-v1-transpilers`.jvm
-    .dependsOn(
-      `idealingua-v1-test-defs` % "test->compile",
-      `idealingua-v1-runtime-rpc-typescript` % "test->compile",
-      `idealingua-v1-runtime-rpc-go` % "test->compile",
-      `idealingua-v1-runtime-rpc-csharp` % "test->compile"
-    )
+  .dependsOn(
+    `idealingua-v1-test-defs` % "test->compile",
+    `idealingua-v1-runtime-rpc-typescript` % "test->compile",
+    `idealingua-v1-runtime-rpc-go` % "test->compile",
+    `idealingua-v1-runtime-rpc-csharp` % "test->compile"
+  )
   .disablePlugins(AssemblyPlugin)
 lazy val `idealingua-v1-transpilersJS` = `idealingua-v1-transpilers`.js
   .disablePlugins(AssemblyPlugin)
 
 lazy val `idealingua-v1-test-defs` = project.in(file("idealingua-v1/idealingua-v1-test-defs"))
-  .disablePlugins(AssemblyPlugin)
-  .settings(
-    organization := "io.7mind",
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    publishArtifact in (Test, packageBin) := true,
-    publishArtifact in (Test, packageDoc) := false,
-    publishArtifact in (Test, packageSrc) := true,
-    testOptions in Test += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Ypartial-unification",
-        "-Yno-adapted-args",
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard"
-      )
-      case (_, "2.12.8") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Ypartial-unification",
-        "-Yno-adapted-args",
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard"
-      )
-      case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wvalue-discard"
-      )
-      case (_, _) => Seq.empty
-    } }
-  )
   .dependsOn(
     `idealingua-v1-runtime-rpc-scalaJVM` % "test->compile;compile->compile"
   )
@@ -3603,19 +3451,117 @@ lazy val `idealingua-v1-test-defs` = project.in(file("idealingua-v1/idealingua-v
       "org.scalatest" %% "scalatest" % "3.0.8" % Test
     )
   )
+  .settings(
+    organization := "io.7mind",
+    testOptions in Test += Tests.Argument("-oDF"),
+    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+      case (_, "2.12.9") => Seq(
+        "-Xsource:2.13",
+        "-Ybackend-parallelism",
+        "8",
+        "-explaintypes",
+        "-Ypartial-unification",
+        "-Yno-adapted-args",
+        "-Xlint:adapted-args",
+        "-Xlint:by-name-right-associative",
+        "-Xlint:constant",
+        "-Xlint:delayedinit-select",
+        "-Xlint:doc-detached",
+        "-Xlint:inaccessible",
+        "-Xlint:infer-any",
+        "-Xlint:missing-interpolator",
+        "-Xlint:nullary-override",
+        "-Xlint:nullary-unit",
+        "-Xlint:option-implicit",
+        "-Xlint:package-object-classes",
+        "-Xlint:poly-implicit-overload",
+        "-Xlint:private-shadow",
+        "-Xlint:stars-align",
+        "-Xlint:type-parameter-shadow",
+        "-Xlint:unsound-match",
+        "-opt-warnings:_",
+        "-Ywarn-extra-implicit",
+        "-Ywarn-unused:_",
+        "-Ywarn-adapted-args",
+        "-Ywarn-dead-code",
+        "-Ywarn-inaccessible",
+        "-Ywarn-infer-any",
+        "-Ywarn-nullary-override",
+        "-Ywarn-nullary-unit",
+        "-Ywarn-numeric-widen",
+        "-Ywarn-unused-import",
+        "-Ywarn-value-discard"
+      )
+      case (_, "2.12.8") => Seq(
+        "-Xsource:2.13",
+        "-Ybackend-parallelism",
+        "8",
+        "-explaintypes",
+        "-Ypartial-unification",
+        "-Yno-adapted-args",
+        "-Xlint:adapted-args",
+        "-Xlint:by-name-right-associative",
+        "-Xlint:constant",
+        "-Xlint:delayedinit-select",
+        "-Xlint:doc-detached",
+        "-Xlint:inaccessible",
+        "-Xlint:infer-any",
+        "-Xlint:missing-interpolator",
+        "-Xlint:nullary-override",
+        "-Xlint:nullary-unit",
+        "-Xlint:option-implicit",
+        "-Xlint:package-object-classes",
+        "-Xlint:poly-implicit-overload",
+        "-Xlint:private-shadow",
+        "-Xlint:stars-align",
+        "-Xlint:type-parameter-shadow",
+        "-Xlint:unsound-match",
+        "-opt-warnings:_",
+        "-Ywarn-extra-implicit",
+        "-Ywarn-unused:_",
+        "-Ywarn-adapted-args",
+        "-Ywarn-dead-code",
+        "-Ywarn-inaccessible",
+        "-Ywarn-infer-any",
+        "-Ywarn-nullary-override",
+        "-Ywarn-nullary-unit",
+        "-Ywarn-numeric-widen",
+        "-Ywarn-unused-import",
+        "-Ywarn-value-discard"
+      )
+      case (_, "2.13.0") => Seq(
+        "-Xsource:2.13",
+        "-Ybackend-parallelism",
+        "8",
+        "-explaintypes",
+        "-Xlint:_",
+        "-Wunused:_",
+        "-Wdead-code",
+        "-Wextra-implicit",
+        "-Wnumeric-widen",
+        "-Woctal-literal",
+        "-Wvalue-discard"
+      )
+      case (_, _) => Seq.empty
+    } },
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    )
+  )
+  .disablePlugins(AssemblyPlugin)
 
 lazy val `idealingua-v1-runtime-rpc-typescript` = project.in(file("idealingua-v1/idealingua-v1-runtime-rpc-typescript"))
-  .disablePlugins(AssemblyPlugin)
+  .settings(
+    libraryDependencies ++= Seq(
+      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+      "org.scalatest" %% "scalatest" % "3.0.8" % Test
+    )
+  )
   .settings(
     organization := "io.7mind",
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    publishArtifact in (Test, packageBin) := true,
-    publishArtifact in (Test, packageDoc) := false,
-    publishArtifact in (Test, packageSrc) := true,
     testOptions in Test += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
@@ -3706,28 +3652,25 @@ lazy val `idealingua-v1-runtime-rpc-typescript` = project.in(file("idealingua-v1
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
-    } }
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.0.8" % Test
+    } },
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
     )
   )
+  .disablePlugins(AssemblyPlugin)
 
 lazy val `idealingua-v1-runtime-rpc-go` = project.in(file("idealingua-v1/idealingua-v1-runtime-rpc-go"))
-  .disablePlugins(AssemblyPlugin)
+  .settings(
+    libraryDependencies ++= Seq(
+      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+      "org.scalatest" %% "scalatest" % "3.0.8" % Test
+    )
+  )
   .settings(
     organization := "io.7mind",
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    publishArtifact in (Test, packageBin) := true,
-    publishArtifact in (Test, packageDoc) := false,
-    publishArtifact in (Test, packageSrc) := true,
     testOptions in Test += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
@@ -3818,28 +3761,25 @@ lazy val `idealingua-v1-runtime-rpc-go` = project.in(file("idealingua-v1/idealin
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
-    } }
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.0.8" % Test
+    } },
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
     )
   )
+  .disablePlugins(AssemblyPlugin)
 
 lazy val `idealingua-v1-runtime-rpc-csharp` = project.in(file("idealingua-v1/idealingua-v1-runtime-rpc-csharp"))
-  .disablePlugins(AssemblyPlugin)
+  .settings(
+    libraryDependencies ++= Seq(
+      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
+      "org.scalatest" %% "scalatest" % "3.0.8" % Test
+    )
+  )
   .settings(
     organization := "io.7mind",
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    publishArtifact in (Test, packageBin) := true,
-    publishArtifact in (Test, packageDoc) := false,
-    publishArtifact in (Test, packageSrc) := true,
     testOptions in Test += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
@@ -3930,28 +3870,34 @@ lazy val `idealingua-v1-runtime-rpc-csharp` = project.in(file("idealingua-v1/ide
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
-    } }
+    } },
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    )
+  )
+  .disablePlugins(AssemblyPlugin)
+
+lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1-compiler"))
+  .dependsOn(
+    `idealingua-v1-transpilersJVM` % "test->compile;compile->compile",
+    `idealingua-v1-runtime-rpc-scalaJVM` % "test->compile;compile->compile",
+    `idealingua-v1-runtime-rpc-typescript` % "test->compile;compile->compile",
+    `idealingua-v1-runtime-rpc-go` % "test->compile;compile->compile",
+    `idealingua-v1-runtime-rpc-csharp` % "test->compile;compile->compile",
+    `idealingua-v1-test-defs` % "test->compile;compile->compile"
   )
   .settings(
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.0.8" % Test
+      "org.scalatest" %% "scalatest" % "3.0.8" % Test,
+      "com.typesafe" % "config" % "1.3.4"
     )
   )
-
-lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1-compiler"))
-  .enablePlugins(AssemblyPlugin)
   .settings(
     organization := "io.7mind",
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    publishArtifact in (Test, packageBin) := true,
-    publishArtifact in (Test, packageDoc) := false,
-    publishArtifact in (Test, packageSrc) := true,
     mainClass in assembly := Some("izumi.idealingua.compiler.CommandlineIDLCompiler"),
     assemblyMergeStrategy in assembly := {
           // FIXME: workaround for https://github.com/zio/interop-cats/issues/16
@@ -4055,37 +4001,58 @@ lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
-    } }
+    } },
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    )
   )
+  .enablePlugins(AssemblyPlugin)
+
+lazy val `microsite` = project.in(file("doc/microsite"))
   .dependsOn(
-    `idealingua-v1-transpilersJVM` % "test->compile;compile->compile",
-    `idealingua-v1-runtime-rpc-scalaJVM` % "test->compile;compile->compile",
-    `idealingua-v1-runtime-rpc-typescript` % "test->compile;compile->compile",
-    `idealingua-v1-runtime-rpc-go` % "test->compile;compile->compile",
-    `idealingua-v1-runtime-rpc-csharp` % "test->compile;compile->compile",
-    `idealingua-v1-test-defs` % "test->compile;compile->compile"
+    `fundamentals-collectionsJVM` % "test->compile;compile->compile",
+    `fundamentals-platformJVM` % "test->compile;compile->compile",
+    `fundamentals-functionalJVM` % "test->compile;compile->compile",
+    `fundamentals-bioJVM` % "test->compile;compile->compile",
+    `fundamentals-typesafe-config` % "test->compile;compile->compile",
+    `fundamentals-reflectionJVM` % "test->compile;compile->compile",
+    `fundamentals-json-circeJVM` % "test->compile;compile->compile",
+    `distage-model` % "test->compile;compile->compile",
+    `distage-proxy-cglib` % "test->compile;compile->compile",
+    `distage-core` % "test->compile;compile->compile",
+    `distage-config` % "test->compile;compile->compile",
+    `distage-roles-api` % "test->compile;compile->compile",
+    `distage-plugins` % "test->compile;compile->compile",
+    `distage-roles` % "test->compile;compile->compile",
+    `distage-static` % "test->compile;compile->compile",
+    `distage-testkit` % "test->compile;compile->compile",
+    `logstage-apiJVM` % "test->compile;compile->compile",
+    `logstage-coreJVM` % "test->compile;compile->compile",
+    `logstage-rendering-circeJVM` % "test->compile;compile->compile",
+    `logstage-di` % "test->compile;compile->compile",
+    `logstage-config` % "test->compile;compile->compile",
+    `logstage-adapter-slf4j` % "test->compile;compile->compile",
+    `logstage-sink-slf4j` % "test->compile;compile->compile"
   )
   .settings(
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
       "org.scalatest" %% "scalatest" % "3.0.8" % Test,
-      "com.typesafe" % "config" % "1.3.4"
+      "org.typelevel" %% "cats-core" % "2.0.0-RC1",
+      "org.typelevel" %% "cats-effect" % "2.0.0-RC1",
+      "dev.zio" %% "zio" % "1.0.0-RC11-1",
+      "dev.zio" %% "zio-interop-cats" % "2.0.0.0-RC2",
+      "org.http4s" %% "http4s-dsl" % "0.21.0-M4",
+      "org.http4s" %% "http4s-circe" % "0.21.0-M4",
+      "org.http4s" %% "http4s-blaze-server" % "0.21.0-M4",
+      "org.http4s" %% "http4s-blaze-client" % "0.21.0-M4"
     )
   )
-
-lazy val `microsite` = project.in(file("doc/microsite"))
-  .enablePlugins(ScalaUnidocPlugin, ParadoxSitePlugin, SitePlugin, GhpagesPlugin, ParadoxMaterialThemePlugin, PreprocessPlugin, MdocPlugin)
-  .disablePlugins(ScoverageSbtPlugin, AssemblyPlugin)
   .settings(
     organization := "io.7mind",
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.8"
-    ),
-    publishArtifact in (Test, packageBin) := true,
-    publishArtifact in (Test, packageDoc) := false,
-    publishArtifact in (Test, packageSrc) := true,
     crossScalaVersions := Seq(
       "2.12.8"
     ),
@@ -4228,61 +4195,25 @@ lazy val `microsite` = project.in(file("doc/microsite"))
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
-    } }
+    } },
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.8"
+    )
   )
-  .dependsOn(
-    `fundamentals-collectionsJVM` % "test->compile;compile->compile",
-    `fundamentals-platformJVM` % "test->compile;compile->compile",
-    `fundamentals-functionalJVM` % "test->compile;compile->compile",
-    `fundamentals-bioJVM` % "test->compile;compile->compile",
-    `fundamentals-typesafe-config` % "test->compile;compile->compile",
-    `fundamentals-reflectionJVM` % "test->compile;compile->compile",
-    `fundamentals-json-circeJVM` % "test->compile;compile->compile",
-    `distage-model` % "test->compile;compile->compile",
-    `distage-proxy-cglib` % "test->compile;compile->compile",
-    `distage-core` % "test->compile;compile->compile",
-    `distage-config` % "test->compile;compile->compile",
-    `distage-roles-api` % "test->compile;compile->compile",
-    `distage-plugins` % "test->compile;compile->compile",
-    `distage-roles` % "test->compile;compile->compile",
-    `distage-static` % "test->compile;compile->compile",
-    `distage-testkit` % "test->compile;compile->compile",
-    `logstage-apiJVM` % "test->compile;compile->compile",
-    `logstage-coreJVM` % "test->compile;compile->compile",
-    `logstage-rendering-circeJVM` % "test->compile;compile->compile",
-    `logstage-di` % "test->compile;compile->compile",
-    `logstage-config` % "test->compile;compile->compile",
-    `logstage-adapter-slf4j` % "test->compile;compile->compile",
-    `logstage-sink-slf4j` % "test->compile;compile->compile"
-  )
+  .enablePlugins(ScalaUnidocPlugin, ParadoxSitePlugin, SitePlugin, GhpagesPlugin, ParadoxMaterialThemePlugin, PreprocessPlugin, MdocPlugin)
+  .disablePlugins(ScoverageSbtPlugin, AssemblyPlugin)
+
+lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
   .settings(
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.0.8" % Test,
-      "org.typelevel" %% "cats-core" % "2.0.0-RC1",
-      "org.typelevel" %% "cats-effect" % "2.0.0-RC1",
-      "dev.zio" %% "zio" % "1.0.0-RC11-1",
-      "dev.zio" %% "zio-interop-cats" % "2.0.0.0-RC2",
-      "org.http4s" %% "http4s-dsl" % "0.21.0-M4",
-      "org.http4s" %% "http4s-circe" % "0.21.0-M4",
-      "org.http4s" %% "http4s-blaze-server" % "0.21.0-M4",
-      "org.http4s" %% "http4s-blaze-client" % "0.21.0-M4"
+      "org.scalatest" %% "scalatest" % "3.0.8" % Test
     )
   )
-
-lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
-  .disablePlugins(AssemblyPlugin)
   .settings(
     organization := "io.7mind",
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    publishArtifact in (Test, packageBin) := true,
-    publishArtifact in (Test, packageDoc) := false,
-    publishArtifact in (Test, packageSrc) := true,
     sbtPlugin := true,
     withBuildInfo("izumi.sbt.deps", "Izumi"),
     testOptions in Test += Tests.Argument("-oDF"),
@@ -4375,15 +4306,14 @@ lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
-    } }
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-      "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.0.8" % Test
+    } },
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
     )
   )
+  .disablePlugins(AssemblyPlugin)
 
 lazy val `fundamentals` = (project in file(".agg/fundamentals-fundamentals"))
   .settings(

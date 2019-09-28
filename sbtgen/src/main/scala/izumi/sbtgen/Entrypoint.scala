@@ -96,7 +96,7 @@ object Entrypoint {
     }
 
     val files = Map(
-      "build.sbt" -> main.mkString("\n\n"),
+      "build.sbt" -> main.mkString("", "\n\n", "\n"),
       "project/build.properties" -> s"sbt.version = ${config.settings.sbtVersion}",
     )
 

@@ -4,7 +4,6 @@ import izumi.sbtgen.model.ArtifactId
 
 trait WithBasicRenderers {
   protected def renderName(s: String): String = s"`$s`"
-
   protected def renderName(s: ArtifactId): String = renderName(s.value)
 
   def stringLit(s: String): String = {
