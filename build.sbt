@@ -29,6 +29,66 @@ releaseProcess := Seq[ReleaseStep](
   pushChanges // : ReleaseStep, also checks that an upstream branch is properly configured
 )
 
+val scalaOpts = scalacOptions ++= ((isSnapshot.value, scalaVersion.value) match {
+  case (_, ScalaVersions.scala_212) => Seq(
+    "-Xsource:2.13",
+    "-Ybackend-parallelism",
+    "8",
+    "-explaintypes",
+
+    "-Yno-adapted-args",
+    "-Ypartial-unification",
+
+    "-Xlint:adapted-args",
+    "-Xlint:by-name-right-associative",
+    "-Xlint:constant",
+    "-Xlint:delayedinit-select",
+    "-Xlint:doc-detached",
+    "-Xlint:inaccessible",
+    "-Xlint:infer-any",
+    "-Xlint:missing-interpolator",
+    "-Xlint:nullary-override",
+    "-Xlint:nullary-unit",
+    "-Xlint:option-implicit",
+    "-Xlint:package-object-classes",
+    "-Xlint:poly-implicit-overload",
+    "-Xlint:private-shadow",
+    "-Xlint:stars-align",
+    "-Xlint:type-parameter-shadow",
+    "-Xlint:unsound-match",
+
+    "-opt-warnings:_",
+
+    "-Ywarn-extra-implicit",
+    "-Ywarn-unused:_",
+    "-Ywarn-adapted-args",
+    "-Ywarn-dead-code",
+    "-Ywarn-inaccessible",
+    "-Ywarn-infer-any",
+    "-Ywarn-nullary-override",
+    "-Ywarn-nullary-unit",
+    "-Ywarn-numeric-widen",
+    "-Ywarn-unused-import",
+    "-Ywarn-value-discard",
+  )
+  case (_, ScalaVersions.scala_213) => Seq(
+    "-Xsource:2.13",
+    "-Ybackend-parallelism",
+    "8",
+    "-explaintypes",
+
+    "-Xlint:_,-missing-interpolator",
+
+    "-Wdead-code",
+    "-Wextra-implicit",
+    "-Wnumeric-widen",
+    "-Woctal-literal",
+    "-Wvalue-discard",
+    "-Wunused:_",
+  )
+  case (_, _) => Seq.empty
+})
+
 publishTo in ThisBuild := (if (!isSnapshot.value) {
   sonatypePublishToBundle.value
 } else {
@@ -41,8 +101,7 @@ lazy val sbtmeta = (project in file("sbtmeta"))
     crossScalaVersions := Seq(ScalaVersions.scala_213, ScalaVersions.scala_212),
     scalaVersion := crossScalaVersions.value.head,
     libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value % Optional,
-
-
+    scalaOpts,
   )
 
 lazy val sbtgen = (project in file("sbtgen"))
@@ -61,6 +120,7 @@ lazy val sbtgen = (project in file("sbtgen"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}",
     ),
+    scalaOpts,
   )
 
 lazy val `sbt-izumi-deps` = (project in file("sbt/sbt-izumi-deps"))
@@ -69,6 +129,7 @@ lazy val `sbt-izumi-deps` = (project in file("sbt/sbt-izumi-deps"))
     crossScalaVersions := Seq(ScalaVersions.scala_212),
     scalaVersion := crossScalaVersions.value.head,
     sbtPlugin := true,
+    scalaOpts,
   )
 
 lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
@@ -80,7 +141,7 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
     libraryDependencies ++= Seq(
       "io.get-coursier" %% "coursier" % "2.0.0-RC3-3",
     ),
-    sbtPlugin := true,
+    scalaOpts,
 
     // https://github.com/scoverage/sbt-scoverage
     addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.0"),
@@ -98,7 +159,7 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
     addSbtPlugin("com.orrsella" % "sbt-stats" % "1.0.7"),
 
     // https://github.com/xerial/sbt-sonatype
-    addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.6"),
+    addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.8"),
 
     // https://github.com/sbt/sbt-release
     addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.11"),
@@ -136,7 +197,7 @@ lazy val `sbt-tests` = (project in file("sbt/sbt-tests"))
       ).flatten,
     },
     scriptedBufferLog := false,
-
+    scalaOpts,
   )
 
 lazy val `sbtgen-root` = (project in file("."))

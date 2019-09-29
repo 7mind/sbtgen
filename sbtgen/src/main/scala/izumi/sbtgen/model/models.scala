@@ -1,16 +1,15 @@
 package izumi.sbtgen.model
 
+import izumi.sbtgen.model.Platform.BasePlatform
+
+import scala.collection.immutable.Queue
 import scala.language.implicitConversions
 
 sealed trait Version
 object Version {
-
   case class VConst(value: String) extends Version
-
   case class VExpr(value: String) extends Version
-
   case object SbtGen extends Version
-
 }
 
 sealed trait Scope {
@@ -19,42 +18,28 @@ sealed trait Scope {
   def native: FullDependencyScope = FullDependencyScope(this, Platform.Native)
   def all: FullDependencyScope = FullDependencyScope(this, Platform.All)
 }
-
 object Scope {
-
   case object Runtime extends Scope
-
   case object Optional extends Scope
-
   case object Provided extends Scope
-
   case object Compile extends Scope
-
   case object Test extends Scope
-
+  final case class Raw(s: String) extends Scope
 }
 
 case class ScalaVersion(value: String)
 
 sealed trait Platform
-
 object Platform {
-
   sealed trait BasePlatform extends Platform
-
   case object Jvm extends BasePlatform
-
   case object Js extends BasePlatform
-
   case object Native extends BasePlatform
-
   case object All extends Platform
-
-
 }
 
 case class PlatformEnv(
-                        platform: Platform.BasePlatform,
+                        platform: BasePlatform,
                         language: Seq[ScalaVersion],
                         settings: Seq[SettingDef] = Seq.empty,
                         plugins: Plugins = Plugins(Seq.empty, Seq.empty),
@@ -79,14 +64,14 @@ sealed trait LibSetting
 object LibSetting {
   case class Exclusion(group: String, artifact: String)
   case class Exclusions(exclusions: Seq[Exclusion]) extends LibSetting
+  case class Classifier(classifier: String) extends LibSetting
   case class Raw(value: String) extends LibSetting
 }
 
-
-case class Library(group: String, artifact: String, version: Version, kind: LibraryType, more: Option[LibSetting]) {
-  def more(settings: LibSetting): Library = this.copy(more = Some(settings))
+case class Library(group: String, artifact: String, version: Version, kind: LibraryType, more: Seq[LibSetting]) {
+  def classifier(s: String): Library = copy(more = more :+ LibSetting.Classifier(s))
+  def more(settings: LibSetting): Library = copy(more = more :+ settings)
 }
-
 
 object Library {
   def apply(
@@ -100,7 +85,7 @@ object Library {
       artifact,
       version,
       kind,
-      None
+      Queue.empty,
     )
   }
 
@@ -115,7 +100,7 @@ object Library {
       artifact,
       Version.VConst(version),
       kind,
-      None
+      Queue.empty,
     )
   }
 }
@@ -123,8 +108,16 @@ object Library {
 case class FullDependencyScope(scope: Scope, platform: Platform)
 
 case class ScopedLibrary(dependency: Library, scope: FullDependencyScope, compilerPlugin: Boolean = false)
+object ScopedLibrary {
+  implicit def fromLibrary(library: Library): ScopedLibrary = library in Scope.Compile.all
+  implicit def fromLibrarySeq(libraries: Seq[Library]): Seq[ScopedLibrary] = libraries.map(fromLibrary)
+}
 
 case class ScopedDependency(name: ArtifactId, scope: FullDependencyScope, mergeTestScopes: Boolean = false)
+object ScopedDependency {
+  implicit def fromDep(dep: ArtifactId): ScopedDependency = dep in Scope.Compile.all
+  implicit def fromDepSeq(deps: Seq[ArtifactId]): Seq[ScopedDependency] = deps.map(fromDep)
+}
 
 case class Group(name: String)
 
@@ -149,6 +142,10 @@ case class Aggregate(
                       settings: Seq[SettingDef] = Seq.empty,
                       enableSharedSettings: Boolean = true,
                       dontIncludeInSuperAgg: Boolean = false,
+                      sharedDeps: Seq[ScopedDependency] = Seq.empty,
+                      sharedLibs: Seq[ScopedLibrary] = Seq.empty,
+                      sharedPlugins: Plugins = Plugins(Seq.empty, Seq.empty),
+                      sharedSettings: Seq[SettingDef] = Seq.empty
                     ) {
   def merge: Aggregate = {
     val newArtifacts = artifacts.map {
@@ -163,13 +160,18 @@ case class Aggregate(
         } else {
           a.pathPrefix
         }
-        a.copy(platforms = newPlatforms, pathPrefix = newPrefix)
+        a.copy(
+          platforms = newPlatforms,
+          pathPrefix = newPrefix,
+          depends = a.depends ++ this.sharedDeps,
+          libs = a.libs ++ this.sharedLibs,
+          plugins = Plugins(a.plugins.enabled ++ this.sharedPlugins.enabled, a.plugins.disabled ++ this.sharedPlugins.disabled),
+          settings = a.settings ++ this.sharedSettings
+        )
     }
     this.copy(artifacts = newArtifacts)
   }
 }
-
-
 
 case class Import(value: String)
 

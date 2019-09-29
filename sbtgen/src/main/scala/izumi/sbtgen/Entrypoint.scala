@@ -18,9 +18,14 @@ case class Config(
                    compactify: Boolean = false,
                  )
 
-
 object Entrypoint {
-  def main(project: Project, settings: GlobalSettings, args: Seq[String]): Unit = {
+  def main(
+            project: Project,
+            settings: GlobalSettings,
+            args: Seq[String],
+            renderer: (GenConfig, Project) => Renderer = new Renderer(_, _),
+          ): Unit = {
+
     val parser1 = new OptionParser[Config]("sbtgen") {
       head("sbtgen")
       opt[Unit]("nojvm")
@@ -48,42 +53,10 @@ object Entrypoint {
         .action((x, c) => c.copy(output = x))
         .text("output directory")
       opt[String]('u', "use")
+        .unbounded()
         .action((x, c) => c.copy(groups = c.groups + Group(x)))
         .text("use only groups specified")
     }
-    //    val builder = OParser.builder[Config]
-    //    val parser1 = {
-    //      import builder._
-    //      OParser.sequence(
-    //        programName("sbtgen"),
-    //        head("sbtgen"),
-    //
-    //        opt[Unit]("nojvm")
-    //          .action((_, c) => c.copy(withJvm = false))
-    //          .text("disable jvm projects"),
-    //        opt[Unit]("js")
-    //          .action((_, c) => c.copy(withSjs = true))
-    //          .text("enable js projects"),
-    //        opt[Unit]("native")
-    //          .action((_, c) => c.copy(withSnat = true))
-    //          .text("enable native projects"),
-    //        opt[Unit]("nta")
-    //          .action((_, c) => c.copy(publishTests = false))
-    //          .text("don't publish test artifacts"),
-    //        opt[Unit]('d', "debug")
-    //          .action((_, c) => c.copy(withSnat = true))
-    //          .text("enable debug output"),
-    //        opt[Unit]('t', "isolate-tests")
-    //          .action((_, c) => c.copy(mergeTestScopes = false))
-    //          .text("enable debug output"),
-    //        opt[String]('o', "output")
-    //          .action((x, c) => c.copy(output = x))
-    //          .text("output directory"),
-    //        opt[String]('u', "use")
-    //          .action((x, c) => c.copy(groups = c.groups + Group(x)))
-    //          .text("use only groups specified"),
-    //      )
-    //    }
 
     parser1.parse(args, Config()) match {
       case Some(config) =>
@@ -101,7 +74,7 @@ object Entrypoint {
         )
 
         try {
-          run(cfg, project)
+          run(cfg, project, renderer(cfg, project))
         } catch {
           case e: Throwable =>
             e.printStackTrace()
@@ -114,8 +87,7 @@ object Entrypoint {
     }
   }
 
-  final def run(config: GenConfig, project: Project): Unit = {
-    val renderer = makeRenderer(config, project)
+  final def run(config: GenConfig, project: Project, renderer: Renderer): Unit = {
     val artifacts = renderer.render()
     val main = if (!config.jvmOnly) {
       Seq("import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}") ++ artifacts
@@ -124,8 +96,8 @@ object Entrypoint {
     }
 
     val files = Map(
-      "build.sbt" -> main.mkString("\n\n"),
-      "project/build.properties" -> s"sbt.version = ${config.settings.sbtVersion}"
+      "build.sbt" -> main.mkString("", "\n\n", "\n"),
+      "project/build.properties" -> s"sbt.version = ${config.settings.sbtVersion}",
     )
 
     val moreFiles = makeMoreBoilerplate(config, project, renderer)
@@ -142,13 +114,14 @@ object Entrypoint {
             s"""$n:
                |
                |$c
-               |""".stripMargin
+               |""".stripMargin,
           )
         }
     }
+    ,
   }
 
-  protected def makeMoreBoilerplate(config: GenConfig, project: Project, renderer: Renderer): Map[String, String] = {
+  private def makeMoreBoilerplate(config: GenConfig, project: Project, renderer: Renderer): Map[String, String] = {
     val b = new StringBuilder()
 
     if (config.js) {
@@ -187,7 +160,38 @@ object Entrypoint {
     Map("project/plugins.sbt" -> b.mkString)
   }
 
-  protected def makeRenderer(config: GenConfig, project: Project): Renderer = {
-    new Renderer(config, project)
-  }
+  // scopt-4.0
+  //    val builder = OParser.builder[Config]
+  //    val parser1 = {
+  //      import builder._
+  //      OParser.sequence(
+  //        programName("sbtgen"),
+  //        head("sbtgen"),
+  //
+  //        opt[Unit]("nojvm")
+  //          .action((_, c) => c.copy(withJvm = false))
+  //          .text("disable jvm projects"),
+  //        opt[Unit]("js")
+  //          .action((_, c) => c.copy(withSjs = true))
+  //          .text("enable js projects"),
+  //        opt[Unit]("native")
+  //          .action((_, c) => c.copy(withSnat = true))
+  //          .text("enable native projects"),
+  //        opt[Unit]("nta")
+  //          .action((_, c) => c.copy(publishTests = false))
+  //          .text("don't publish test artifacts"),
+  //        opt[Unit]('d', "debug")
+  //          .action((_, c) => c.copy(withSnat = true))
+  //          .text("enable debug output"),
+  //        opt[Unit]('t', "isolate-tests")
+  //          .action((_, c) => c.copy(mergeTestScopes = false))
+  //          .text("enable debug output"),
+  //        opt[String]('o', "output")
+  //          .action((x, c) => c.copy(output = x))
+  //          .text("output directory"),
+  //        opt[String]('u', "use")
+  //          .action((x, c) => c.copy(groups = c.groups + Group(x)))
+  //          .text("use only groups specified"),
+  //      )
+  //    }
 }

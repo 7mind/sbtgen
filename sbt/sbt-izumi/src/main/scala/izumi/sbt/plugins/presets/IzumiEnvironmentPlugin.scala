@@ -5,11 +5,13 @@ import sbt.{AutoPlugin, Plugins}
 
 trait IzumiEnvironmentBase extends AutoPlugin {
 
-  override def requires: Plugins = super.requires &&
-    plugins.IzumiBuildManifestPlugin &&
-    plugins.IzumiConvenienceTasksPlugin &&
-    plugins.IzumiPropertiesPlugin &&
-    plugins.IzumiResolverPlugin
+  override def requires: Plugins = {
+    super.requires &&
+      plugins.IzumiBuildManifestPlugin &&
+      plugins.IzumiConvenienceTasksPlugin &&
+      plugins.IzumiPropertiesPlugin &&
+      plugins.IzumiResolverPlugin
+  }
 }
 
 object IzumiEnvironmentPlugin extends IzumiEnvironmentBase

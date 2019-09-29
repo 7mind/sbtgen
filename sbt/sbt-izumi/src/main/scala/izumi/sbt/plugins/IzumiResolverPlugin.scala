@@ -4,6 +4,7 @@ import sbt.Keys._
 import sbt._
 
 object IzumiResolverPlugin extends AutoPlugin {
+
   import IzumiPropertiesPlugin.autoImport._
 
   override lazy val globalSettings = Seq(

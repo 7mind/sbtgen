@@ -45,7 +45,6 @@ object V {
   val scala_java_time = "2.0.0-RC3"
 }
 
-
 object Izumi {
 
   object Deps {
@@ -87,7 +86,6 @@ object Izumi {
 
     final val cglib_nodep = Library("cglib", "cglib-nodep", V.cglib_nodep, LibraryType.Invariant).more(LibSetting.Exclusions(Seq(Exclusion("xxx", "yyy")))) in Scope.Compile.jvm
 
-
     final val projector = Library("org.typelevel", "kind-projector", "0.10.3", LibraryType.AutoJvm)
 
     final val fast_classpath_scanner = Library("io.github.classgraph", "classgraph", V.classgraph, LibraryType.Invariant) in Scope.Compile.jvm
@@ -106,7 +104,7 @@ object Izumi {
     val http4s_server = Seq(
       Library("org.http4s", "http4s-dsl", V.http4s),
       Library("org.http4s", "http4s-circe", V.http4s),
-      Library( "org.http4s", "http4s-blaze-server", V.http4s),
+      Library("org.http4s", "http4s-blaze-server", V.http4s),
     )
 
     val http4s_all = (http4s_server ++ http4s_client)
@@ -184,7 +182,8 @@ object Izumi {
         "organization" in SettingScope.Build := "io.7mind.izumi",
         "homepage" in SettingScope.Build := """Some(url("https://izumi.7mind.io"))""".raw,
         "licenses" in SettingScope.Build := """Seq("BSD-style" -> url("http://www.opensource.org/licenses/bsd-license.php"))""".raw,
-        "developers" in SettingScope.Build := """List(
+        "developers" in SettingScope.Build :=
+          """List(
           Developer(id = "7mind", name = "Septimal Mind", url = url("https://github.com/7mind"), email = "team@7mind.io"),
         )""".raw,
         "scmInfo" in SettingScope.Build := """Some(ScmInfo(url("https://github.com/7mind/izumi"), "scm:git:https://github.com/7mind/izumi.git"))""".raw,
@@ -193,11 +192,10 @@ object Izumi {
         "scalacOptions" in SettingScope.Build += """s"-Xmacro-settings:product-group=${organization.value}"""".raw,
         "scalacOptions" in SettingScope.Build += """s"-Xmacro-settings:sbt-version=${sbtVersion.value}"""".raw,
         "scalacOptions" in SettingScope.Build += """s"-Xmacro-settings:scala-version=${scalaVersion.value}"""".raw,
-        "scalacOptions" in SettingScope.Build += s"""${"\""*3}-Xmacro-settings:scalatest-version=${V.scalatest}${"\""*3}""".raw,
-        "scalacOptions" in SettingScope.Build += s"""${"\""*3}-Xmacro-settings:scala-versions=${Targets.targetScala.map(_.value).mkString(":")}${"\""*3}""".raw,
+        "scalacOptions" in SettingScope.Build += s"""${"\"" * 3}-Xmacro-settings:scalatest-version=${V.scalatest}${"\"" * 3}""".raw,
+        "scalacOptions" in SettingScope.Build += s"""${"\"" * 3}-Xmacro-settings:scala-versions=${Targets.targetScala.map(_.value).mkString(":")}${"\"" * 3}""".raw,
         SettingDef.RawSettingDef("""scalacOptions in ThisBuild ++= Seq("-Ybackend-parallelism", math.max(1, sys.runtime.availableProcessors() - 1).toString)"""),
       )
-
 
       final val sharedSettings = Seq(
         "testOptions" in SettingScope.Test += """Tests.Argument("-oDF")""".raw,
@@ -291,8 +289,8 @@ object Izumi {
 
       final lazy val izumi_deps = ArtifactId("sbt-izumi-deps")
     }
-  }
 
+  }
 
   final val forkTests = Seq(
     "fork" in(SettingScope.Test, Platform.Jvm) := true,
@@ -349,10 +347,8 @@ object Izumi {
     defaultPlatforms = Targets.cross,
   )
 
-
   final val allMonads = (cats_all ++ Seq(zio_core)).map(_ in Scope.Optional.all)
   final val allMonadsTest = (cats_all ++ Seq(zio_core)).map(_ in Scope.Test.all)
-
 
   final lazy val distage = Aggregate(
     Projects.distage.id,
@@ -590,7 +586,8 @@ object Izumi {
         settings = Projects.root.docSettings ++ Seq(
           "coverageEnabled" := false,
           "skip" in SettingScope.Raw("publish") := true,
-          "DocKeys.prefix" := """{if (isSnapshot.value) {
+          "DocKeys.prefix" :=
+            """{if (isSnapshot.value) {
             "latest/snapshot"
           } else {
             "latest/release"
@@ -601,7 +598,8 @@ object Izumi {
           "mdocIn" := """baseDirectory.value / "src/main/tut"""".raw,
           "sourceDirectory" in SettingScope.Raw("Paradox") := "mdocOut.value".raw,
           "mdocExtraArguments" ++= Seq(" --no-link-hygiene"),
-          "mappings" in SettingScope.Raw("SitePlugin.autoImport.makeSite") := """{
+          "mappings" in SettingScope.Raw("SitePlugin.autoImport.makeSite") :=
+            """{
             (mappings in SitePlugin.autoImport.makeSite)
               .dependsOn(mdoc.toTask(" "))
               .value
@@ -612,19 +610,22 @@ object Izumi {
           SettingDef.RawSettingDef("addMappingsToSiteDir(mappings in(ScalaUnidoc, packageDoc), siteSubdirName in ScalaUnidoc)"),
           SettingDef.RawSettingDef("unidocProjectFilter in(ScalaUnidoc, unidoc) := inAggregates(`izumi-jvm`, transitive=true)"),
 
-          SettingDef.RawSettingDef("""paradoxMaterialTheme in Paradox ~= {
+          SettingDef.RawSettingDef(
+            """paradoxMaterialTheme in Paradox ~= {
             _.withCopyright("7mind.io")
               .withRepository(uri("https://github.com/7mind/izumi"))
             //        .withColor("222", "434343")
           }"""),
           "siteSubdirName" in SettingScope.Raw("ScalaUnidoc") := """s"${DocKeys.prefix.value}/api"""".raw,
           "siteSubdirName" in SettingScope.Raw("Paradox") := """s"${DocKeys.prefix.value}/doc"""".raw,
-          SettingDef.RawSettingDef("""paradoxProperties ++= Map(
+          SettingDef.RawSettingDef(
+            """paradoxProperties ++= Map(
             "scaladoc.izumi.base_url" -> s"/${DocKeys.prefix.value}/api/com/github/pshirshov/",
             "scaladoc.base_url" -> s"/${DocKeys.prefix.value}/api/",
             "izumi.version" -> version.value,
           )"""),
-          SettingDef.RawSettingDef("""excludeFilter in ghpagesCleanSite :=
+          SettingDef.RawSettingDef(
+            """excludeFilter in ghpagesCleanSite :=
             new FileFilter {
               def accept(f: File): Boolean = {
                 (f.toPath.startsWith(ghpagesRepository.value.toPath.resolve("latest")) && !f.toPath.startsWith(ghpagesRepository.value.toPath.resolve(DocKeys.prefix.value))) ||
@@ -665,7 +666,6 @@ object Izumi {
     dontIncludeInSuperAgg = true,
     enableSharedSettings = false,
   )
-
 
   val izumi: Project = Project(
     Projects.root.id,

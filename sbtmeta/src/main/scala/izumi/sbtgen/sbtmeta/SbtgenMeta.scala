@@ -22,5 +22,4 @@ object SbtgenMeta {
   def extractScalaVersions(): Option[String] = macro ProjectAttributeMacro.extractScalaVersionsMacro
 
   def extract(name: String): Option[String] = macro ProjectAttributeMacro.extractAttrMacro
-
 }

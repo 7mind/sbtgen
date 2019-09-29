@@ -23,77 +23,80 @@ object IzumiConvenienceTasksPlugin extends AutoPlugin {
 
   import Keys._
 
-  override def globalSettings: Seq[Def.Setting[_]] = Seq(
-    defaultStubPackage := Some((organization in ThisBuild).value)
-  )
+  override def globalSettings: Seq[Def.Setting[_]] = {
+    Seq(
+      defaultStubPackage := Some((organization in ThisBuild).value)
+    )
+  } // These settings are only suitable for root project, it's okay to activate this plugin on root level only
 
-  // These settings are only suitable for root project, it's okay to activate this plugin on root level only
-  override def projectSettings = Seq(
-    addVersionSuffix := {
-      val suffix: String = (token(Space) ~> token(StringBasic, "suffix"))
-        .parsed
-        .replace('/', '_')
-        .replace('.', '_')
-        .replace('-', '_')
+  override def projectSettings = {
+    Seq(
+      addVersionSuffix := {
+        val suffix: String = (token(Space) ~> token(StringBasic, "suffix"))
+          .parsed
+          .replace('/', '_')
+          .replace('.', '_')
+          .replace('-', '_')
 
-      val existingVersion = Version(version.value).get
-      val newVersion = existingVersion
-        .withoutQualifier
-        .copy(qualifier = Some(s"-$suffix-SNAPSHOT"))
-        .string
+        val existingVersion = Version(version.value).get
+        val newVersion = existingVersion
+          .withoutQualifier
+          .copy(qualifier = Some(s"-$suffix-SNAPSHOT"))
+          .string
 
-      IO.write(file("version.sbt"), s"""version in ThisBuild := "$newVersion"""")
-    }
-    , preserveTargets := {
-      val suffix: String = (token(Space) ~> token(StringBasic, "suffix"))
-        .parsed
-
-      val name = "target"
-      val pairs = (file(".") ** (DirectoryFilter && new ExactFilter(name))).get.map {
-        fn =>
-          val withSuffix = fn.toPath.getParent.resolve(s"${fn.getName}.$suffix")
-          logger.debug(s"Preserving directory $fn => $withSuffix")
-          fn -> withSuffix.toFile
+        IO.write(file("version.sbt"), s"""version in ThisBuild := "$newVersion"""")
       }
-      IO.delete(pairs.map(_._2))
-      pairs.foreach {
-        case (s, t) =>
-          IO.copyDirectory(s, t)
+      , preserveTargets := {
+        val suffix: String = (token(Space) ~> token(StringBasic, "suffix"))
+          .parsed
+
+        val name = "target"
+        val pairs = (file(".") ** (DirectoryFilter && new ExactFilter(name))).get.map {
+          fn =>
+            val withSuffix = fn.toPath.getParent.resolve(s"${fn.getName}.$suffix")
+            logger.debug(s"Preserving directory $fn => $withSuffix")
+            fn -> withSuffix.toFile
+        }
+        IO.delete(pairs.map(_._2))
+        pairs.foreach {
+          case (s, t) =>
+            IO.copyDirectory(s, t)
+        }
       }
-    }
-    , rmDirs := {
-      val name: String = (token(Space) ~> token(StringBasic, "name"))
-        .parsed
+      , rmDirs := {
+        val name: String = (token(Space) ~> token(StringBasic, "name"))
+          .parsed
 
-      val dirs = (file(".") ** (DirectoryFilter && new ExactFilter(name))).get
-      IO.delete(dirs)
-    }
-    , newModule := {
-      val args = spaceDelimited("<args>").parsed
-      val moduleName = args.head
-      val pkgSuffix = args.tail.headOption
-
-      val pkg = (defaultStubPackage.value, pkgSuffix) match {
-        case (Some(p), None) =>
-          Some(p)
-        case (None, Some(suffix)) =>
-          Some(suffix)
-        case (Some(p), Some(suffix)) =>
-          Some(s"$p.$suffix")
-        case (None, None) =>
-          None
+        val dirs = (file(".") ** (DirectoryFilter && new ExactFilter(name))).get
+        IO.delete(dirs)
       }
+      , newModule := {
+        val args = spaceDelimited("<args>").parsed
+        val moduleName = args.head
+        val pkgSuffix = args.tail.headOption
 
-      mkDefaultModule(moduleName, pkg, mkJavaDirs.value)
-    }
-    , newStub := {
-      val args = spaceDelimited("<args>").parsed
-      val moduleName = args.head
-      val stubId = args.tail.headOption.getOrElse("default")
-      mkModule(moduleName, stubId)
-    }
-    , mkJavaDirs := false
-  )
+        val pkg = (defaultStubPackage.value, pkgSuffix) match {
+          case (Some(p), None) =>
+            Some(p)
+          case (None, Some(suffix)) =>
+            Some(suffix)
+          case (Some(p), Some(suffix)) =>
+            Some(s"$p.$suffix")
+          case (None, None) =>
+            None
+        }
+
+        mkDefaultModule(moduleName, pkg, mkJavaDirs.value)
+      }
+      , newStub := {
+        val args = spaceDelimited("<args>").parsed
+        val moduleName = args.head
+        val stubId = args.tail.headOption.getOrElse("default")
+        mkModule(moduleName, stubId)
+      }
+      , mkJavaDirs := false
+    )
+  }
 
   private def mkModule(name: String, stubId: String): Unit = {
     val base = file(".").toPath
