@@ -690,7 +690,9 @@ object Izumi {
     globalPlugins = Projects.plugins,
     rootPlugins = Projects.root.plugins,
     pluginConflictRules = Map(assemblyPluginJvm.name -> true),
-    appendPlugins = Defaults.SbtGenPlugins ++ Seq(
+    appendPlugins = Defaults.SbtGenPlugins.map(
+      _.copy(version = Version.VConst("0.0.27"))
+    ) ++ Seq(
       SbtPlugin("com.eed3si9n", "sbt-assembly", "0.14.9"),
     )
   )
