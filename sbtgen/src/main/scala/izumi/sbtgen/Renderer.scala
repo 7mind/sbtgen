@@ -98,7 +98,7 @@ class Renderer(
   def render(): Seq[String] = {
     val artifacts = aggregates.flatMap(_.filteredArtifacts).map(formatArtifact)
 
-    val filteredAggs = aggregates.flatMap(renderAgg).filterNot(_.aggregatedNames.isEmpty)
+    val filteredAggs = aggregates.flatMap(prepareCrossAggregate).filterNot(_.aggregatedNames.isEmpty)
 
     val superAgg = filteredAggs
       .groupBy(_.target)
@@ -125,7 +125,7 @@ class Renderer(
 
     val allAggregates = (filteredAggs ++ superAgg).filterNot(_.aggregatedNames.isEmpty)
     assert(allAggregates.nonEmpty, "All aggregates were filtered out")
-    val aggDefs = renderAggregateProjects(allAggregates)
+    val aggDefs = allAggregates.map(renderAggregateProject(project))
 
     val unexpected = project.settings.filterNot(_.scope.platform == Platform.All)
     assert(unexpected.isEmpty, "Global settings cannot be scoped to a platform")
@@ -150,9 +150,9 @@ class Renderer(
     ).flatten
   }
 
-  protected def renderAgg(aggregate: Aggregate): Seq[PreparedAggregate] = {
-    val es = aggregate.enableSharedSettings
-    val di = aggregate.dontIncludeInSuperAgg
+  protected def prepareCrossAggregate(aggregate: Aggregate): Seq[PreparedAggregate] = {
+    val enableSharedSettings = aggregate.enableSharedSettings
+    val noSuperAgg = aggregate.dontIncludeInSuperAgg
     val fullAgg = aggregate.filteredArtifacts.flatMap {
       a =>
         if (a.isJvmOnly) {
@@ -162,25 +162,32 @@ class Renderer(
         }
     }
 
-    val jvmOnly = mkAgg(aggregate, Platform.Jvm, es, di)
-    val jsOnly = mkAgg(aggregate, Platform.Js, es, di)
-    val nativeOnly = mkAgg(aggregate, Platform.Native, es, di)
-
-    PreparedAggregate(
-      aggregate.name,
-      Seq(".agg", (aggregate.pathPrefix :+ aggregate.name.value).mkString("-")),
-      fullAgg,
-      Platform.All,
-      project.globalPlugins,
-      enableSharedSettings = es,
-      dontIncludeInSuperAgg = di,
+    val allAggregate = PreparedAggregate(
+      id = aggregate.name,
+      pathPrefix = Seq(".agg", (aggregate.pathPrefix :+ aggregate.name.value).mkString("-")),
+      aggregatedNames = fullAgg,
+      target = Platform.All,
+      plugins = project.globalPlugins,
+      enableSharedSettings = enableSharedSettings,
+      dontIncludeInSuperAgg = noSuperAgg,
       settings = aggregate.settings,
-    ) +: jvmOnly ++: jsOnly ++: nativeOnly
+    )
+
+    val jvmOnly = prepareAggregate(aggregate, Platform.Jvm, enableSharedSettings, noSuperAgg)
+    val jsOnly = prepareAggregate(aggregate, Platform.Js, enableSharedSettings, noSuperAgg)
+    val nativeOnly = prepareAggregate(aggregate, Platform.Native, enableSharedSettings, noSuperAgg)
+
+    Seq(
+      Some(allAggregate),
+      jvmOnly,
+      jsOnly,
+      nativeOnly,
+    ).flatten
   }
 
-  protected def mkAgg(agg: Aggregate, platform: BasePlatform, sharedSettings: Boolean, disableSuperAgg: Boolean): Seq[PreparedAggregate] = {
+  protected def prepareAggregate(agg: Aggregate, platform: BasePlatform, sharedSettings: Boolean, disableSuperAgg: Boolean): Option[PreparedAggregate] = {
     if (!isPlatformEnabled(platform)) {
-      Seq.empty
+      None
     } else {
       val jvmAgg = agg.filteredArtifacts.flatMap {
         a =>
@@ -193,30 +200,27 @@ class Renderer(
       if (jvmAgg.nonEmpty) {
         val artname = Seq(agg.name.value, platformName(platform))
         val id = ArtifactId(artname.mkString("-"))
-        Seq(PreparedAggregate(
-          id,
-          Seq(".agg", (agg.pathPrefix ++ artname).mkString("-")),
-          jvmAgg,
-          platform,
-          project.globalPlugins,
+        Some(PreparedAggregate(
+          id = id,
+          pathPrefix = Seq(".agg", (agg.pathPrefix ++ artname).mkString("-")),
+          aggregatedNames = jvmAgg,
+          target = platform,
+          plugins = project.globalPlugins,
           enableSharedSettings = sharedSettings,
           dontIncludeInSuperAgg = disableSuperAgg,
           settings = agg.settings,
         ))
       } else {
-        Seq.empty
+        None
       }
     }
   }
 
-  protected def renderAggregateProjects(aggregates: Seq[PreparedAggregate]): Seq[String] = {
-    val settings = Seq(
-      "skip" in SettingScope.Raw("publish") := true,
-    )
-
-    val aggDefs = aggregates.map {
+  protected def renderAggregateProject(/* FIXME: move logic to prepare */ project: Project)(aggregate: PreparedAggregate): String = {
+    aggregate match {
       case PreparedAggregate(name, path, agg, platform, plugins, isRoot, enableSharedSettings, _, localSettings) =>
-        val hack = if (isRoot) {
+        // FIXME: move logic to prepare
+        val hack: Seq[SettingDef] = if (isRoot) {
           project.sharedRootSettings
         } else if (enableSharedSettings) {
           project.sharedAggSettings
@@ -224,14 +228,25 @@ class Renderer(
           Seq.empty
         }
 
-        val s = formatSettings(settings ++ localSettings ++ hack, Platform.All, false)
-
         val header = s"""lazy val ${renderName(name.value)} = (project in file(${stringLit(path.mkString("/"))}))"""
-        val names = agg.map(_.shift(2)).mkString(".aggregate(\n", ",\n", "\n)").shift(2)
-        val p = formatPlugins(plugins, platform, dot = true, inclusive = true)
-        (Seq(header, s) ++ p ++ Seq(names)).mkString("\n")
+        val settingsStr: String = formatSettings(
+          settings = Seq(
+            // FIXME: move logic to prepare
+            "skip" in SettingScope.Raw("publish") := true
+          ) ++ localSettings ++ hack,
+          platform = Platform.All,
+          platformPrefix = false,
+        )
+        val pluginsStr = formatPlugins(plugins, platform, dot = true, inclusive = true)
+        val aggregateStr = agg.map(_.shift(2)).mkString(".aggregate(\n", ",\n", "\n)").shift(2)
+
+        Seq(
+          Seq(header),
+          Seq(settingsStr),
+          pluginsStr,
+          Seq(aggregateStr),
+        ).flatten.mkString("\n")
     }
-    aggDefs
   }
 
   //
@@ -458,7 +473,7 @@ trait Renderers
         val settingsStr = nonEmpty(renderSettings(platform, platformPrefix = false))(settings)
         val depsStr = renderDeps(isJvmOnly = false, platform)(deps)
         val libsStr = renderLibDeps(isJvmOnly = false, platform)(libs)
-        val pluginsStr = renderPlugins(true)(sbtPlugins)
+        val pluginsStr = renderPlugins(dot = true)(sbtPlugins)
 
         Seq(
           Seq(headerStr),
@@ -605,7 +620,6 @@ trait Renderers
       val libDeps: Seq[Const] = sharedArtDeps.map(renderLib(isJvmOnly, targetPlatform))
       val settings = Seq("libraryDependencies" ++= libDeps)
 
-      //      Some(formatSettings(settings, targetPlatform, false))
       Some(renderSettings(targetPlatform, platformPrefix = false)(settings))
     } else {
       None

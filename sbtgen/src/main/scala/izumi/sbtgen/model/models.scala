@@ -1,7 +1,6 @@
 package izumi.sbtgen.model
 
 import izumi.sbtgen.model.Platform.BasePlatform
-import izumi.sbtgen.model.LibSetting.Classifier
 
 import scala.collection.immutable.Queue
 import scala.language.implicitConversions

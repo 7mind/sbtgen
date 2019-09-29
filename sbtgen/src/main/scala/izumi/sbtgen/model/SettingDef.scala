@@ -87,5 +87,5 @@ object Const {
     ))
   }
   implicit def seqToConst[T: Conv]: Conv[Seq[T]] = (a: Seq[T]) => CSeq(a.map(Conv[T].to))
-  implicit def mapToConst[T: Conv]: Conv[Map[Scalar, T]] = (a: Map[Scalar, T]) => CMap(a.view.mapValues(Conv[T].to).toMap)
+  implicit def mapToConst[T: Conv]: Conv[Map[Scalar, T]] = (a: Map[Scalar, T]) => CMap(a.mapValues(Conv[T].to).toMap)
 }
