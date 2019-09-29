@@ -1,19 +1,15 @@
 package izumi.sbtgen.model
 
-import izumi.sbtgen.model.LibSetting.Classifier
+import izumi.sbtgen.model.Platform.BasePlatform
 
 import scala.collection.immutable.Queue
 import scala.language.implicitConversions
 
 sealed trait Version
 object Version {
-
   case class VConst(value: String) extends Version
-
   case class VExpr(value: String) extends Version
-
   case object SbtGen extends Version
-
 }
 
 sealed trait Scope {
@@ -22,7 +18,6 @@ sealed trait Scope {
   def native: FullDependencyScope = FullDependencyScope(this, Platform.Native)
   def all: FullDependencyScope = FullDependencyScope(this, Platform.All)
 }
-
 object Scope {
   case object Runtime extends Scope
   case object Optional extends Scope
@@ -35,19 +30,16 @@ object Scope {
 case class ScalaVersion(value: String)
 
 sealed trait Platform
-
 object Platform {
   sealed trait BasePlatform extends Platform
-
   case object Jvm extends BasePlatform
   case object Js extends BasePlatform
   case object Native extends BasePlatform
-
   case object All extends Platform
 }
 
 case class PlatformEnv(
-                        platform: Platform.BasePlatform,
+                        platform: BasePlatform,
                         language: Seq[ScalaVersion],
                         settings: Seq[SettingDef] = Seq.empty,
                         plugins: Plugins = Plugins(Seq.empty, Seq.empty),
@@ -76,12 +68,10 @@ object LibSetting {
   case class Raw(value: String) extends LibSetting
 }
 
-
 case class Library(group: String, artifact: String, version: Version, kind: LibraryType, more: Seq[LibSetting]) {
   def classifier(s: String): Library = copy(more = more :+ LibSetting.Classifier(s))
   def more(settings: LibSetting): Library = copy(more = more :+ settings)
 }
-
 
 object Library {
   def apply(
@@ -182,8 +172,6 @@ case class Aggregate(
     this.copy(artifacts = newArtifacts)
   }
 }
-
-
 
 case class Import(value: String)
 

@@ -56,7 +56,6 @@ object IzumiBuildInfoPlugin extends AutoPlugin {
     Seq(m.organization.quoted, sep, m.name.quoted, "%", verstr).mkString(" ")
   }
 
-
   def generateBuildInfo(packageName: String, objectName: String): Def.Initialize[Task[Seq[File]]] = {
     val buildDepMap = {
       Def.taskDyn {
@@ -65,7 +64,9 @@ object IzumiBuildInfoPlugin extends AutoPlugin {
         val tt = refs.map(_._1).map {
           ref =>
             libraryDependencies.all(ScopeFilter(inProjects(ref)))
-              .zipWith(Def.setting(ref)) { case (a, b) => b -> a }
+              .zipWith(Def.setting(ref)) {
+                case (a, b) => b -> a
+              }
         }
 
         Def.task {
@@ -81,7 +82,9 @@ object IzumiBuildInfoPlugin extends AutoPlugin {
         val tt = refs.map(_._1).map {
           ref =>
             organization.all(ScopeFilter(inProjects(ref)))
-              .zipWith(Def.setting(ref)) { case (a, b) => b -> a }
+              .zipWith(Def.setting(ref)) {
+                case (a, b) => b -> a
+              }
         }
 
         Def.task {
@@ -97,7 +100,9 @@ object IzumiBuildInfoPlugin extends AutoPlugin {
         val tt = refs.map(_._1).map {
           ref =>
             version.all(ScopeFilter(inProjects(ref)))
-              .zipWith(Def.setting(ref)) { case (a, b) => b -> a }
+              .zipWith(Def.setting(ref)) {
+                case (a, b) => b -> a
+              }
         }
 
         Def.task {
@@ -122,7 +127,6 @@ object IzumiBuildInfoPlugin extends AutoPlugin {
       val vermap = buildVersionMap.value.map(_.evaluate(sd)).toMap
       val groupmap = buildGroupIdMap.value.map(_.evaluate(sd)).toMap
 
-
       val allProjects = allProjectRefs.map {
         case (ref, proj) =>
           val name = proj.id.safe
@@ -136,8 +140,6 @@ object IzumiBuildInfoPlugin extends AutoPlugin {
       val allProjectsT = allProjects.map(m => s"""final val ${m.safeId} = R.${m.safeId} % Test """)
       val allProjectsCTT = allProjects.map(m => s"""final val ${m.safeId} = R.${m.safeId} classifier "tests" """)
       val allProjectsTT = allProjects.map(m => s"""final val ${m.safeId} = TSR.${m.safeId} % Test """)
-
-
 
       val imports = allProjects.map {
         p =>
@@ -169,7 +171,6 @@ object IzumiBuildInfoPlugin extends AutoPlugin {
              |}
            """.stripMargin
       }
-
 
       IO.write(
         file,
@@ -231,10 +232,12 @@ object IzumiBuildInfoPlugin extends AutoPlugin {
   }
 
   object autoImport {
-    def withBuildInfo(packageName: String, objectName: String): Seq[Setting[_]] = Seq(
-      sbtPlugin := true
-      , sourceGenerators in Compile += generateBuildInfo(packageName, objectName).taskValue
-    )
+    def withBuildInfo(packageName: String, objectName: String): Seq[Setting[_]] = {
+      Seq(
+        sbtPlugin := true
+        , sourceGenerators in Compile += generateBuildInfo(packageName, objectName).taskValue
+      )
+    }
   }
 
 }

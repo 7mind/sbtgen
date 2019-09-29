@@ -23,7 +23,7 @@ object IzumiPropertiesPlugin extends AutoPlugin {
         Try(props.get(name).map(_.toBoolean)).toOption.flatten.getOrElse(default)
       }
 
-      def getInt(name: String, default: Int): Int= {
+      def getInt(name: String, default: Int): Int = {
         Try(props.get(name).map(_.toInt)).toOption.flatten.getOrElse(default)
       }
     }

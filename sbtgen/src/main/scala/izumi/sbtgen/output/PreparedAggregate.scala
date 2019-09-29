@@ -1,1 +1,0 @@
-package izumi.sbtgen.output

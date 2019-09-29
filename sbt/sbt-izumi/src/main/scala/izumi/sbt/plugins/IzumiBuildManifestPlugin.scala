@@ -17,10 +17,9 @@ object IzumiBuildManifestPlugin extends AutoPlugin {
 
   import Keys._
 
-
   override def globalSettings: Seq[Def.Setting[_]] = Seq()
 
-  override def projectSettings: Seq[Def.Setting[_]] =
+  override def projectSettings: Seq[Def.Setting[_]] = {
     Seq(
       extendedManifestMfAttributes := Def.task {
         val attributes = Map(
@@ -44,5 +43,5 @@ object IzumiBuildManifestPlugin extends AutoPlugin {
 
       packageOptions in Compile ++= extendedManifestMfAttributes.value,
     )
-
+  }
 }

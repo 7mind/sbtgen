@@ -12,44 +12,17 @@ trait ModelExt {
     protected def s: String
     protected def scope: FullSettingScope
 
-    def :=(const: Const): UnscopedSettingDef = {
-      UnscopedSettingDef(s, SettingOp.Assign, const, scope)
-    }
+    def :=(const: Const): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Assign, const, scope)
+    def +=(const: Const): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Append, const, scope)
 
-    def +=(const: Const): UnscopedSettingDef = {
-      UnscopedSettingDef(s, SettingOp.Append, const, scope)
-    }
+    def ++=(const: Const.EmptyMap.type): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Extend, const, scope)
+    def ++=(const: Const.EmptySeq.type): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Extend, const, scope)
+    def ++=[T: Const.Conv](const: Seq[T]): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Extend, const, scope)
+    def ++=[T: Const.Conv](const: Map[Const.Scalar, T]): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Extend, const, scope)
 
-    def ++=(const: Const.EmptyMap.type): UnscopedSettingDef = {
-      UnscopedSettingDef(s, SettingOp.Extend, const, scope)
-    }
-
-    def ++=(const: Const.EmptySeq.type): UnscopedSettingDef = {
-      UnscopedSettingDef(s, SettingOp.Extend, const, scope)
-    }
-
-    def ++=[T: Const.Conv](const: Seq[T]): UnscopedSettingDef = {
-      import Const._
-      UnscopedSettingDef(s, SettingOp.Extend, const, scope)
-    }
-
-    def ++=[T: Const.Conv](const: Map[Const.Scalar, T]): UnscopedSettingDef = {
-      import Const._
-      UnscopedSettingDef(s, SettingOp.Extend, const, scope)
-    }
-
-    def :=(const: Seq[(SettingKey, Const)]): ScopedSettingDef = {
-      ScopedSettingDef(s, SettingOp.Assign, const, scope)
-    }
-
-    def +=(const: Seq[(SettingKey, Const)]): ScopedSettingDef = {
-      ScopedSettingDef(s, SettingOp.Append, const, scope)
-    }
-
-    def ++=(const: Seq[(SettingKey, Const)]): ScopedSettingDef = {
-      ScopedSettingDef(s, SettingOp.Extend, const, scope)
-    }
-
+    def :=(const: Seq[(SettingKey, Const)]): ScopedSettingDef = ScopedSettingDef(s, SettingOp.Assign, const, scope)
+    def +=(const: Seq[(SettingKey, Const)]): ScopedSettingDef = ScopedSettingDef(s, SettingOp.Append, const, scope)
+    def ++=(const: Seq[(SettingKey, Const)]): ScopedSettingDef = ScopedSettingDef(s, SettingOp.Extend, const, scope)
   }
 
   class ScopedSettingBuilder(protected val s: String, protected val scope: FullSettingScope) extends WithSettingsDsl
@@ -58,25 +31,19 @@ trait ModelExt {
     override protected val scope: FullSettingScope = FullSettingScope(SettingScope.Project, Platform.All)
 
     def in(scope: SettingScope): ScopedSettingBuilder = new ScopedSettingBuilder(s, FullSettingScope(scope, Platform.All))
+    def in(platform: Platform): ScopedSettingBuilder = new ScopedSettingBuilder(s, FullSettingScope(SettingScope.Project, platform))
     def in(scope: SettingScope, platform: Platform): ScopedSettingBuilder = new ScopedSettingBuilder(s, FullSettingScope(scope, platform))
 
-    def raw: Const = Const.CRaw(s)
+    def raw: Const.CRaw = Const.CRaw(s)
   }
 
   implicit class ArtifactIdExt(id: ArtifactId) {
-    def in(scope: FullDependencyScope): ScopedDependency = {
-      ScopedDependency(id, scope)
-    }
-
-    def tin(scope: FullDependencyScope): ScopedDependency = {
-      ScopedDependency(id, scope, mergeTestScopes = true)
-    }
+    def in(scope: FullDependencyScope): ScopedDependency = ScopedDependency(id, scope)
+    def tin(scope: FullDependencyScope): ScopedDependency = ScopedDependency(id, scope, mergeTestScopes = true)
   }
 
   implicit class DependencyExt(dependency: Library) {
-    def in(scope: FullDependencyScope): ScopedLibrary = {
-      ScopedLibrary(dependency, scope)
-    }
+    def in(scope: FullDependencyScope): ScopedLibrary = ScopedLibrary(dependency, scope)
   }
 
 }

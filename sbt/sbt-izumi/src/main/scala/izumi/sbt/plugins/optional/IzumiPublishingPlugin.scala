@@ -67,7 +67,6 @@ object IzumiPublishingPlugin extends AutoPlugin {
     config.withOverwrite(doOverwrite || config.overwrite || isSnapshot)
   }
 
-
   object autoImport {
 
     object Repositories {

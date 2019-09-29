@@ -46,7 +46,6 @@ final class IzString(private val s: String) extends AnyVal {
     }
   }
 
-
   @inline final def leftEllipsed(limit: Int, ellipsis: String): String = {
     val elen = ellipsis.length
     if (s.length > limit && s.length > elen) {
@@ -110,8 +109,9 @@ final class IzString(private val s: String) extends AnyVal {
   }
 
   def camelTo(sep: String): String = {
-    "[A-Z\\d]".r.replaceAllIn(s, { m =>
-      sep + m.group(0).toLowerCase()
+    "[A-Z\\d]".r.replaceAllIn(s, {
+      m =>
+        sep + m.group(0).toLowerCase()
     })
   }
 
@@ -120,8 +120,9 @@ final class IzString(private val s: String) extends AnyVal {
   def camelToUnderscores: String = camelTo("_")
 
   def underscoreToCamel: String = {
-    "_([a-z\\d])".r.replaceAllIn(s, { m =>
-      m.group(1).toUpperCase()
+    "_([a-z\\d])".r.replaceAllIn(s, {
+      m =>
+        m.group(1).toUpperCase()
     })
   }
 
@@ -166,7 +167,7 @@ final class IzString(private val s: String) extends AnyVal {
     lines.zipWithIndex
       .map {
         case (l, i) =>
-          s"${(i+1).toString.leftPad(pad)}: $l"
+          s"${(i + 1).toString.leftPad(pad)}: $l"
       }
       .mkString("\n")
   }
@@ -185,5 +186,6 @@ final class IzIterable[A](private val s: Iterable[A]) extends AnyVal {
 
 object IzString {
   implicit def toRichString(s: String): IzString = new IzString(s)
+
   implicit def toRichIterable[A](s: Iterable[A]): IzIterable[A] = new IzIterable(s)
 }

@@ -1,5 +1,6 @@
 package izumi.sbtgen
 
+import izumi.sbtgen.PreparedPlatform._
 import izumi.sbtgen.impl.{WithArtifactExt, WithBasicRenderers, WithProjectIndex}
 import izumi.sbtgen.model.Platform.BasePlatform
 import izumi.sbtgen.model._
@@ -8,34 +9,96 @@ import izumi.sbtgen.tools.IzString._
 
 import scala.collection.mutable
 
+final case class PreparedAggregate(
+                                    id: ArtifactId,
+                                    pathPrefix: Seq[String],
+                                    aggregatedNames: Seq[String],
+                                    target: Platform,
+                                    plugins: Plugins,
+                                    isRoot: Boolean = false,
+                                    enableSharedSettings: Boolean = true,
+                                    dontIncludeInSuperAgg: Boolean = false,
+                                    settings: Seq[SettingDef] = Seq.empty,
+                                  )
+
+final case class PreparedCrossArtifact(
+                                        header: PreparedArtifactHeader,
+                                        settings: Seq[SettingDef],
+                                        deps: Seq[ScopedDependency],
+                                        libs: Seq[ScopedLibrary],
+                                        sbtPlugins: PreparedPlugins,
+                                        platformArtifacts: Seq[PreparedArtifact],
+                                      ) {
+  def platform: PreparedPlatform = header.platform
+  def jvmOnly: Boolean = platform.jvmOnly
+}
+
+final case class PreparedArtifact(
+                                   name: ArtifactId,
+                                   platform: BasePlatform,
+                                   parentName: ArtifactId,
+                                   settings: Seq[SettingDef],
+                                   deps: Seq[ScopedDependency],
+                                   libs: Seq[ScopedLibrary],
+                                   sbtPlugins: PreparedPlugins,
+                                 )
+
+sealed trait PreparedPlatform {
+  final def fold[A](jvmOnly: Platform.Jvm.type => A)(crossAll: Platform => A): Seq[A] = {
+    this match {
+      case JvmOnly => Seq(jvmOnly(Platform.Jvm))
+      case Cross(platforms) => crossAll(Platform.All) +: platforms.map(crossAll)
+    }
+  }
+  final def jvmOnly: Boolean = this == JvmOnly
+}
+object PreparedPlatform {
+  case object JvmOnly extends PreparedPlatform
+  final case class Cross(platforms: Seq[BasePlatform]) extends PreparedPlatform
+}
+
+final case class PreparedArtifactHeader(
+                                         name: ArtifactId,
+                                         path: String,
+                                         platform: PreparedPlatform,
+                                       )
+
+final case class PreparedPlugins(
+                                  enabled: Seq[Plugin],
+                                  disabled: Seq[Plugin],
+                                )
+
+trait WithSettingsCache {
+  protected def cached(s: String): String
+}
+
 class Renderer(
                 protected val config: GenConfig,
                 project: Project,
               )
   extends WithProjectIndex
     with WithBasicRenderers
-    with WithArtifactExt {
+    with WithArtifactExt
+    with WithSettingsCache
+    with Renderers {
 
   private val aggregates: Seq[Aggregate] = project.aggregates.map(_.merge)
   protected val index: Map[ArtifactId, Artifact] = makeIndex(aggregates)
   protected val settingsCache = new mutable.HashMap[String, Int]()
 
-  case class PreparedAggregate(
-                                id: ArtifactId,
-                                pathPrefix: Seq[String],
-                                aggregatedNames: Seq[String],
-                                target: Platform,
-                                plugins: Plugins,
-                                isRoot: Boolean = false,
-                                enableSharedSettings: Boolean = true,
-                                dontIncludeInSuperAgg: Boolean = false,
-                                settings: Seq[SettingDef] = Seq.empty,
-                              )
+  override protected def cached(s: String): String = {
+    if (config.compactify) {
+      val idx = settingsCache.getOrElseUpdate(s, settingsCache.size)
+      cacheIdxName(idx) + ".value"
+    } else {
+      s
+    }
+  }
 
   def render(): Seq[String] = {
-    val artifacts = aggregates.flatMap(_.filteredArtifacts).map(renderArtifact)
+    val artifacts = aggregates.flatMap(_.filteredArtifacts).map(formatArtifact)
 
-    val filteredAggs = aggregates.flatMap(renderAgg).filterNot(_.aggregatedNames.isEmpty)
+    val filteredAggs = aggregates.flatMap(prepareCrossAggregate).filterNot(_.aggregatedNames.isEmpty)
 
     val superAgg = filteredAggs
       .groupBy(_.target)
@@ -44,7 +107,7 @@ class Renderer(
         case (p, group) =>
           val id = p match {
             case platform: Platform.BasePlatform =>
-              Some(platformName(platform).toLowerCase)
+              Some(platformName(platform))
             case Platform.All =>
               None
           }
@@ -62,7 +125,7 @@ class Renderer(
 
     val allAggregates = (filteredAggs ++ superAgg).filterNot(_.aggregatedNames.isEmpty)
     assert(allAggregates.nonEmpty, "All aggregates were filtered out")
-    val aggDefs = renderAggregateProjects(allAggregates)
+    val aggDefs = allAggregates.map(renderAggregateProject(project))
 
     val unexpected = project.settings.filterNot(_.scope.platform == Platform.All)
     assert(unexpected.isEmpty, "Global settings cannot be scoped to a platform")
@@ -70,7 +133,7 @@ class Renderer(
     val settings = project.settings.filter(_.scope.platform == Platform.All).map(renderSetting)
 
     val imports = Seq(project.imports.map(i => s"import ${i.value}").mkString("\n"))
-    val plugins = renderPlugins(project.rootPlugins, Platform.All, dot = false, inclusive = true)
+    val plugins = formatPlugins(project.rootPlugins, Platform.All, dot = false, inclusive = true)
 
     val sc = settingsCache.toSeq.sortBy(_._2).map {
       case (s, idx) =>
@@ -87,9 +150,9 @@ class Renderer(
     ).flatten
   }
 
-  protected def renderAgg(aggregate: Aggregate): Seq[PreparedAggregate] = {
-    val es = aggregate.enableSharedSettings
-    val di = aggregate.dontIncludeInSuperAgg
+  protected def prepareCrossAggregate(aggregate: Aggregate): Seq[PreparedAggregate] = {
+    val enableSharedSettings = aggregate.enableSharedSettings
+    val noSuperAgg = aggregate.dontIncludeInSuperAgg
     val fullAgg = aggregate.filteredArtifacts.flatMap {
       a =>
         if (a.isJvmOnly) {
@@ -99,25 +162,32 @@ class Renderer(
         }
     }
 
-    val jvmOnly = mkAgg(aggregate, Platform.Jvm, es, di)
-    val jsOnly = mkAgg(aggregate, Platform.Js, es, di)
-    val nativeOnly = mkAgg(aggregate, Platform.Native, es, di)
-
-    Seq(PreparedAggregate(
-      aggregate.name,
-      Seq(".agg", (aggregate.pathPrefix :+ aggregate.name.value).mkString("-")),
-      fullAgg,
-      Platform.All,
-      project.globalPlugins,
-      enableSharedSettings = es,
-      dontIncludeInSuperAgg = di,
+    val allAggregate = PreparedAggregate(
+      id = aggregate.name,
+      pathPrefix = Seq(".agg", (aggregate.pathPrefix :+ aggregate.name.value).mkString("-")),
+      aggregatedNames = fullAgg,
+      target = Platform.All,
+      plugins = project.globalPlugins,
+      enableSharedSettings = enableSharedSettings,
+      dontIncludeInSuperAgg = noSuperAgg,
       settings = aggregate.settings,
-    )) ++ jvmOnly ++ jsOnly ++ nativeOnly
+    )
+
+    val jvmOnly = prepareAggregate(aggregate, Platform.Jvm, enableSharedSettings, noSuperAgg)
+    val jsOnly = prepareAggregate(aggregate, Platform.Js, enableSharedSettings, noSuperAgg)
+    val nativeOnly = prepareAggregate(aggregate, Platform.Native, enableSharedSettings, noSuperAgg)
+
+    Seq(
+      Some(allAggregate),
+      jvmOnly,
+      jsOnly,
+      nativeOnly,
+    ).flatten
   }
 
-  private def mkAgg(agg: Aggregate, platform: BasePlatform, sharedSettings: Boolean, disableSuperAgg: Boolean): Seq[PreparedAggregate] = {
+  protected def prepareAggregate(agg: Aggregate, platform: BasePlatform, sharedSettings: Boolean, disableSuperAgg: Boolean): Option[PreparedAggregate] = {
     if (!isPlatformEnabled(platform)) {
-      Seq.empty
+      None
     } else {
       val jvmAgg = agg.filteredArtifacts.flatMap {
         a =>
@@ -130,30 +200,27 @@ class Renderer(
       if (jvmAgg.nonEmpty) {
         val artname = Seq(agg.name.value, platformName(platform))
         val id = ArtifactId(artname.mkString("-"))
-        Seq(PreparedAggregate(
-          id,
-          Seq(".agg", (agg.pathPrefix ++ artname).mkString("-")),
-          jvmAgg,
-          platform,
-          project.globalPlugins,
+        Some(PreparedAggregate(
+          id = id,
+          pathPrefix = Seq(".agg", (agg.pathPrefix ++ artname).mkString("-")),
+          aggregatedNames = jvmAgg,
+          target = platform,
+          plugins = project.globalPlugins,
           enableSharedSettings = sharedSettings,
           dontIncludeInSuperAgg = disableSuperAgg,
           settings = agg.settings,
         ))
       } else {
-        Seq.empty
+        None
       }
     }
   }
 
-  protected def renderAggregateProjects(aggregates: Seq[PreparedAggregate]): Seq[String] = {
-    val settings = Seq(
-      "skip" in SettingScope.Raw("publish") := true,
-    )
-
-    val aggDefs = aggregates.map {
+  protected def renderAggregateProject(/* FIXME: move logic to prepare */ project: Project)(aggregate: PreparedAggregate): String = {
+    aggregate match {
       case PreparedAggregate(name, path, agg, platform, plugins, isRoot, enableSharedSettings, _, localSettings) =>
-        val hack = if (isRoot) {
+        // FIXME: move logic to prepare
+        val hack: Seq[SettingDef] = if (isRoot) {
           project.sharedRootSettings
         } else if (enableSharedSettings) {
           project.sharedAggSettings
@@ -161,77 +228,58 @@ class Renderer(
           Seq.empty
         }
 
-        val s = renderSettings(settings ++ localSettings ++ hack, Platform.All)
-
         val header = s"""lazy val ${renderName(name.value)} = (project in file(${stringLit(path.mkString("/"))}))"""
-        val names = agg.map(_.shift(2)).mkString(".aggregate(\n", ",\n", "\n)").shift(2)
-        val p = renderPlugins(plugins, platform, dot = true, inclusive = true)
-        (Seq(header, s) ++ p ++ Seq(names)).mkString("\n")
+        val settingsStr: String = formatSettings(
+          settings = Seq(
+            // FIXME: move logic to prepare
+            "skip" in SettingScope.Raw("publish") := true
+          ) ++ localSettings ++ hack,
+          platform = Platform.All,
+          platformPrefix = false,
+        )
+        val pluginsStr = formatPlugins(plugins, platform, dot = true, inclusive = true)
+        val aggregateStr = agg.map(_.shift(2)).mkString(".aggregate(\n", ",\n", "\n)").shift(2)
+
+        Seq(
+          Seq(header),
+          Seq(settingsStr),
+          pluginsStr,
+          Seq(aggregateStr),
+        ).flatten.mkString("\n")
     }
-    aggDefs
   }
 
-  protected def renderArtifact(a: Artifact): String = {
-    val path = (a.pathPrefix :+ a.name.value).mkString("/")
+  //
+  // NEW
+  //
 
-    val header = if (!a.isJvmOnly) {
-      val platforms = a.platforms.map(p => platformName(p.platform).toUpperCase()).map(pn => s"${pn}Platform")
-      s"""lazy val ${renderName(a.name)} = crossProject${platforms.mkString("(", ", ", ")")}.crossType(CrossType.Pure).in(file(${stringLit(path)}))"""
-    } else {
-      s"""lazy val ${renderName(a.name)} = project.in(file(${stringLit(path)}))"""
+  protected def prepareArtifact(project: Project, artifact: Artifact): PreparedCrossArtifact = {
+    val enabledPlatforms = artifact.platforms.filter(platformEnabled)
+    val platform = if (artifact.isJvmOnly) JvmOnly else Cross(enabledPlatforms.map(_.platform))
+    val jvmOnly = platform.jvmOnly
+
+    val header = {
+      val path = (artifact.pathPrefix :+ artifact.name.value).mkString("/")
+      PreparedArtifactHeader(artifact.name, path, platform)
     }
+    val settings = prepareCrossArtifactSettings(project, artifact.subGroupId, artifact.settings, enabledPlatforms)
+    val deps = filterDeps(artifact.depends, jvmOnly, Platform.All)
+    val libs = filterLibDeps(project, artifact.libs, jvmOnly, Platform.All)
+    val plugins = preparePlugins(project, artifact.plugins ++ project.globalPlugins, Platform.All, inclusive = jvmOnly)
+    val platformArtifacts = preparePlatformArtifacts(project, artifact, jvmOnly)(enabledPlatforms)
 
-    val enabledPlatforms = a.platforms
-      .filter(p => platformEnabled(p.platform))
+    PreparedCrossArtifact(
+      header = header,
+      settings = settings,
+      deps = deps,
+      libs = libs,
+      sbtPlugins = plugins,
+      platformArtifacts = platformArtifacts
+    )
+  }
 
-    val platforms = if (!a.isJvmOnly) {
-      enabledPlatforms
-        .flatMap {
-          p =>
-            val prefix = platformName(p.platform)
-            val settings = Seq(
-              "scalaVersion" := "crossScalaVersions.value.head".raw,
-              "crossScalaVersions" := p.language.map(_.value),
-            ) ++ p.settings ++ a.settings
-            Seq(renderSettings(settings, p.platform, Some(prefix)))
-        }
-    } else {
-      Seq.empty
-    }
-
-    val platformProjects = if (!a.isJvmOnly) {
-      enabledPlatforms.map {
-        p =>
-          val pname = platformName(p.platform)
-          val plugins = renderPlugins(a.plugins ++ p.plugins ++ project.globalPlugins, p.platform, dot = true)
-
-          Seq(
-            Seq(s"""lazy val ${a.nameOn(p.platform)} = ${renderName(a.name)}.$pname"""),
-            formatDeps(a, p.platform).map(_.shift(2)),
-            formatLibDeps(a, p.platform),
-            plugins,
-          )
-            .flatten
-            .mkString("\n")
-      }
-    } else {
-      Seq.empty
-    }
-
-    val groupId = (Seq(config.settings.groupId) ++ a.subGroupId.toSeq).mkString(".")
-
-    val more = if (a.isJvmOnly) {
-      val p = a.platforms.filter(_.platform == Platform.Jvm).head
-      Seq(
-        "scalaVersion" := "crossScalaVersions.value.head".raw,
-        "crossScalaVersions" := p.language.map(_.value),
-        "publishArtifact" in SettingScope.Raw("(Test, packageBin)") := true,
-        "publishArtifact" in SettingScope.Raw("(Test, packageDoc)") := false,
-        "publishArtifact" in SettingScope.Raw("(Test, packageSrc)") := true,
-      )
-    } else {
-      Seq.empty
-    }
+  protected def prepareCrossArtifactSettings(project: Project, subGroupId: Option[String], artifactSettings: Seq[SettingDef], enabledPlatforms: Seq[PlatformEnv]): Seq[SettingDef] = {
+    val groupId = (config.settings.groupId :: subGroupId.toList).mkString(".")
 
     val jvmOnlyFix = if (config.jvmOnly) {
       Seq(
@@ -239,45 +287,60 @@ class Renderer(
         "unmanagedResourceDirectories" in SettingScope.Compile += """baseDirectory.value / ".jvm/src/main/resources" """.raw,
         "unmanagedSourceDirectories" in SettingScope.Test += """baseDirectory.value / ".jvm/src/test/scala" """.raw,
         "unmanagedResourceDirectories" in SettingScope.Test += """baseDirectory.value / ".jvm/src/test/resources" """.raw,
-      ) ++ a.platforms.filter(_.platform == Platform.Jvm).flatMap(_.settings)
+      )
+    } else Seq.empty
+
+    val platformSettings = {
+      enabledPlatforms.flatMap {
+        penv =>
+          val psettings = Seq(
+            "scalaVersion" := "crossScalaVersions.value.head".raw,
+            "crossScalaVersions" := penv.language.map(_.value),
+          ) ++ penv.settings /*++ {
+            // FIXME:
+            if (penv.platform == Platform.Jvm && jvmOnly) Seq(
+              //              "publishArtifact" in SettingScope.Raw("(Test, packageBin)") := true,
+              //              "publishArtifact" in SettingScope.Raw("(Test, packageDoc)") := false, // FIXME: packageDoc one day caused spurious failures, remove later???
+              //              "publishArtifact" in SettingScope.Raw("(Test, packageSrc)") := true,
+            ) else Seq.empty
+          } // ++ artifact.settings*/
+
+          filterSettings(psettings.map(_.withPlatform(penv.platform)), penv.platform)
+      }
+    }
+
+    val settingsAll = Seq(
+      Seq("organization" := groupId),
+      jvmOnlyFix,
+      artifactSettings,
+      project.sharedSettings,
+    ).flatten
+
+    filterSettings(settingsAll, Platform.All) ++ platformSettings
+  }
+
+  protected def preparePlatformArtifacts(project: Project, artifact: Artifact, jvmOnly: Boolean)(enabledPlatforms: Seq[PlatformEnv]): Seq[PreparedArtifact] = {
+    if (!jvmOnly) {
+      enabledPlatforms.map {
+        penv =>
+          val plugins = preparePlugins(project, artifact.plugins ++ penv.plugins ++ project.globalPlugins, penv.platform, inclusive = false)
+
+          PreparedArtifact(
+            name = ArtifactId(artifact.nameOn0(penv.platform)),
+            platform = penv.platform,
+            parentName = artifact.name,
+            settings = Nil,
+            deps = filterDeps(artifact.depends, jvmOnly, penv.platform),
+            libs = filterLibDeps(project, artifact.libs, jvmOnly, penv.platform),
+            sbtPlugins = plugins,
+          )
+      }
     } else {
       Seq.empty
     }
-
-    val sharedSettings = Seq(
-      "organization" := groupId,
-    ) ++ more ++ jvmOnlyFix ++ a.settings ++ project.sharedSettings
-
-    val renderedSettings = renderSettings(sharedSettings, Platform.All)
-    val plugins = renderPlugins(a.plugins ++ project.globalPlugins, Platform.All, dot = true, inclusive = a.isJvmOnly)
-
-    val out = Seq(
-      Seq(header),
-      plugins,
-      Seq(renderedSettings),
-      formatDeps(a, Platform.All),
-      formatLibDeps(a, Platform.All),
-      platforms,
-      platformProjects,
-    ).flatten
-
-    out.mkString("\n")
   }
 
-  def isPlatformEnabled(p: Platform): Boolean = {
-    p match {
-      case Platform.All =>
-        true
-      case Platform.Jvm =>
-        config.jvm
-      case Platform.Js =>
-        config.js
-      case Platform.Native =>
-        config.native
-    }
-  }
-
-  protected def renderPlugins(plugins: Plugins, platform: Platform, dot: Boolean, inclusive: Boolean = false): Seq[String] = {
+  protected def preparePlugins(project: Project, plugins: Plugins, platform: Platform, inclusive: Boolean): PreparedPlugins = {
     val predicate = (p: Plugin) => (inclusive && platform == Platform.All && isPlatformEnabled(p.platform)) || p.platform == platform
 
     val enabledPlugins = plugins.enabled.filter(predicate).distinct
@@ -301,19 +364,154 @@ class Renderer(
         true
     })
 
-    val enabled = if (enabledPlugins0.nonEmpty) {
-      Seq(enabledPlugins0.map(_.name).distinct.mkString("enablePlugins(", ", ", ")"))
-    } else {
-      Seq.empty
+    PreparedPlugins(enabledPlugins0, disabledPlugins0)
+  }
+
+  //
+  // OLD
+  //
+
+  def isPlatformEnabled(p: Platform): Boolean = {
+    p match {
+      case Platform.All =>
+        true
+      case Platform.Jvm =>
+        config.jvm
+      case Platform.Js =>
+        config.js
+      case Platform.Native =>
+        config.native
+    }
+  }
+
+  protected def formatArtifact(a: Artifact): String = {
+    renderArtifact(prepareArtifact(project, a))
+  }
+
+  protected def formatPlugins(plugins: Plugins, platform: Platform, dot: Boolean, inclusive: Boolean): Seq[String] = {
+    renderPlugins(dot)(preparePlugins(project, plugins, platform, inclusive))
+  }
+
+  protected def formatSettings(settings: Seq[SettingDef], platform: Platform, platformPrefix: Boolean): String = {
+    renderSettings(platform, platformPrefix)(filterSettings(settings, platform))
+  }
+
+  protected def cacheIdxName(idx: Int) = {
+    s"setting_$idx"
+  }
+
+  //
+  // FILTER
+  //
+
+  protected def filterSettings(settings: Seq[SettingDef], platform: Platform): Seq[SettingDef] = {
+    settings
+      .filter(s => s.scope.platform == platform || s.scope.platform == Platform.All || (config.jvmOnly && platform == Platform.All && s.scope.platform == Platform.Jvm))
+  }
+
+  protected def filterDeps(deps: Seq[ScopedDependency], isJvmOnly: Boolean, targetPlatform: Platform): Seq[ScopedDependency] = {
+    val predicate = targetPlatform match {
+      case platform: BasePlatform =>
+        (d: ScopedDependency) => d.scope.platform == platform
+      case Platform.All =>
+        (d: ScopedDependency) => isJvmOnly || (d.scope.platform == Platform.All && !index(d.name).isJvmOnly)
     }
 
-    val disabled = if (disabledPlugins0.nonEmpty) {
-      Seq(disabledPlugins0.map(_.name).distinct.mkString("disablePlugins(", ", ", ")"))
+    deps.filter(predicate)
+  }
+
+  protected def filterLibDeps(project: Project, libs: Seq[ScopedLibrary], isJvmOnly: Boolean, targetPlatform: Platform): Seq[ScopedLibrary] = {
+    (project.globalLibs ++ libs)
+      .filter(d => (isJvmOnly && targetPlatform == Platform.All) || d.scope.platform == targetPlatform)
+  }
+
+}
+
+//
+// RENDER
+//
+
+trait Renderers
+  extends WithArtifactExt
+    with WithBasicRenderers
+    with WithProjectIndex {
+  this: WithSettingsCache =>
+
+  protected def renderArtifact(crossArtifact: PreparedCrossArtifact): String = {
+    crossArtifact match {
+      case PreparedCrossArtifact(header, settings, deps, libs, sbtPlugins, platformArtifacts) =>
+        val headerStr = renderHeader(header)
+
+        val settingsStr = crossArtifact.platform.fold(jvmOnly =>
+          nonEmpty(renderSettings(jvmOnly, platformPrefix = false))(settings)
+        )(p =>
+          nonEmpty(renderSettings(p, platformPrefix = true))(settings.filter(_.scope.platform == p))
+        ).flatten
+
+        val depsStr = renderDeps(crossArtifact.jvmOnly, Platform.All)(deps)
+        val libsStr = renderLibDeps(crossArtifact.jvmOnly, Platform.All)(libs)
+        val pluginsStr = renderPlugins(dot = true)(sbtPlugins)
+
+        val platformProjects = platformArtifacts.map(renderPlatformArtifact)
+
+        Seq(
+          Seq(headerStr),
+          depsStr,
+          libsStr,
+          settingsStr,
+          pluginsStr,
+          platformProjects,
+        ).flatten.mkString("\n")
+    }
+  }
+
+  protected def renderPlatformArtifact(artifact: PreparedArtifact): String = {
+    artifact match {
+      case PreparedArtifact(name, platform, parentName, settings, deps, libs, sbtPlugins) =>
+        val headerStr = s"""lazy val ${renderName(name)} = ${renderName(parentName)}.${platformName(platform)}"""
+
+        val settingsStr = nonEmpty(renderSettings(platform, platformPrefix = false))(settings)
+        val depsStr = renderDeps(isJvmOnly = false, platform)(deps)
+        val libsStr = renderLibDeps(isJvmOnly = false, platform)(libs)
+        val pluginsStr = renderPlugins(dot = true)(sbtPlugins)
+
+        Seq(
+          Seq(headerStr),
+          depsStr,
+          libsStr,
+          settingsStr,
+          pluginsStr,
+        ).flatten.mkString("\n")
+    }
+  }
+
+  protected def renderHeader(h: PreparedArtifactHeader): String = {
+    h match {
+      case PreparedArtifactHeader(name, path, JvmOnly) =>
+        s"""lazy val ${renderName(name)} = project.in(file(${stringLit(path)}))"""
+
+      case PreparedArtifactHeader(name, path, Cross(platforms)) =>
+        val platformsStr = platforms.map(p => s"${platformName(p).toUpperCase}Platform").mkString(", ")
+        s"""lazy val ${renderName(name)} = crossProject($platformsStr).crossType(CrossType.Pure).in(file(${stringLit(path)}))"""
+    }
+  }
+
+  protected def renderPlugins(dot: Boolean)(preparedPlugins: PreparedPlugins): Seq[String] = {
+    val PreparedPlugins(enabledPlugins, disabledPlugins) = preparedPlugins
+
+    val enabled = if (enabledPlugins.nonEmpty) {
+      Some(enabledPlugins.map(_.name).distinct.mkString("enablePlugins(", ", ", ")"))
     } else {
-      Seq.empty
+      None
     }
 
-    val out = enabled ++ disabled
+    val disabled = if (disabledPlugins.nonEmpty) {
+      Some(disabledPlugins.map(_.name).distinct.mkString("disablePlugins(", ", ", ")"))
+    } else {
+      None
+    }
+
+    val out = enabled.toList ++ disabled
     if (dot) {
       out.map(s => s".$s").map(_.shift(2))
     } else {
@@ -321,16 +519,15 @@ class Renderer(
     }
   }
 
-  protected def renderSettings(settings: Seq[SettingDef], platform: Platform, prefix: Option[String] = None): String = {
-    val p = prefix match {
-      case Some(value) =>
-        s"${value}Settings"
-      case None =>
+  protected def renderSettings(platform: Platform, platformPrefix: Boolean)(settings: Seq[SettingDef]): String = {
+    val p = (platformPrefix, platform) match {
+      case (true, bp: BasePlatform) =>
+        s"${platformName(bp)}Settings"
+      case _ =>
         "settings"
     }
 
     settings
-      .filter(s => s.scope.platform == platform || s.scope.platform == Platform.All || (config.jvmOnly && platform == Platform.All && s.scope.platform == Platform.Jvm))
       .map(renderSetting)
       .map(_.shift(2))
       .mkString(s".$p(\n", ",\n", "\n)")
@@ -382,7 +579,6 @@ class Renderer(
 
       case s: SettingDef.ScopedSettingDef =>
 
-
         val r = s
           .defs
           .toSeq
@@ -419,137 +615,81 @@ class Renderer(
     all.mkString(" ")
   }
 
-  def cached(s: String): String = {
-    if (config.compactify) {
-      val idx = settingsCache.getOrElseUpdate(s, settingsCache.size)
-      cacheIdxName(idx) + ".value"
+  protected def renderLibDeps(isJvmOnly: Boolean, targetPlatform: Platform)(sharedArtDeps: Seq[ScopedLibrary]): Option[String] = {
+    if (sharedArtDeps.nonEmpty) {
+      val libDeps: Seq[Const] = sharedArtDeps.map(renderLib(isJvmOnly, targetPlatform))
+      val settings = Seq("libraryDependencies" ++= libDeps)
+
+      Some(renderSettings(targetPlatform, platformPrefix = false)(settings))
     } else {
-      s
+      None
     }
   }
 
-  private def cacheIdxName(idx: Int) = {
-    s"setting_${idx}"
-  }
-
-  protected def renderConst(const: Const): String = {
-    const match {
-      case scalar: Const.Scalar =>
-        scalar match {
-          case Const.CInt(value) =>
-            value.toString
-          case Const.CString(value) =>
-            stringLit(value)
-          case Const.CBoolean(value) =>
-            value.toString
-          case Const.CRaw(value) =>
-            value
+  protected def renderLib(isJvmOnly: Boolean, targetPlatform: Platform)(lib: ScopedLibrary): Const.CRaw = {
+    val sep = lib.dependency.kind match {
+      case LibraryType.AutoJvm =>
+        "%%"
+      case LibraryType.Invariant =>
+        "%"
+      case LibraryType.Auto =>
+        targetPlatform match {
+          case Platform.Jvm =>
+            "%%"
+          case Platform.Js =>
+            "%%%"
+          case Platform.Native =>
+            "%%%"
+          case Platform.All if isJvmOnly =>
+            "%%"
+          case Platform.All =>
+            "%%%"
         }
-      case Const.CSeq(value) =>
-        value.map(renderConst).map(_.shift(2)).mkString("Seq(\n", ",\n", "\n)")
-      case Const.CTuple(value) =>
-        value.map(renderConst).map(_.shift(2)).mkString("(", ",", ")")
-      case Const.CMap(value) =>
-        value
-          .toSeq
-          .map {
-            case (k, v) =>
-              s"${renderConst(k)} -> ${renderConst(v)}"
-          }
-          .map(_.shift(2))
-          .mkString("Map(\n", ",\n", "\n)")
-      case Const.EmptySeq =>
-        "Seq.empty"
-      case Const.EmptyMap =>
-        "Map.empty"
     }
-  }
 
-  protected def formatLibDeps(agg: Artifact, targetPlatform: Platform): Seq[String] = {
-    val deps = project.globalLibs ++ agg.libs
+    val suffix = lib.scope.scope match {
+      case Scope.Runtime =>
+        Seq("%", "Runtime")
+      case Scope.Optional =>
+        Seq("%", "Optional")
+      case Scope.Provided =>
+        Seq("%", "Provided")
+      case Scope.Compile =>
+        Seq.empty
+      case Scope.Test =>
+        Seq("%", "Test")
+      case Scope.Raw(s) =>
+        Seq("%", stringLit(s))
+    }
 
-    val sharedArtDeps = deps.filter(d => (agg.isJvmOnly && targetPlatform == Platform.All) || d.scope.platform == targetPlatform)
+    val exclusionsOrRaw = lib.dependency.more.flatMap {
+      value =>
+        value match {
+          case LibSetting.Exclusions(exclusions) =>
+            exclusions.map(e => s"exclude(${stringLit(e.group)}, ${stringLit(e.artifact)})")
+          case LibSetting.Classifier(value) =>
+            Seq(s"classifier ${stringLit(value)}")
+          case LibSetting.Raw(value) =>
+            Seq(value)
+        }
+    }
 
-    val artDeps = if (sharedArtDeps.nonEmpty) {
-      val deps = sharedArtDeps.map {
-        lib =>
-          val sep = lib.dependency.kind match {
-            case LibraryType.AutoJvm =>
-              "%%"
-            case LibraryType.Invariant =>
-              "%"
-            case LibraryType.Auto =>
-              targetPlatform match {
-                case Platform.Jvm =>
-                  "%%"
-                case Platform.Js =>
-                  "%%%"
-                case Platform.Native =>
-                  "%%%"
-                case Platform.All if agg.isJvmOnly =>
-                  "%%"
-                case Platform.All =>
-                  "%%%"
-              }
-          }
+    val depStr = Seq(stringLit(lib.dependency.group), sep, stringLit(lib.dependency.artifact), "%", renderVersion(lib.dependency.version))
 
-          val suffix = lib.scope.scope match {
-            case Scope.Runtime =>
-              Seq("%", "Runtime")
-            case Scope.Optional =>
-              Seq("%", "Optional")
-            case Scope.Provided =>
-              Seq("%", "Provided")
-            case Scope.Compile =>
-              Seq.empty
-            case Scope.Test =>
-              Seq("%", "Test")
-            case Scope.Raw(s) =>
-              Seq("%", stringLit(s))
-          }
+    val out = Seq(
+      depStr,
+      suffix,
+      exclusionsOrRaw,
+    ).flatten.mkString(" ")
 
-          val more = lib.dependency.more.flatMap {
-            value =>
-              value match {
-                case LibSetting.Exclusions(exclusions) =>
-                  exclusions.map(e => s"exclude(${stringLit(e.group)}, ${stringLit(e.artifact)})")
-                case LibSetting.Classifier(value) =>
-                  Seq(s"classifier ${stringLit(value)}")
-                case LibSetting.Raw(value) =>
-                  Seq(value)
-              }
-          }
-
-          val out = Seq(
-            Seq(
-              stringLit(lib.dependency.group),
-              sep,
-              stringLit(lib.dependency.artifact),
-              "%",
-              renderVersion(lib.dependency.version),
-            ),
-            suffix,
-            more,
-          )
-            .flatten
-            .mkString(" ")
-
-          if (lib.compilerPlugin) {
-            s"compilerPlugin($out)".raw
-          } else {
-            out.raw
-          }
-      }
-      val settings = Seq("libraryDependencies" ++= deps)
-
-      Seq(renderSettings(settings, targetPlatform))
+    if (lib.compilerPlugin) {
+      s"compilerPlugin($out)".raw
     } else {
-      Seq.empty
+      out.raw
     }
-    artDeps
   }
 
-  def renderVersion(v: Version): String = {
+  protected[sbtgen] def renderVersion(v: Version): String = {
     v match {
       case Version.VConst(value) =>
         stringLit(value)
@@ -560,57 +700,90 @@ class Renderer(
     }
   }
 
-  protected def formatDeps(a: Artifact, targetPlatform: Platform): Seq[String] = {
-    val deps = a.depends
-    val predicate = targetPlatform match {
-      case platform: Platform.BasePlatform =>
-        (d: ScopedDependency) => d.scope.platform == platform
-      case Platform.All =>
-        (d: ScopedDependency) => a.isJvmOnly || (d.scope.platform == Platform.All && !index(d.name).isJvmOnly) || (index(d.name).isJvmOnly && d.scope.platform == Platform.Jvm && a.isJvmOnly)
-    }
-
-    val sharedArtDeps = deps.filter(predicate)
-
-    val artDeps = if (sharedArtDeps.nonEmpty) {
-      Seq(sharedArtDeps
-        .map {
-          d =>
-            val ad = index.get(d.name) match {
-              case Some(value) =>
-                value
-              case None =>
-                throw new RuntimeException(s"Unknown dependency: ${d.name}")
-            }
-            val name = targetPlatform match {
-              case Platform.All if a.isJvmOnly =>
-                ad.nameOn(Platform.Jvm)
-              case _ =>
-                ad.nameOn(targetPlatform)
-            }
-
-            val scope = d.scope.scope match {
-              case Scope.Test =>
-                if (config.mergeTestScopes && d.mergeTestScopes) {
-                  "test->compile,test"
-                } else {
-                  "test->compile"
-                }
-              case _ =>
-                if (config.mergeTestScopes && d.mergeTestScopes) {
-                  "test->test;compile->compile"
-                } else {
-                  "test->compile;compile->compile"
-                }
-            }
-            s"$name % ${stringLit(scope)}"
-        }
+  protected def renderDeps(isJvmOnly: Boolean, targetPlatform: Platform)(sharedArtDeps: Seq[ScopedDependency]): Option[String] = {
+    if (sharedArtDeps.nonEmpty) {
+      val res = sharedArtDeps
+        .map(renderDep(targetPlatform, isJvmOnly))
         .map(_.shift(2))
-        .mkString(s".dependsOn(\n", ",\n", "\n)").shift(2),
-      )
+        .mkString(s".dependsOn(\n", ",\n", "\n)").shift(2)
+
+      Some(res)
     } else {
-      Seq.empty
+      None
     }
-    artDeps
+  }
+
+  protected def renderDep(targetPlatform: Platform, isJvmOnly: Boolean)(d: ScopedDependency): String = {
+    val ad = index.get(d.name) match {
+      case Some(value) =>
+        value
+      case None =>
+        throw new RuntimeException(s"Unknown dependency: ${
+          d.name
+        } ")
+    }
+    val name = targetPlatform match {
+      case Platform.All if isJvmOnly =>
+        ad.nameOn(Platform.Jvm)
+      case _ =>
+        ad.nameOn(targetPlatform)
+    }
+
+    val scope = d.scope.scope match {
+      case Scope.Test =>
+        if (config.mergeTestScopes && d.mergeTestScopes) {
+          "test->compile,test"
+        } else {
+          "test->compile"
+        }
+      case _ =>
+        if (config.mergeTestScopes && d.mergeTestScopes) {
+          "test->test;compile->compile"
+        } else {
+          "test->compile;compile->compile"
+        }
+    }
+    s"$name % ${
+      stringLit(scope)
+    }"
+  }
+
+  protected def renderConst(const: Const): String = {
+    const match {
+      case Const.CInt(value) =>
+        value.toString
+      case Const.CString(value) =>
+        stringLit(value)
+      case Const.CBoolean(value) =>
+        value.toString
+      case Const.CRaw(value) =>
+        value
+      case Const.CSeq(value) =>
+        value.map(renderConst).map(_.shift(2)).mkString("Seq(\n", ",\n", "\n)")
+      case Const.CTuple(value) =>
+        value.map(renderConst).map(_.shift(2)).mkString("(", ",", ")")
+      case Const.CMap(value) =>
+        value
+          .toSeq
+          .map {
+            case (k, v) =>
+              s"${
+                renderConst(k)
+              } -> ${
+                renderConst(v)
+              } "
+          }
+          .map(_.shift(2))
+          .mkString("Map(\n", ",\n", "\n)")
+      case Const.EmptySeq =>
+        "Seq.empty"
+      case Const.EmptyMap =>
+        "Map.empty"
+    }
+  }
+
+  private[this] def nonEmpty[A](f: Seq[A] => String)(c: Seq[A]): Seq[String] = {
+    if (c.isEmpty) Nil else Seq(f(c))
   }
 
 }

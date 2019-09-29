@@ -8,29 +8,34 @@ object SettingScope {
   case object Build extends SettingScope
   case object Compile extends SettingScope
   case object Test extends SettingScope
-  case class Raw(value: String) extends SettingScope
+  final case class Raw(value: String) extends SettingScope
 }
 
 case class FullSettingScope(scope: SettingScope, platform: Platform)
 
 sealed trait SettingDef {
   def scope: FullSettingScope
+
+  private[sbtgen] final def withPlatform(p: Platform): SettingDef = {
+    this match {
+      case s: SettingDef.RawSettingDef => s.copy(scope = scope.copy(platform = p))
+      case s: SettingDef.UnscopedSettingDef => s.copy(scope = scope.copy(platform = p))
+      case s: SettingDef.ScopedSettingDef => s.copy(scope = scope.copy(platform = p))
+    }
+  }
 }
-
 object SettingDef {
-
+  case class RawSettingDef(value: String, scope: FullSettingScope = FullSettingScope(SettingScope.Compile, Platform.All)) extends SettingDef
   sealed trait KVSettingDef extends SettingDef {
     def name: String
-
     def op: SettingOp
   }
-
-  case class RawSettingDef(value: String, scope: FullSettingScope = FullSettingScope(SettingScope.Compile, Platform.All)) extends SettingDef
-
   case class UnscopedSettingDef(name: String, op: SettingOp, value: Const, scope: FullSettingScope) extends KVSettingDef
-
   case class ScopedSettingDef(name: String, op: SettingOp, defs: Seq[(SettingKey, Const)], scope: FullSettingScope) extends KVSettingDef
 
+  trait Render[+A] {
+    def render(s: SettingDef): A
+  }
 }
 
 sealed trait SettingOp
@@ -49,6 +54,18 @@ sealed trait Const
 
 object Const {
 
+  sealed trait Scalar extends Const
+  final case class CInt(value: Int) extends Scalar
+  final case class CString(value: String) extends Scalar
+  final case class CBoolean(value: Boolean) extends Scalar
+  final case class CRaw(value: String) extends Scalar
+
+  final case class CTuple(value: Seq[Const]) extends Const
+  final case class CSeq(value: Seq[Const]) extends Const
+  final case class CMap(value: Map[Scalar, Const]) extends Const
+  case object EmptySeq extends Const
+  case object EmptyMap extends Const
+
   trait Conv[T] {
     def to(v: T): Const
   }
@@ -58,7 +75,7 @@ object Const {
 
   implicit def make[T: Conv](a: T): Const = Conv[T].to(a)
 
-  implicit val ConstToConst: Conv[Const] = v => v
+  implicit def ConstToConst[C <: Const]: Conv[C] = c => c
   implicit val IntToConst: Conv[Int] = CInt(_)
   implicit val StrToConst: Conv[String] = CString(_)
   implicit val BoolToConst: Conv[Boolean] = CBoolean(_)
@@ -69,21 +86,6 @@ object Const {
       Conv[T2].to(b),
     ))
   }
-
   implicit def seqToConst[T: Conv]: Conv[Seq[T]] = (a: Seq[T]) => CSeq(a.map(Conv[T].to))
-
-  implicit def mapToConst[T: Conv]: Conv[Map[Scalar, T]] = (a: Map[Scalar, T]) => CMap(a.view.mapValues(Conv[T].to).toMap)
-
-  sealed trait Scalar extends Const
-
-  case class CInt(value: Int) extends Scalar
-  case class CString(value: String) extends Scalar
-  case class CBoolean(value: Boolean) extends Scalar
-  case class CRaw(value: String) extends Scalar
-  case class CTuple(value: Seq[Const]) extends Const
-  case class CSeq(value: Seq[Const]) extends Const
-  case class CMap(value: Map[Scalar, Const]) extends Const
-  case object EmptySeq extends Const
-  case object EmptyMap extends Const
-
+  implicit def mapToConst[T: Conv]: Conv[Map[Scalar, T]] = (a: Map[Scalar, T]) => CMap(a.mapValues(Conv[T].to).toMap)
 }
