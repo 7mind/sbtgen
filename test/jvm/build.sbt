@@ -4481,6 +4481,23 @@ lazy val `sbt-plugins-jvm` = (project in file(".agg/sbt-plugins-sbt-plugins-jvm"
     `sbt-izumi-deps`
   )
 
+lazy val `izumi-jvm` = (project in file(".agg/.agg-jvm"))
+  .settings(
+    skip in publish := true,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
+    scalaVersion := crossScalaVersions.value.head
+  )
+  .disablePlugins(AssemblyPlugin)
+  .aggregate(
+    `fundamentals-jvm`,
+    `distage-jvm`,
+    `logstage-jvm`,
+    `idealingua-jvm`
+  )
+
 lazy val `izumi` = (project in file("."))
   .settings(
     skip in publish := true,
@@ -4534,21 +4551,4 @@ lazy val `izumi` = (project in file("."))
     `distage`,
     `logstage`,
     `idealingua`
-  )
-
-lazy val `izumi-jvm` = (project in file(".agg/.agg-jvm"))
-  .settings(
-    skip in publish := true,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head
-  )
-  .disablePlugins(AssemblyPlugin)
-  .aggregate(
-    `fundamentals-jvm`,
-    `distage-jvm`,
-    `logstage-jvm`,
-    `idealingua-jvm`
   )

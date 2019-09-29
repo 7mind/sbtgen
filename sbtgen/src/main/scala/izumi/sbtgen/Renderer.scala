@@ -84,7 +84,7 @@ class Renderer(
 
   private val aggregates: Seq[Aggregate] = project.aggregates.map(_.merge)
   protected val index: Map[ArtifactId, Artifact] = makeIndex(aggregates)
-  protected val settingsCache = new mutable.HashMap[String, Int]()
+  protected val settingsCache = new mutable.LinkedHashMap[String, Int]()
 
   override protected def cached(s: String): String = {
     if (config.compactify) {
@@ -103,6 +103,7 @@ class Renderer(
     val superAgg = filteredAggs
       .groupBy(_.target)
       .toSeq
+      .sortBy(_._1 == Platform.All) // place Platform.All super-aggregate last
       .map {
         case (p, group) =>
           val id = p match {
@@ -454,10 +455,10 @@ trait Renderers
 
         val platformProjects = platformArtifacts.map(renderPlatformArtifact)
 
-        Seq(
+        Seq[Seq[String]](
           Seq(headerStr),
-          depsStr,
-          libsStr,
+          depsStr.toSeq,
+          libsStr.toSeq,
           settingsStr,
           pluginsStr,
           platformProjects,
@@ -475,10 +476,10 @@ trait Renderers
         val libsStr = renderLibDeps(isJvmOnly = false, platform)(libs)
         val pluginsStr = renderPlugins(dot = true)(sbtPlugins)
 
-        Seq(
+        Seq[Seq[String]](
           Seq(headerStr),
-          depsStr,
-          libsStr,
+          depsStr.toSeq,
+          libsStr.toSeq,
           settingsStr,
           pluginsStr,
         ).flatten.mkString("\n")
