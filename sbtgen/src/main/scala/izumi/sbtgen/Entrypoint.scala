@@ -13,7 +13,7 @@ case class Config(
                    debug: Boolean = false,
                    mergeTestScopes: Boolean = true,
                    output: String = "test-out",
-                   groups: Set[Group] = Set.empty,
+                   groups: Set[String] = Set.empty,
                    publishTests: Boolean = true,
                    compactify: Boolean = false,
                  )
@@ -54,7 +54,7 @@ object Entrypoint {
         .text("output directory")
       opt[String]('u', "use")
         .unbounded()
-        .action((x, c) => c.copy(groups = c.groups + Group(x)))
+        .action((x, c) => c.copy(groups = c.groups + x))
         .text("use only groups specified")
     }
 
