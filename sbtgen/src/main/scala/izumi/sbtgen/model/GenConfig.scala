@@ -8,7 +8,7 @@ case class GenConfig(
                       mergeTestScopes: Boolean,
                       settings: GlobalSettings,
                       output: String,
-                      onlyGroups: Set[Group],
+                      onlyGroups: Set[String],
                       publishTests: Boolean,
                       compactify: Boolean,
                     ) {
