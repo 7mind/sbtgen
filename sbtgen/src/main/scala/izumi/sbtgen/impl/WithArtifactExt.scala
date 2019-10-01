@@ -1,16 +1,17 @@
 package izumi.sbtgen.impl
 
 import izumi.sbtgen.model.Platform.BasePlatform
-import izumi.sbtgen.model.{Aggregate, Artifact, GenConfig, Platform, PlatformEnv}
+import izumi.sbtgen.model.{Aggregate, Artifact, GenConfig, Group, Platform, PlatformEnv}
 
 trait WithArtifactExt {
   this: WithBasicRenderers =>
 
   protected val config: GenConfig
+  protected val configuredGroups: Set[String]
 
   protected implicit class AggregateExt(agg: Aggregate) {
     def filteredArtifacts: Seq[Artifact] = {
-      agg.artifacts.filter(a => config.onlyGroups.isEmpty || (agg.groups ++ a.groups).intersect(config.onlyGroups).nonEmpty)
+      agg.artifacts.filter(a => config.onlyGroups.isEmpty || ((agg.groups ++ a.groups).map(_.name)).intersect(configuredGroups).nonEmpty)
     }
   }
 

@@ -119,7 +119,10 @@ object ScopedDependency {
   implicit def fromDepSeq(deps: Seq[ArtifactId]): Seq[ScopedDependency] = deps.map(fromDep)
 }
 
-case class Group(name: String)
+case class Group(
+                  name: String,
+                  deps: Set[Group] = Set.empty,
+                )
 
 case class Artifact(
                      name: ArtifactId,

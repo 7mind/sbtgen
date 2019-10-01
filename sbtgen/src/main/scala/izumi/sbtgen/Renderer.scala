@@ -86,6 +86,26 @@ class Renderer(
   protected val index: Map[ArtifactId, Artifact] = makeIndex(aggregates)
   protected val settingsCache = new mutable.LinkedHashMap[String, Int]()
 
+  protected val configuredGroups: Set[String] = {
+    def flattenGroups(groups: Set[Group]): Set[Group] = {
+      groups.foldLeft(Set.empty: Set[Group])((agg, g) => agg ++ unpackGroup(g))
+    }
+
+    def unpackGroup(group: Group): Set[Group] = {
+      if (group.deps.isEmpty) Set(Group(group.name))
+      else Set(Group(group.name)) ++ group.deps.foldLeft(Set.empty: Set[Group])((agg, g) => agg ++ unpackGroup(g))
+    }
+
+    val allGroups = for {
+      agg <- aggregates
+      artifact <- agg.artifacts
+    } yield agg.groups ++ artifact.groups
+
+    flattenGroups(
+      allGroups.fold(Set.empty)(_ ++ _).filter(g => config.onlyGroups.contains(Group(g.name)))
+    ).map(_.name)
+  }
+
   override protected def cached(s: String): String = {
     if (config.compactify) {
       val idx = settingsCache.getOrElseUpdate(s, settingsCache.size)
