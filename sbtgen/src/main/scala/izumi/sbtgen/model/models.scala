@@ -48,7 +48,6 @@ case class PlatformEnv(
 case class ArtifactId(value: String)
 
 sealed trait LibraryType
-
 object LibraryType {
   case object Invariant extends LibraryType
   case object AutoJvm extends LibraryType

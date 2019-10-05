@@ -87,17 +87,15 @@ class Renderer(
   protected val settingsCache = new mutable.LinkedHashMap[String, Int]()
 
   protected val configuredGroups: Set[Group] = {
-    def flattenGroups(groups: Set[Group]): Set[Group] = {
-      groups.flatMap(unpackGroup)
-    }
-
     def unpackGroup(group: Group): Set[Group] = {
       Set(group) ++ group.deps.flatMap(unpackGroup)
     }
 
-    val allGroups = aggregates.flatMap(agg => agg.groups ++ agg.artifacts.flatMap(_.groups))
+    val allGroups = aggregates.flatMap(agg => agg.groups ++ agg.artifacts.flatMap(_.groups)).toSet
 
-    flattenGroups(allGroups.filter(g => config.onlyGroups.contains(g.name)).toSet)
+    allGroups
+      .filter(config.onlyGroups contains _.name)
+      .flatMap(unpackGroup)
   }
 
   override protected def cached(s: String): String = {
