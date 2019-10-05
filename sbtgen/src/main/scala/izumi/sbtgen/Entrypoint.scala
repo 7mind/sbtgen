@@ -3,7 +3,7 @@ package izumi.sbtgen
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Paths}
 
-import izumi.sbtgen.model.{GenConfig, GlobalSettings, Group, Project}
+import izumi.sbtgen.model.{GenConfig, GlobalSettings, Project}
 import scopt.OptionParser
 
 case class Config(
@@ -127,21 +127,21 @@ object Entrypoint {
     if (config.js) {
       b.append(
         s"""// https://www.scala-js.org/
-           |addSbtPlugin("org.scala-js" % "sbt-scalajs" % "${renderer renderVersion config.settings.scalaJsVersion}")
+           |addSbtPlugin("org.scala-js" % "sbt-scalajs" % ${renderer renderVersion config.settings.scalaJsVersion})
            |
            |// https://github.com/portable-scala/sbt-crossproject
-           |addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % "${renderer renderVersion config.settings.crossProjectVersion}")
+           |addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % ${renderer renderVersion config.settings.crossProjectVersion})
            |
            |// https://scalacenter.github.io/scalajs-bundler/
-           |addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "${renderer renderVersion config.settings.bundlerVersion}")
+           |addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % ${renderer renderVersion config.settings.bundlerVersion})
            |""".stripMargin)
     }
 
     if (config.native) {
       b.append(
-        s"""addSbtPlugin("org.portable-scala" % "sbt-scala-native-crossproject" % "${renderer renderVersion config.settings.crossProjectVersion}")
+        s"""addSbtPlugin("org.portable-scala" % "sbt-scala-native-crossproject" % ${renderer renderVersion config.settings.crossProjectVersion})
            |
-           |addSbtPlugin("org.scala-native"   % "sbt-scala-native"              % "${renderer renderVersion config.settings.scalaNativeVersion}")
+           |addSbtPlugin("org.scala-native"   % "sbt-scala-native"              % ${renderer renderVersion config.settings.scalaNativeVersion})
            |""".stripMargin)
     }
 

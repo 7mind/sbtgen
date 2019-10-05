@@ -1,7 +1,7 @@
 package izumi.sbt.plugins.optional
 
 import izumi.sbt.plugins.IzumiPropertiesPlugin
-import com.typesafe.sbt.pgp.PgpKeys._
+import com.jsuereth.sbtpgp.PgpKeys._
 import sbt.Keys.{credentials, resolvers, _}
 import sbt.internal.util.ConsoleLogger
 import sbt.io.syntax
