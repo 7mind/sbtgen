@@ -1,3 +1,3 @@
 package izumi.sbtgen
 
-package object model extends ModelExt
+package object model extends ModelSyntax

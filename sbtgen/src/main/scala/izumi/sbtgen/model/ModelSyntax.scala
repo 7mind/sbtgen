@@ -2,7 +2,7 @@ package izumi.sbtgen.model
 
 import izumi.sbtgen.model.SettingDef.{ScopedSettingDef, UnscopedSettingDef}
 
-trait ModelExt {
+trait ModelSyntax {
 
   implicit class SettingKeyExt(s: SettingKey) {
     def :=(const: Const): (SettingKey, Const) = (s, const)

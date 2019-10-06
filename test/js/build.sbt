@@ -246,7 +246,10 @@ lazy val `fundamentals-platform` = crossProject(JVMPlatform, JSPlatform).crossTy
       "2.13.0"
     ),
     coverageEnabled := false,
-    scalaJSModuleKind := ModuleKind.CommonJSModule
+    scalaJSModuleKind := ModuleKind.CommonJSModule,
+    npmDependencies in Compile ++= Seq(
+      (  "hash.js",  "1.1.7")
+    )
   )
 lazy val `fundamentals-platformJVM` = `fundamentals-platform`.jvm
   .disablePlugins(AssemblyPlugin)
@@ -1351,7 +1354,8 @@ lazy val `distage-config` = project.in(file("distage/distage-config"))
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
-    )
+    ),
+    fork in Test := true
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -1579,7 +1583,8 @@ lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
-    )
+    ),
+    fork in Test := true
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -3418,7 +3423,8 @@ lazy val `idealingua-v1-transpilers` = crossProject(JVMPlatform, JSPlatform).cro
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
-    )
+    ),
+    fork in Test := true
   )
   .jsSettings(
     scalaVersion := crossScalaVersions.value.head,

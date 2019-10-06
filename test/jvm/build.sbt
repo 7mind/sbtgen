@@ -1209,7 +1209,6 @@ lazy val `distage-config` = project.in(file("distage/distage-config"))
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
     unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
     unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
-    fork in Test := true,
     testOptions in Test += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
@@ -1305,7 +1304,8 @@ lazy val `distage-config` = project.in(file("distage/distage-config"))
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
-    )
+    ),
+    fork in Test := true
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -1446,7 +1446,6 @@ lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
     unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
     unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
-    fork in Test := true,
     testOptions in Test += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
@@ -1542,7 +1541,8 @@ lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
-    )
+    ),
+    fork in Test := true
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -3264,7 +3264,6 @@ lazy val `idealingua-v1-transpilers` = project.in(file("idealingua-v1/idealingua
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
     unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
     unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
-    fork in Test := true,
     testOptions in Test += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
@@ -3360,7 +3359,8 @@ lazy val `idealingua-v1-transpilers` = project.in(file("idealingua-v1/idealingua
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
-    )
+    ),
+    fork in Test := true
   )
   .disablePlugins(AssemblyPlugin)
 

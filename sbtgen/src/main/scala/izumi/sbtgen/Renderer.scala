@@ -24,6 +24,8 @@ final case class PreparedAggregate(
 final case class PreparedCrossArtifact(
                                         header: PreparedArtifactHeader,
                                         settings: Seq[SettingDef],
+                                        // FIXME: add, remove platform logic from renderer
+                                        //                                        settings: Map[Platform, Seq[PreparedSettingDef]],
                                         deps: Seq[ScopedDependency],
                                         libs: Seq[ScopedLibrary],
                                         sbtPlugins: PreparedPlugins,
@@ -309,16 +311,11 @@ class Renderer(
           val psettings = Seq(
             "scalaVersion" := "crossScalaVersions.value.head".raw,
             "crossScalaVersions" := penv.language.map(_.value),
-          ) ++ penv.settings /*++ {
-            // FIXME:
-            if (penv.platform == Platform.Jvm && jvmOnly) Seq(
-              //              "publishArtifact" in SettingScope.Raw("(Test, packageBin)") := true,
-              //              "publishArtifact" in SettingScope.Raw("(Test, packageDoc)") := false, // FIXME: packageDoc one day caused spurious failures, remove later???
-              //              "publishArtifact" in SettingScope.Raw("(Test, packageSrc)") := true,
-            ) else Seq.empty
-          } // ++ artifact.settings*/
+          ) ++ penv.settings
 
-          filterSettings(psettings.map(_.withPlatform(penv.platform)), penv.platform)
+          filterSettings(psettings.map(_.withPlatform(penv.platform)), penv.platform) ++
+            filterSettings(artifactSettings, penv.platform) ++
+            filterSettings(project.sharedSettings, penv.platform)
       }
     }
 
@@ -397,16 +394,22 @@ class Renderer(
     }
   }
 
+  @deprecated(".", ".")
   protected def formatArtifact(a: Artifact): String = {
     renderArtifact(prepareArtifact(project, a))
   }
 
+  @deprecated(".", ".")
   protected def formatPlugins(plugins: Plugins, platform: Platform, dot: Boolean, inclusive: Boolean): Seq[String] = {
     renderPlugins(dot)(preparePlugins(project, plugins, platform, inclusive))
   }
 
+  @deprecated(".", ".")
   protected def formatSettings(settings: Seq[SettingDef], platform: Platform, platformPrefix: Boolean): String = {
-    renderSettings(platform, platformPrefix)(filterSettings(settings, platform))
+    renderSettings(platform, platformPrefix) {
+      settings
+        .filter(s => s.scope.platform == platform || s.scope.platform == Platform.All || (config.jvmOnly && platform == Platform.All && s.scope.platform == Platform.Jvm))
+    }
   }
 
   protected def cacheIdxName(idx: Int) = {
@@ -418,8 +421,7 @@ class Renderer(
   //
 
   protected def filterSettings(settings: Seq[SettingDef], platform: Platform): Seq[SettingDef] = {
-    settings
-      .filter(s => s.scope.platform == platform || s.scope.platform == Platform.All || (config.jvmOnly && platform == Platform.All && s.scope.platform == Platform.Jvm))
+    settings.filter(_.scope.platform == platform)
   }
 
   protected def filterDeps(deps: Seq[ScopedDependency], isJvmOnly: Boolean, targetPlatform: Platform): Seq[ScopedDependency] = {
