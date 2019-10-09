@@ -13,9 +13,9 @@ final case class PreparedAggregate(
                                     id: ArtifactId,
                                     pathPrefix: Seq[String],
                                     aggregatedNames: Seq[String],
-                                    target: Platform,
+                                    platform: Platform,
                                     plugins: Plugins,
-                                    isRoot: Boolean = false,
+                                    isRoot: Boolean,
                                     enableSharedSettings: Boolean = true,
                                     dontIncludeInSuperAgg: Boolean = false,
                                     settings: Seq[SettingDef] = Seq.empty,
@@ -115,7 +115,7 @@ class Renderer(
     val filteredAggs = aggregates.flatMap(prepareCrossAggregate).filterNot(_.aggregatedNames.isEmpty)
 
     val superAgg = filteredAggs
-      .groupBy(_.target)
+      .groupBy(_.platform)
       .toSeq
       .sortBy(_._1 == Platform.All) // place Platform.All super-aggregate last
       .map {
@@ -135,7 +135,14 @@ class Renderer(
           }
 
           val aggregatedIds = group.filterNot(_.dontIncludeInSuperAgg).map(a => renderName(a.id))
-          PreparedAggregate(ArtifactId(name), path, aggregatedIds, p, project.globalPlugins, isRoot = p == Platform.All)
+          PreparedAggregate(
+            id = ArtifactId(name),
+            pathPrefix = path,
+            aggregatedNames = aggregatedIds,
+            platform = p,
+            plugins = project.globalPlugins,
+            isRoot = p == Platform.All,
+          )
       }
 
     val allAggregates = (filteredAggs ++ superAgg).filterNot(_.aggregatedNames.isEmpty)
@@ -147,7 +154,7 @@ class Renderer(
 
     val settings = project.settings.filter(_.scope.platform == Platform.All).map(renderSetting)
 
-    val imports = Seq(project.imports.map(i => s"import ${i.value}").mkString("\n"))
+    val imports = Seq(project.imports.filter(p => platformEnabled(p.platform)).map(i => s"import ${i.value}").mkString("\n"))
     val plugins = formatPlugins(project.rootPlugins, Platform.All, dot = false, inclusive = true)
 
     val sc = settingsCache.toSeq.sortBy(_._2).map {
@@ -170,19 +177,18 @@ class Renderer(
     val noSuperAgg = aggregate.dontIncludeInSuperAgg
     val fullAgg = aggregate.filteredArtifacts.flatMap {
       a =>
-        if (a.isJvmOnly) {
-          Seq(renderName(a.name))
-        } else {
-          a.platforms.filter(p => platformEnabled(p.platform)).map(p => a.nameOn(p.platform))
-        }
+        a.platforms
+          .filter(p => platformEnabled(p.platform))
+          .map(p => if (a.isJvmOnly) renderName(a.name) else a.nameOn(p.platform))
     }
 
     val allAggregate = PreparedAggregate(
       id = aggregate.name,
       pathPrefix = Seq(".agg", (aggregate.pathPrefix :+ aggregate.name.value).mkString("-")),
       aggregatedNames = fullAgg,
-      target = Platform.All,
+      platform = Platform.All,
       plugins = project.globalPlugins,
+      isRoot = false,
       enableSharedSettings = enableSharedSettings,
       dontIncludeInSuperAgg = noSuperAgg,
       settings = aggregate.settings,
@@ -219,8 +225,9 @@ class Renderer(
           id = id,
           pathPrefix = Seq(".agg", (agg.pathPrefix ++ artname).mkString("-")),
           aggregatedNames = jvmAgg,
-          target = platform,
+          platform = platform,
           plugins = project.globalPlugins,
+          isRoot = false,
           enableSharedSettings = sharedSettings,
           dontIncludeInSuperAgg = disableSuperAgg,
           settings = agg.settings,

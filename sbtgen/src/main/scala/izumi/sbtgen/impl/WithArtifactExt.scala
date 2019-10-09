@@ -57,6 +57,13 @@ trait WithArtifactExt {
 
   protected def platformEnabled(penv: PlatformEnv): Boolean = platformEnabled(penv.platform)
 
+  protected def platformEnabled(p: Platform): Boolean = {
+    p match {
+      case platform: BasePlatform => platformEnabled(platform)
+      case Platform.All => true
+    }
+  }
+
   protected def platformEnabled(p: Platform.BasePlatform): Boolean = {
     p match {
       case Platform.Jvm =>

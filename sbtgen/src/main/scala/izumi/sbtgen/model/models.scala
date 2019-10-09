@@ -175,7 +175,7 @@ case class Aggregate(
   }
 }
 
-case class Import(value: String)
+final case class Import(value: String, platform: Platform = Platform.All)
 
 case class Plugin(name: String, platform: Platform = Platform.All)
 
