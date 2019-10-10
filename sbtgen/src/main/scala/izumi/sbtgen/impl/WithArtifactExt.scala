@@ -11,7 +11,9 @@ trait WithArtifactExt {
 
   protected implicit class AggregateExt(agg: Aggregate) {
     def filteredArtifacts: Seq[Artifact] = {
-      agg.artifacts.filter(a => config.onlyGroups.isEmpty || (agg.groups ++ a.groups).intersect(configuredGroups).nonEmpty)
+      agg.artifacts
+        .filter(a => config.onlyGroups.isEmpty || (agg.groups ++ a.groups).intersect(configuredGroups).nonEmpty)
+        .filter(a => a.platforms.exists(platformEnabled))
     }
   }
 
