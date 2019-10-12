@@ -40,10 +40,18 @@ object MyProject {
         name = ArtifactId("my-lib"),
         artifacts = Seq(
           Artifact(
-            name = ArtifactId("my-module"),
+            name = ArtifactId("my-module-a"),
             libs = Seq.empty,
             depends = Seq.empty,
             platforms = Seq(Platforms.jvm),
+            groups = Set(Group("groupA")),
+          ),
+          Artifact(
+            name = ArtifactId("my-module-b"),
+            libs = Seq.empty,
+            depends = Seq.empty,
+            platforms = Seq(Platforms.jvm),
+            groups = Set(Group("groupB")),
           ),
         ),
       ),
@@ -65,7 +73,11 @@ Alternatively, you may launch it with [Ammonite](https://ammonite.io) if it's in
 amm sbtgen.sc
 ```
 
-This will generate `build.sbt` for `my-project` in current directory. Use `--help` for help:
+This will generate `build.sbt` for `my-project` in current directory.
+
+Use `./sbtgen.sc -u groupA` or `./sbtgen.sc -u groupB` to build only `my-module-a` or `my-module-b`
+
+Use `./sbtgen.sc --help` for help:
 
 ```bash
 $ ./sbtgen.sc --help
