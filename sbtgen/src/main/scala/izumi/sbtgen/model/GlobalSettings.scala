@@ -2,7 +2,7 @@ package izumi.sbtgen.model
 
 case class GlobalSettings(
                            groupId: String,
-                           sbtVersion: String = "1.3.2",
+                           sbtVersion: String = "1.3.3",
                            scalaJsVersion: Version = Version.VConst("0.6.29"),
                            crossProjectVersion: Version = Version.VConst("0.6.1"),
                            scalaNativeVersion: Version = Version.VConst("0.3.7"),
