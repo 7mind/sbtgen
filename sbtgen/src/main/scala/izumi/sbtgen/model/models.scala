@@ -188,10 +188,10 @@ case class Plugins(enabled: Seq[Plugin], disabled: Seq[Plugin] = Seq.empty) {
 case class Project(
                     name: ArtifactId,
                     aggregates: Seq[Aggregate],
-                    settings: Seq[SettingDef] = Seq.empty,
+                    rootSettings: Seq[SettingDef] = Seq.empty,
+                    topLevelSettings: Seq[SettingDef] = Seq.empty,
                     sharedSettings: Seq[SettingDef] = Seq.empty,
                     sharedAggSettings: Seq[SettingDef] = Seq.empty,
-                    sharedRootSettings: Seq[SettingDef] = Seq.empty,
                     imports: Seq[Import] = Seq.empty,
                     globalLibs: Seq[ScopedLibrary] = Seq.empty,
                     rootPlugins: Plugins = Plugins(Seq.empty, Seq.empty),

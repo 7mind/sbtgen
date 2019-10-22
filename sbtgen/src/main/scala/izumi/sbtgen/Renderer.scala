@@ -149,10 +149,10 @@ class Renderer(
     assert(allAggregates.nonEmpty, "All aggregates were filtered out")
     val aggDefs = allAggregates.map(renderAggregateProject(project))
 
-    val unexpected = project.settings.filterNot(_.scope.platform == Platform.All)
+    val unexpected = project.topLevelSettings.filterNot(_.scope.platform == Platform.All)
     assert(unexpected.isEmpty, "Global settings cannot be scoped to a platform")
 
-    val settings = project.settings.filter(_.scope.platform == Platform.All).map(renderSetting)
+    val settings = project.topLevelSettings.filter(_.scope.platform == Platform.All).map(renderSetting)
 
     val imports = Seq(project.imports.filter(p => platformEnabled(p.platform)).map(i => s"import ${i.value}").mkString("\n"))
     val plugins = formatPlugins(project.rootPlugins, Platform.All, dot = false, inclusive = true)
@@ -243,7 +243,7 @@ class Renderer(
       case PreparedAggregate(name, path, agg, platform, plugins, isRoot, enableSharedSettings, _, localSettings) =>
         // FIXME: move logic to prepare
         val hack: Seq[SettingDef] = if (isRoot) {
-          project.sharedRootSettings
+          project.rootSettings
         } else if (enableSharedSettings) {
           project.sharedAggSettings
         } else {
