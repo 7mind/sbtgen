@@ -168,8 +168,7 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
     addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.9.2"),
 
     // https://github.com/sbt/sbt-duplicates-finder
-    addSbtPlugin("org.scala-sbt" % "sbt-duplicates-finder" % "0.8.1"),
-
+    addSbtPlugin("com.github.sbt" % "sbt-duplicates-finder" % "1.0.0"),
   )
 
 lazy val `sbt-tests` = (project in file("sbt/sbt-tests"))
@@ -193,8 +192,8 @@ lazy val `sbt-tests` = (project in file("sbt/sbt-tests"))
         ),
         Option(System.getProperty("sbt.ivy.home"))
           .toSeq
-          .flatMap(value =>  Seq(s"-Dsbt.ivy.home=$value", s"-Divy.home=$value")),
-      ).flatten,
+          .flatMap(value => Seq(s"-Dsbt.ivy.home=$value", s"-Divy.home=$value")),
+      ).flatten
     },
     scriptedBufferLog := false,
     scalaOpts,
