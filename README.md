@@ -117,6 +117,14 @@ Complete projects that use this tool:
 
 ## Contributors: how to publish
 
+To release new version via CI:
+
+```bash
+sbt +clean +test release
+```
+
+To publish manually:
+
 ```bash
 sbt +clean +sonatypeBundleClean +publishSigned +sonatypeBundleRelease
 ```
