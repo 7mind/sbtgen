@@ -13,5 +13,5 @@ object IzumiManifest {
   val BuildScala = "X-Build-Scala"
   val Version = "X-Version"
   val BuildTimestamp = "X-Build-Timestamp"
-  val TsFormat: DateTimeFormatter = DateTimeFormatter.ISO_ZONED_DATE_TIME
+  val TsFormat: DateTimeFormatter = IzumiTime.ISO_DATE_TIME_3NANO
 }
