@@ -179,7 +179,10 @@ final case class Import(value: String, platform: Platform = Platform.All)
 
 case class Plugin(name: String, platform: Platform = Platform.All)
 
-case class Plugins(enabled: Seq[Plugin], disabled: Seq[Plugin] = Seq.empty) {
+case class Plugins(
+                    enabled: Seq[Plugin] = Seq.empty,
+                    disabled: Seq[Plugin] = Seq.empty,
+                  ) {
   def ++(o: Plugins): Plugins = {
     Plugins(enabled ++ o.enabled, disabled ++ o.disabled)
   }
