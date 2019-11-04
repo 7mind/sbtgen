@@ -79,7 +79,7 @@ object Defaults {
   final val Scala213Options = Seq(
     //        "-Xsource:3.0", // is available
     //        "-Xsource:2.14", // Delay -Xsource:2.14 due to spurious warnings https://github.com/scala/bug/issues/11639
-    "-Xsource:2.13",
+    //        "-Xsource:2.13", // Don't use -Xsource: since it's not recommended... https://github.com/scala/bug/issues/11661
     "-Ybackend-parallelism", math.max(1, sys.runtime.availableProcessors() / 2).toString,
     "-explaintypes", // Explain type errors in more detail.
 
