@@ -3,7 +3,7 @@ package izumi.sbtgen
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Paths}
 
-import izumi.sbtgen.model.{GenConfig, GlobalSettings, Project}
+import izumi.sbtgen.model.{Aggregate, Artifact, ArtifactId, GenConfig, GlobalSettings, Project}
 import scopt.OptionParser
 
 case class Config(
