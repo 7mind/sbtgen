@@ -77,14 +77,14 @@ object Defaults {
     "-Ybackend-parallelism", math.max(1, sys.runtime.availableProcessors() / 2).toString,
     "-explaintypes", // Explain type errors in more detail.
 
-    "-Xlint:_",
+    "-Xlint:_,-eta-sam",
 
-    "-Wunused:_",
     "-Wdead-code",
     "-Wextra-implicit",
     "-Wnumeric-widen",
     "-Woctal-literal",
     //"-Wself-implicit", // Spurious warnings for any top-level implicit, including scala.language._
+    "-Wunused:_",
     "-Wvalue-discard",
   )
 
