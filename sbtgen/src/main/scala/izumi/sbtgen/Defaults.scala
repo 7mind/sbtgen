@@ -1,17 +1,21 @@
 package izumi.sbtgen
 
+import izumi.sbtgen.model.Const.CRaw
 import izumi.sbtgen.model._
 
 object Defaults {
   final val SharedOptions = Seq(
     "publishMavenStyle" in SettingScope.Build := true,
-    "scalacOptions" in SettingScope.Build ++= Seq(
+    "scalacOptions" in SettingScope.Build ++= Seq[Const](
       "-encoding", "UTF-8",
       "-target:jvm-1.8",
       "-feature",
       "-unchecked",
       "-deprecation",
       "-language:higherKinds",
+      "-Ybackend-parallelism", CRaw("math.max(1, sys.runtime.availableProcessors() / 2).toString"),
+      "-explaintypes", // Explain type errors in more detail.
+
       // https://github.com/scala/scala/pull/6412
       // https://twitter.com/olafurpg/status/1191299377064824832
       // > The caching logic for compiler plugins is enabled by default in Bloop and that one does make a difference,
@@ -37,8 +41,6 @@ object Defaults {
 
   final val Scala212Options = Seq(
     "-Xsource:2.13",
-    "-Ybackend-parallelism", math.max(1, sys.runtime.availableProcessors() / 2).toString,
-    "-explaintypes", // Explain type errors in more detail.
 
     "-Ypartial-unification", // 2.12 only
     "-Yno-adapted-args", // 2.12 only
@@ -76,13 +78,10 @@ object Defaults {
     "-Ywarn-value-discard", // Warn when non-Unit expression results are unused.
   )
 
-  final val Scala213Options = Seq(
+  final val Scala213Options = Seq[Const](
     //        "-Xsource:3.0", // is available
     //        "-Xsource:2.14", // Delay -Xsource:2.14 due to spurious warnings https://github.com/scala/bug/issues/11639
     //        "-Xsource:2.13", // Don't use -Xsource: since it's not recommended... https://github.com/scala/bug/issues/11661
-    "-Ybackend-parallelism", math.max(1, sys.runtime.availableProcessors() / 2).toString,
-    "-explaintypes", // Explain type errors in more detail.
-
     "-Xlint:_,-eta-sam",
 
     "-Wdead-code",
