@@ -12,6 +12,12 @@ object Defaults {
       "-unchecked",
       "-deprecation",
       "-language:higherKinds",
+      // https://github.com/scala/scala/pull/6412
+      // https://twitter.com/olafurpg/status/1191299377064824832
+      // > The caching logic for compiler plugins is enabled by default in Bloop and that one does make a difference,
+      //   around 20/30%, see https://github.com/scala/scala-dev/issues/458
+      "-Ycache-plugin-class-loader:always",
+      "-Ycache-macro-class-loader:last-modified",
     ),
     "javacOptions" in SettingScope.Build ++= Seq(
       "-encoding", "UTF-8",
