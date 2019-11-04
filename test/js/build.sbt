@@ -18,9 +18,6 @@ lazy val `fundamentals-collections` = crossProject(JVMPlatform, JSPlatform).cros
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -55,9 +52,6 @@ lazy val `fundamentals-collections` = crossProject(JVMPlatform, JSPlatform).cros
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -91,16 +85,12 @@ lazy val `fundamentals-collections` = crossProject(JVMPlatform, JSPlatform).cros
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -144,9 +134,6 @@ lazy val `fundamentals-platform` = crossProject(JVMPlatform, JSPlatform).crossTy
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -181,9 +168,6 @@ lazy val `fundamentals-platform` = crossProject(JVMPlatform, JSPlatform).crossTy
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -217,16 +201,12 @@ lazy val `fundamentals-platform` = crossProject(JVMPlatform, JSPlatform).crossTy
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -271,9 +251,6 @@ lazy val `fundamentals-functional` = crossProject(JVMPlatform, JSPlatform).cross
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -308,9 +285,6 @@ lazy val `fundamentals-functional` = crossProject(JVMPlatform, JSPlatform).cross
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -344,16 +318,12 @@ lazy val `fundamentals-functional` = crossProject(JVMPlatform, JSPlatform).cross
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -400,9 +370,6 @@ lazy val `fundamentals-bio` = crossProject(JVMPlatform, JSPlatform).crossType(Cr
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -437,9 +404,6 @@ lazy val `fundamentals-bio` = crossProject(JVMPlatform, JSPlatform).crossType(Cr
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -473,16 +437,12 @@ lazy val `fundamentals-bio` = crossProject(JVMPlatform, JSPlatform).crossType(Cr
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -531,9 +491,6 @@ lazy val `fundamentals-typesafe-config` = project.in(file("fundamentals/fundamen
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -568,9 +525,6 @@ lazy val `fundamentals-typesafe-config` = project.in(file("fundamentals/fundamen
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -604,16 +558,12 @@ lazy val `fundamentals-typesafe-config` = project.in(file("fundamentals/fundamen
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -647,9 +597,6 @@ lazy val `fundamentals-reflection` = crossProject(JVMPlatform, JSPlatform).cross
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -684,9 +631,6 @@ lazy val `fundamentals-reflection` = crossProject(JVMPlatform, JSPlatform).cross
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -720,16 +664,12 @@ lazy val `fundamentals-reflection` = crossProject(JVMPlatform, JSPlatform).cross
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -780,9 +720,6 @@ lazy val `fundamentals-json-circe` = crossProject(JVMPlatform, JSPlatform).cross
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -817,9 +754,6 @@ lazy val `fundamentals-json-circe` = crossProject(JVMPlatform, JSPlatform).cross
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -853,16 +787,12 @@ lazy val `fundamentals-json-circe` = crossProject(JVMPlatform, JSPlatform).cross
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -918,9 +848,6 @@ lazy val `distage-model` = project.in(file("distage/distage-model"))
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -955,9 +882,6 @@ lazy val `distage-model` = project.in(file("distage/distage-model"))
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -991,16 +915,12 @@ lazy val `distage-model` = project.in(file("distage/distage-model"))
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -1034,9 +954,6 @@ lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -1071,9 +988,6 @@ lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -1107,16 +1021,12 @@ lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -1148,9 +1058,6 @@ lazy val `distage-core` = project.in(file("distage/distage-core"))
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -1185,9 +1092,6 @@ lazy val `distage-core` = project.in(file("distage/distage-core"))
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -1221,16 +1125,12 @@ lazy val `distage-core` = project.in(file("distage/distage-core"))
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -1263,9 +1163,6 @@ lazy val `distage-config` = project.in(file("distage/distage-config"))
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -1300,9 +1197,6 @@ lazy val `distage-config` = project.in(file("distage/distage-config"))
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -1336,16 +1230,12 @@ lazy val `distage-config` = project.in(file("distage/distage-config"))
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -1376,9 +1266,6 @@ lazy val `distage-roles-api` = project.in(file("distage/distage-roles-api"))
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -1413,9 +1300,6 @@ lazy val `distage-roles-api` = project.in(file("distage/distage-roles-api"))
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -1449,16 +1333,12 @@ lazy val `distage-roles-api` = project.in(file("distage/distage-roles-api"))
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -1492,9 +1372,6 @@ lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -1529,9 +1406,6 @@ lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -1565,16 +1439,12 @@ lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -1614,9 +1484,6 @@ lazy val `distage-roles` = project.in(file("distage/distage-roles"))
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -1651,9 +1518,6 @@ lazy val `distage-roles` = project.in(file("distage/distage-roles"))
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -1687,16 +1551,12 @@ lazy val `distage-roles` = project.in(file("distage/distage-roles"))
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -1728,9 +1588,6 @@ lazy val `distage-static` = project.in(file("distage/distage-static"))
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -1765,9 +1622,6 @@ lazy val `distage-static` = project.in(file("distage/distage-static"))
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -1801,16 +1655,12 @@ lazy val `distage-static` = project.in(file("distage/distage-static"))
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -1849,9 +1699,6 @@ lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -1886,9 +1733,6 @@ lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -1922,16 +1766,12 @@ lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -1963,9 +1803,6 @@ lazy val `logstage-api` = crossProject(JVMPlatform, JSPlatform).crossType(CrossT
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -2000,9 +1837,6 @@ lazy val `logstage-api` = crossProject(JVMPlatform, JSPlatform).crossType(CrossT
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -2036,16 +1870,12 @@ lazy val `logstage-api` = crossProject(JVMPlatform, JSPlatform).crossType(CrossT
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -2096,9 +1926,6 @@ lazy val `logstage-core` = crossProject(JVMPlatform, JSPlatform).crossType(Cross
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -2133,9 +1960,6 @@ lazy val `logstage-core` = crossProject(JVMPlatform, JSPlatform).crossType(Cross
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -2169,16 +1993,12 @@ lazy val `logstage-core` = crossProject(JVMPlatform, JSPlatform).crossType(Cross
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -2223,9 +2043,6 @@ lazy val `logstage-rendering-circe` = crossProject(JVMPlatform, JSPlatform).cros
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -2260,9 +2077,6 @@ lazy val `logstage-rendering-circe` = crossProject(JVMPlatform, JSPlatform).cros
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -2296,16 +2110,12 @@ lazy val `logstage-rendering-circe` = crossProject(JVMPlatform, JSPlatform).cros
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -2353,9 +2163,6 @@ lazy val `logstage-di` = project.in(file("logstage/logstage-di"))
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -2390,9 +2197,6 @@ lazy val `logstage-di` = project.in(file("logstage/logstage-di"))
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -2426,16 +2230,12 @@ lazy val `logstage-di` = project.in(file("logstage/logstage-di"))
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -2466,9 +2266,6 @@ lazy val `logstage-config` = project.in(file("logstage/logstage-config"))
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -2503,9 +2300,6 @@ lazy val `logstage-config` = project.in(file("logstage/logstage-config"))
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -2539,16 +2333,12 @@ lazy val `logstage-config` = project.in(file("logstage/logstage-config"))
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -2582,9 +2372,6 @@ lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-s
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -2619,9 +2406,6 @@ lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-s
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -2655,16 +2439,12 @@ lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-s
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -2697,9 +2477,6 @@ lazy val `logstage-sink-slf4j` = project.in(file("logstage/logstage-sink-slf4j")
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -2734,9 +2511,6 @@ lazy val `logstage-sink-slf4j` = project.in(file("logstage/logstage-sink-slf4j")
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -2770,16 +2544,12 @@ lazy val `logstage-sink-slf4j` = project.in(file("logstage/logstage-sink-slf4j")
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -2811,9 +2581,6 @@ lazy val `idealingua-v1-model` = crossProject(JVMPlatform, JSPlatform).crossType
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -2848,9 +2615,6 @@ lazy val `idealingua-v1-model` = crossProject(JVMPlatform, JSPlatform).crossType
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -2884,16 +2648,12 @@ lazy val `idealingua-v1-model` = crossProject(JVMPlatform, JSPlatform).crossType
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -2942,9 +2702,6 @@ lazy val `idealingua-v1-core` = crossProject(JVMPlatform, JSPlatform).crossType(
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -2979,9 +2736,6 @@ lazy val `idealingua-v1-core` = crossProject(JVMPlatform, JSPlatform).crossType(
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -3015,16 +2769,12 @@ lazy val `idealingua-v1-core` = crossProject(JVMPlatform, JSPlatform).crossType(
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -3077,9 +2827,6 @@ lazy val `idealingua-v1-runtime-rpc-scala` = crossProject(JVMPlatform, JSPlatfor
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -3114,9 +2861,6 @@ lazy val `idealingua-v1-runtime-rpc-scala` = crossProject(JVMPlatform, JSPlatfor
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -3150,16 +2894,12 @@ lazy val `idealingua-v1-runtime-rpc-scala` = crossProject(JVMPlatform, JSPlatfor
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -3211,9 +2951,6 @@ lazy val `idealingua-v1-runtime-rpc-http4s` = project.in(file("idealingua-v1/ide
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -3248,9 +2985,6 @@ lazy val `idealingua-v1-runtime-rpc-http4s` = project.in(file("idealingua-v1/ide
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -3284,16 +3018,12 @@ lazy val `idealingua-v1-runtime-rpc-http4s` = project.in(file("idealingua-v1/ide
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -3330,9 +3060,6 @@ lazy val `idealingua-v1-transpilers` = crossProject(JVMPlatform, JSPlatform).cro
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -3367,9 +3094,6 @@ lazy val `idealingua-v1-transpilers` = crossProject(JVMPlatform, JSPlatform).cro
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -3403,16 +3127,12 @@ lazy val `idealingua-v1-transpilers` = crossProject(JVMPlatform, JSPlatform).cro
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -3463,9 +3183,6 @@ lazy val `idealingua-v1-test-defs` = project.in(file("idealingua-v1/idealingua-v
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -3500,9 +3217,6 @@ lazy val `idealingua-v1-test-defs` = project.in(file("idealingua-v1/idealingua-v
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -3536,16 +3250,12 @@ lazy val `idealingua-v1-test-defs` = project.in(file("idealingua-v1/idealingua-v
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -3572,9 +3282,6 @@ lazy val `idealingua-v1-runtime-rpc-typescript` = project.in(file("idealingua-v1
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -3609,9 +3316,6 @@ lazy val `idealingua-v1-runtime-rpc-typescript` = project.in(file("idealingua-v1
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -3645,16 +3349,12 @@ lazy val `idealingua-v1-runtime-rpc-typescript` = project.in(file("idealingua-v1
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -3681,9 +3381,6 @@ lazy val `idealingua-v1-runtime-rpc-go` = project.in(file("idealingua-v1/idealin
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -3718,9 +3415,6 @@ lazy val `idealingua-v1-runtime-rpc-go` = project.in(file("idealingua-v1/idealin
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -3754,16 +3448,12 @@ lazy val `idealingua-v1-runtime-rpc-go` = project.in(file("idealingua-v1/idealin
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -3790,9 +3480,6 @@ lazy val `idealingua-v1-runtime-rpc-csharp` = project.in(file("idealingua-v1/ide
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -3827,9 +3514,6 @@ lazy val `idealingua-v1-runtime-rpc-csharp` = project.in(file("idealingua-v1/ide
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -3863,16 +3547,12 @@ lazy val `idealingua-v1-runtime-rpc-csharp` = project.in(file("idealingua-v1/ide
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -3921,9 +3601,6 @@ lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -3958,9 +3635,6 @@ lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -3994,16 +3668,12 @@ lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -4115,9 +3785,6 @@ lazy val `microsite` = project.in(file("doc/microsite"))
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -4152,9 +3819,6 @@ lazy val `microsite` = project.in(file("doc/microsite"))
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -4188,16 +3852,12 @@ lazy val `microsite` = project.in(file("doc/microsite"))
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -4226,9 +3886,6 @@ lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -4263,9 +3920,6 @@ lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
       )
       case (_, "2.12.8") => Seq(
         "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
         "-Ypartial-unification",
         "-Yno-adapted-args",
         "-Xlint:adapted-args",
@@ -4299,16 +3953,12 @@ lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
         "-Ywarn-value-discard"
       )
       case (_, "2.13.0") => Seq(
-        "-Xsource:2.13",
-        "-Ybackend-parallelism",
-        "8",
-        "-explaintypes",
-        "-Xlint:_",
-        "-Wunused:_",
+        "-Xlint:_,-eta-sam",
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
+        "-Wunused:_",
         "-Wvalue-discard"
       )
       case (_, _) => Seq.empty
@@ -4700,7 +4350,12 @@ lazy val `izumi` = (project in file("."))
       "-feature",
       "-unchecked",
       "-deprecation",
-      "-language:higherKinds"
+      "-language:higherKinds",
+      "-Ybackend-parallelism",
+      math.max(1, sys.runtime.availableProcessors() / 2).toString,
+      "-explaintypes",
+      "-Ycache-plugin-class-loader:always",
+      "-Ycache-macro-class-loader:last-modified"
     ),
     javacOptions in ThisBuild ++= Seq(
       "-encoding",
