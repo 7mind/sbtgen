@@ -4,6 +4,8 @@ SBT build generator for role-based projects, based on [Ammonite](https://ammonit
 
 Details: [Monorepo or Multirepo? Role-Based Repositories](https://blog.7mind.io/role-based-repositories.html).
 
+See also: [role-based projects for .NET/C#](https://github.com/CK-Build/CKli/)
+
 ## Quick Start
 
 Create a file `sbtgen.sc` and paste the following code:
@@ -110,7 +112,7 @@ Complete projects that use this tool:
 * Izumi framework build:
   * https://github.com/7mind/izumi/blob/develop/project/Deps.sc
   * https://github.com/7mind/izumi/blob/develop/sbtgen.sc
-  
+
 * Test project:
   * sbtgen script: https://github.com/7mind/sbtgen/blob/develop/sbtgen/src/test/scala/izumi/sbtgen/TestProject.scala
   * generated project: https://github.com/7mind/sbtgen/blob/develop/test/js/build.sbt
@@ -128,3 +130,4 @@ To publish manually:
 ```bash
 sbt +clean +sonatypeBundleClean +publishSigned +sonatypeBundleRelease
 ```
+

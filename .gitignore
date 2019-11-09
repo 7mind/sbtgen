@@ -1,6 +1,8 @@
 testproject
 test-out
 
+.metals
+
 /local.sbt
 .secrets*
 secrets.tar
