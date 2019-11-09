@@ -4,7 +4,7 @@ SBT build generator for role-based projects, based on [Ammonite](https://ammonit
 
 Details: [Monorepo or Multirepo? Role-Based Repositories](https://blog.7mind.io/role-based-repositories.html).
 
-See also: [role-based projects for .NET/C#](https://github.com/CK-Build/CKli/)
+See also: [role-based projects for .NET/C# and JS](https://github.com/CK-Build/CKli/)
 
 ## Quick Start
 
