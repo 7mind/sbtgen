@@ -95,7 +95,6 @@ object Defaults {
 
   final val SbtGenPlugins = Seq(
     SbtPlugin("io.7mind.izumi.sbt", "sbt-izumi", Version.SbtGen),
-    SbtPlugin("io.7mind.izumi.sbt", "sbt-izumi-deps", Version.SbtGen),
   )
 
   final val SbtMeta = Seq(

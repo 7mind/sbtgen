@@ -1,9 +1,9 @@
 import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
+import xerial.sbt.Sonatype.autoImport.sonatypeProfileName
 
 turbo in ThisBuild := true
 classLoaderLayeringStrategy in ThisBuild := ClassLoaderLayeringStrategy.ScalaLibrary
 
-name := "izumi-sbtgen"
 organization in ThisBuild := "io.7mind.izumi.sbt"
 
 homepage in ThisBuild := Some(url("https://izumi.7mind.io"))
@@ -14,20 +14,11 @@ developers in ThisBuild := List(
 scmInfo in ThisBuild := Some(ScmInfo(url("https://github.com/7mind/sbtgen"), "scm:git:https://github.com/7mind/sbtgen.git"))
 credentials in ThisBuild += Credentials(file(".secrets/credentials.sonatype-nexus.properties"))
 
-sonatypeProfileName := "io.7mind"
-releaseProcess := Seq[ReleaseStep](
-  checkSnapshotDependencies, // : ReleaseStep
-  inquireVersions, // : ReleaseStep
-  runClean, // : ReleaseStep
-  runTest, // : ReleaseStep
-  setReleaseVersion, // : ReleaseStep
-  commitReleaseVersion, // : ReleaseStep, performs the initial git checks
-  tagRelease, // : ReleaseStep
-  //publishArtifacts,                       // : ReleaseStep, checks whether `publishTo` is properly set up
-  setNextVersion, // : ReleaseStep
-  commitNextVersion, // : ReleaseStep
-  pushChanges // : ReleaseStep, also checks that an upstream branch is properly configured
-)
+publishTo in ThisBuild := (if (!isSnapshot.value) {
+  sonatypePublishToBundle.value
+} else {
+  Some(Opts.resolver.sonatypeSnapshots)
+})
 
 val scalaOpts = scalacOptions ++= ((isSnapshot.value, scalaVersion.value) match {
   case (_, ScalaVersions.scala_212) => Seq(
@@ -89,18 +80,11 @@ val scalaOpts = scalacOptions ++= ((isSnapshot.value, scalaVersion.value) match 
   case (_, _) => Seq.empty
 })
 
-publishTo in ThisBuild := (if (!isSnapshot.value) {
-  sonatypePublishToBundle.value
-} else {
-  Some(Opts.resolver.sonatypeSnapshots)
-})
-
-
 lazy val sbtmeta = (project in file("sbtmeta"))
   .settings(
     crossScalaVersions := Seq(ScalaVersions.scala_213, ScalaVersions.scala_212),
     scalaVersion := crossScalaVersions.value.head,
-    libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value % Optional,
+    libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided,
     scalaOpts,
   )
 
@@ -120,15 +104,6 @@ lazy val sbtgen = (project in file("sbtgen"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}",
     ),
-    scalaOpts,
-  )
-
-lazy val `sbt-izumi-deps` = (project in file("sbt/sbt-izumi-deps"))
-  .settings(
-    crossSbtVersions := Seq(sbtVersion.value),
-    crossScalaVersions := Seq(ScalaVersions.scala_212),
-    scalaVersion := crossScalaVersions.value.head,
-    sbtPlugin := true,
     scalaOpts,
   )
 
@@ -172,7 +147,7 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
   )
 
 lazy val `sbt-tests` = (project in file("sbt/sbt-tests"))
-  .dependsOn(`sbt-izumi`, `sbt-izumi-deps`)
+  .dependsOn(`sbt-izumi`)
   .enablePlugins(ScriptedPlugin)
   .settings(
     crossSbtVersions := Seq(sbtVersion.value),
@@ -203,11 +178,25 @@ lazy val `sbtgen-root` = (project in file("."))
   .aggregate(
     sbtgen,
     sbtmeta,
-    `sbt-izumi-deps`,
     `sbt-izumi`,
   )
   .settings(
+    name := "izumi-sbtgen",
     scalaVersion := ScalaVersions.scala_212,
     crossScalaVersions := Nil,
     skip in publish := true,
+    sonatypeProfileName := "io.7mind",
+    releaseProcess := Seq[ReleaseStep](
+      checkSnapshotDependencies, // : ReleaseStep
+      inquireVersions, // : ReleaseStep
+      runClean, // : ReleaseStep
+      runTest, // : ReleaseStep
+      setReleaseVersion, // : ReleaseStep
+      commitReleaseVersion, // : ReleaseStep, performs the initial git checks
+      tagRelease, // : ReleaseStep
+      //publishArtifacts,                       // : ReleaseStep, checks whether `publishTo` is properly set up
+      setNextVersion, // : ReleaseStep
+      commitNextVersion, // : ReleaseStep
+      pushChanges // : ReleaseStep, also checks that an upstream branch is properly configured
+    ),
   )
