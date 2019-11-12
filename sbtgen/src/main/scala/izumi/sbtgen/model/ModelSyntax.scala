@@ -14,9 +14,8 @@ trait ModelSyntax {
 
     def :=(const: Const): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Assign, const, scope)
     def +=(const: Const): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Append, const, scope)
+    def ++=(const: Const): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Extend, const, scope)
 
-    def ++=(const: Const.EmptyMap.type): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Extend, const, scope)
-    def ++=(const: Const.EmptySeq.type): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Extend, const, scope)
     def ++=[T: Const.Conv](const: Seq[T]): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Extend, const, scope)
     def ++=[T: Const.Conv](const: Map[Const.Scalar, T]): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Extend, const, scope)
 
