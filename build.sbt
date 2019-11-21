@@ -119,7 +119,7 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
     scalaOpts,
 
     // https://github.com/scoverage/sbt-scoverage
-    addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.0"),
+    addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.1"),
 
     // http://www.scala-sbt.org/sbt-pgp/
     addSbtPlugin("com.jsuereth" % "sbt-pgp" % "2.0.1-M3"),
