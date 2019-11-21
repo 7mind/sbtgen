@@ -134,7 +134,7 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
     addSbtPlugin("com.orrsella" % "sbt-stats" % "1.0.7"),
 
     // https://github.com/xerial/sbt-sonatype
-    addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.8"),
+    addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.8.1"),
 
     // https://github.com/sbt/sbt-release
     addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.12"),
