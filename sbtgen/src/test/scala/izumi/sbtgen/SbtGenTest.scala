@@ -2,9 +2,9 @@ package izumi.sbtgen
 
 import izumi.sbtgen.model.GlobalSettings
 import izumi.sbtgen.sbtmeta.SbtgenMeta
-import org.scalatest.WordSpec
+import org.scalatest.wordspec.AnyWordSpec
 
-class SbtGenTest extends WordSpec {
+class SbtGenTest extends AnyWordSpec {
   "sbtgen" should {
     "produce the same output in JVM-only" in {
       val settings = GlobalSettings(
