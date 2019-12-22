@@ -114,7 +114,7 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
     crossSbtVersions := Seq(sbtVersion.value),
     sbtPlugin := true,
     libraryDependencies ++= Seq(
-      "io.get-coursier" %% "coursier" % "2.0.0-RC3-4",
+      "io.get-coursier" %% "coursier" % "2.0.0-RC5-4",
     ),
     scalaOpts,
 
