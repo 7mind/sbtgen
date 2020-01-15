@@ -74,6 +74,7 @@ object IzumiPublishingPlugin extends AutoPlugin {
         filter(
           env("PUBLISH", url),
           file(realmId, url, syntax.file(s".secrets/credentials.$realmId.properties")),
+          file(realmId, url, Path.userHome / s".sbt/secrets/credentials.$realmId.properties"),
           file(realmId, url, Path.userHome / s".sbt/credentials.$realmId.properties"),
         )
       }
