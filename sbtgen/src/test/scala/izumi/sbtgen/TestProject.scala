@@ -194,7 +194,7 @@ object Izumi {
         "scalacOptions" in SettingScope.Build += """s"-Xmacro-settings:scala-version=${scalaVersion.value}"""".raw,
         "scalacOptions" in SettingScope.Build += s"""${"\"" * 3}-Xmacro-settings:scalatest-version=${V.scalatest}${"\"" * 3}""".raw,
         "scalacOptions" in SettingScope.Build += s"""${"\"" * 3}-Xmacro-settings:scala-versions=${Targets.targetScala.map(_.value).mkString(":")}${"\"" * 3}""".raw,
-        SettingDef.RawSettingDef("""scalacOptions in ThisBuild ++= Seq("-Ybackend-parallelism", math.max(1, sys.runtime.availableProcessors() - 1).toString)"""),
+        SettingDef.RawSettingDef("""scalacOptions in ThisBuild ++= Seq("-Ybackend-parallelism", math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString)"""),
       )
 
       final val sharedSettings = Seq(
