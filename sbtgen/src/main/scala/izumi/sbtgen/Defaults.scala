@@ -13,7 +13,7 @@ object Defaults {
       "-unchecked",
       "-deprecation",
       "-language:higherKinds",
-      "-Ybackend-parallelism", CRaw("math.max(1, sys.runtime.availableProcessors() - 1).toString"),
+      "-Ybackend-parallelism", CRaw("math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString"),
       "-explaintypes", // Explain type errors in more detail.
 
       // https://github.com/scala/scala/pull/6412
