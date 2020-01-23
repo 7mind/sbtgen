@@ -643,7 +643,7 @@ object Izumi {
     groups = Groups.docs,
     defaultPlatforms = Targets.jvmDocs,
     dontIncludeInSuperAgg = true,
-    enableSharedSettings = false,
+    enableProjectSharedAggSettings = false,
     settings = Projects.root.docSettings,
   )
 
@@ -663,7 +663,7 @@ object Izumi {
     groups = Groups.docs,
     defaultPlatforms = Targets.jvm,
     dontIncludeInSuperAgg = true,
-    enableSharedSettings = false,
+    enableProjectSharedAggSettings = false,
   )
 
   val izumi: Project = Project(

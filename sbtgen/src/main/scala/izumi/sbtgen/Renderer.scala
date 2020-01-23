@@ -16,7 +16,7 @@ final case class PreparedAggregate(
                                     platform: Platform,
                                     plugins: Plugins,
                                     isRoot: Boolean,
-                                    enableSharedSettings: Boolean = true,
+                                    enableProjectSharedAggSettings: Boolean = true,
                                     dontIncludeInSuperAgg: Boolean = false,
                                     settings: Seq[SettingDef] = Seq.empty,
                                   )
@@ -173,7 +173,7 @@ class Renderer(
   }
 
   protected def prepareCrossAggregate(aggregate: Aggregate): Seq[PreparedAggregate] = {
-    val enableSharedSettings = aggregate.enableSharedSettings
+    val enableSharedSettings = aggregate.enableProjectSharedAggSettings
     val noSuperAgg = aggregate.dontIncludeInSuperAgg
     val fullAgg = aggregate.filteredArtifacts.flatMap {
       a =>
@@ -189,7 +189,7 @@ class Renderer(
       platform = Platform.All,
       plugins = project.globalPlugins,
       isRoot = false,
-      enableSharedSettings = enableSharedSettings,
+      enableProjectSharedAggSettings = enableSharedSettings,
       dontIncludeInSuperAgg = noSuperAgg,
       settings = aggregate.settings,
     )
@@ -228,7 +228,7 @@ class Renderer(
           platform = platform,
           plugins = project.globalPlugins,
           isRoot = false,
-          enableSharedSettings = sharedSettings,
+          enableProjectSharedAggSettings = sharedSettings,
           dontIncludeInSuperAgg = disableSuperAgg,
           settings = agg.settings,
         ))

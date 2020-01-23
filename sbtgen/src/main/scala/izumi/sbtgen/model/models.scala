@@ -142,7 +142,7 @@ case class Aggregate(
                       groups: Set[Group] = Set.empty,
                       defaultPlatforms: Seq[PlatformEnv] = Seq.empty,
                       settings: Seq[SettingDef] = Seq.empty,
-                      enableSharedSettings: Boolean = true,
+                      enableProjectSharedAggSettings: Boolean = true,
                       dontIncludeInSuperAgg: Boolean = false,
                       sharedDeps: Seq[ScopedDependency] = Seq.empty,
                       sharedLibs: Seq[ScopedLibrary] = Seq.empty,
