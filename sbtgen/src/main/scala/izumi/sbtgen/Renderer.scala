@@ -433,18 +433,24 @@ class Renderer(
 
   protected def filterDeps(deps: Seq[ScopedDependency], isJvmOnly: Boolean, targetPlatform: Platform): Seq[ScopedDependency] = {
     val predicate = targetPlatform match {
-      case platform: BasePlatform =>
-        (d: ScopedDependency) => d.scope.platform == platform
+      case _: BasePlatform =>
+        (d: ScopedDependency) => d.scope.platform == targetPlatform
       case Platform.All =>
-        (d: ScopedDependency) => isJvmOnly || (d.scope.platform == Platform.All && !index(d.name).isJvmOnly)
+        (d: ScopedDependency) => isJvmOnly && d.scope.platform.supportsPlatform(Platform.Jvm) || (d.scope.platform == Platform.All && !index(d.name).isJvmOnly)
     }
 
     deps.filter(predicate)
   }
 
   protected def filterLibDeps(project: Project, libs: Seq[ScopedLibrary], isJvmOnly: Boolean, targetPlatform: Platform): Seq[ScopedLibrary] = {
-    (project.globalLibs ++ libs)
-      .filter(d => (isJvmOnly && targetPlatform == Platform.All) || d.scope.platform == targetPlatform)
+    val predicate = targetPlatform match {
+      case _: BasePlatform =>
+        (d: ScopedLibrary) => d.scope.platform == targetPlatform
+      case Platform.All =>
+        (d: ScopedLibrary) => isJvmOnly && d.scope.platform.supportsPlatform(Platform.Jvm) || d.scope.platform == targetPlatform
+    }
+
+    (project.globalLibs ++ libs).filter(predicate)
   }
 
 }

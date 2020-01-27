@@ -1,6 +1,6 @@
 package izumi.sbtgen.model
 
-import izumi.sbtgen.model.Platform.BasePlatform
+import izumi.sbtgen.model.Platform.{All, BasePlatform}
 
 import scala.collection.immutable.Queue
 import scala.language.implicitConversions
@@ -29,7 +29,9 @@ object Scope {
 
 case class ScalaVersion(value: String)
 
-sealed trait Platform
+sealed trait Platform {
+  final def supportsPlatform(p: BasePlatform): Boolean = this == p || this == Platform.All
+}
 object Platform {
   sealed trait BasePlatform extends Platform
   case object Jvm extends BasePlatform
