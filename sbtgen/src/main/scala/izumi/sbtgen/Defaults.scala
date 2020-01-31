@@ -13,15 +13,7 @@ object Defaults {
       "-unchecked",
       "-deprecation",
       "-language:higherKinds",
-      "-Ybackend-parallelism", CRaw("math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString"),
       "-explaintypes", // Explain type errors in more detail.
-
-      // https://github.com/scala/scala/pull/6412
-      // https://twitter.com/olafurpg/status/1191299377064824832
-      // > The caching logic for compiler plugins is enabled by default in Bloop and that one does make a difference,
-      //   around 20/30%, see https://github.com/scala/scala-dev/issues/458
-      "-Ycache-plugin-class-loader:always",
-      "-Ycache-macro-class-loader:last-modified",
     ),
     "javacOptions" in SettingScope.Build ++= Seq(
       "-encoding", "UTF-8",
@@ -41,6 +33,8 @@ object Defaults {
 
   final val Scala212Options = Seq(
     "-Xsource:2.13",
+
+    "-Ybackend-parallelism", CRaw("math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString"),
 
     "-Ypartial-unification", // 2.12 only
     "-Yno-adapted-args", // 2.12 only
@@ -76,6 +70,13 @@ object Defaults {
     //"-Ywarn-self-implicit", // Spurious warnings for any top-level implicit, including scala.language._
     "-Ywarn-unused-import", // Warn when imports are unused.
     "-Ywarn-value-discard", // Warn when non-Unit expression results are unused.
+
+    // https://github.com/scala/scala/pull/6412
+    // https://twitter.com/olafurpg/status/1191299377064824832
+    // > The caching logic for compiler plugins is enabled by default in Bloop and that one does make a difference,
+    //   around 20/30%, see https://github.com/scala/scala-dev/issues/458
+    "-Ycache-plugin-class-loader:always",
+    "-Ycache-macro-class-loader:last-modified",
   )
 
   final val Scala213Options = Seq[Const](
@@ -84,6 +85,8 @@ object Defaults {
     //        "-Xsource:2.13", // Don't use -Xsource: since it's not recommended... https://github.com/scala/bug/issues/11661
     "-Xlint:_,-eta-sam",
 
+    "-Ybackend-parallelism", CRaw("math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString"),
+
     "-Wdead-code",
     "-Wextra-implicit",
     "-Wnumeric-widen",
@@ -91,6 +94,13 @@ object Defaults {
     //"-Wself-implicit", // Spurious warnings for any top-level implicit, including scala.language._
     "-Wunused:_",
     "-Wvalue-discard",
+
+    // https://github.com/scala/scala/pull/6412
+    // https://twitter.com/olafurpg/status/1191299377064824832
+    // > The caching logic for compiler plugins is enabled by default in Bloop and that one does make a difference,
+    //   around 20/30%, see https://github.com/scala/scala-dev/issues/458
+    "-Ycache-plugin-class-loader:always",
+    "-Ycache-macro-class-loader:last-modified",
   )
 
   final val SbtGenPlugins = Seq(
