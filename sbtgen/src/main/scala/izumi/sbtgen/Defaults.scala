@@ -31,7 +31,7 @@ object Defaults {
     )
   )
 
-  final val Scala212Options = Seq(
+  final val Scala212Options = Seq[Const](
     "-Xsource:2.13",
 
     "-Ybackend-parallelism", CRaw("math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString"),
