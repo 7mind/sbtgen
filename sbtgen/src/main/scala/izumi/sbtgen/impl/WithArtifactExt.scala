@@ -48,7 +48,7 @@ trait WithArtifactExt {
           }
         case x: BasePlatform =>
           if (a.supportsPlatform(x)) {
-            a.name.value + platformName(x).toUpperCase
+            a.name.value + platformTypeName(x)
           } else {
             throw new RuntimeException(s"Project do not support platform `$platform`: $a")
           }
@@ -87,4 +87,16 @@ trait WithArtifactExt {
         "native"
     }
   }
+
+  protected def platformTypeName(p: Platform.BasePlatform): String = {
+    p match {
+      case Platform.Jvm =>
+        "JVM"
+      case Platform.Js =>
+        "JS"
+      case Platform.Native =>
+        "Native"
+    }
+  }
+
 }
