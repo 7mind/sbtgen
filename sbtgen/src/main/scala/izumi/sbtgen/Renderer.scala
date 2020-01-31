@@ -519,7 +519,7 @@ trait Renderers
         s"""lazy val ${renderName(name)} = project.in(file(${stringLit(path)}))"""
 
       case PreparedArtifactHeader(name, path, Cross(platforms)) =>
-        val platformsStr = platforms.map(p => s"${platformName(p).toUpperCase}Platform").mkString(", ")
+        val platformsStr = platforms.map(p => s"${platformTypeName(p)}Platform").mkString(", ")
         s"""lazy val ${renderName(name)} = crossProject($platformsStr).crossType(CrossType.Pure).in(file(${stringLit(path)}))"""
     }
   }
