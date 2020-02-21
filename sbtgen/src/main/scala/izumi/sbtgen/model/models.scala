@@ -1,6 +1,6 @@
 package izumi.sbtgen.model
 
-import izumi.sbtgen.model.Platform.{All, BasePlatform}
+import izumi.sbtgen.model.Platform.BasePlatform
 
 import scala.collection.immutable.Queue
 import scala.language.implicitConversions

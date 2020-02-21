@@ -97,8 +97,9 @@ object Entrypoint {
 
     val files = Map(
       "build.sbt" -> main.mkString("", "\n\n", "\n"),
-      "project/build.properties" -> s"sbt.version = ${config.settings.sbtVersion}",
-    )
+    ) ++ config.settings.sbtVersion.fold(Map.empty[String, String])(sbtVersion => Map(
+      "project/build.properties" -> s"sbt.version = $sbtVersion",
+    ))
 
     val moreFiles = makeMoreBoilerplate(config, project, renderer)
 
