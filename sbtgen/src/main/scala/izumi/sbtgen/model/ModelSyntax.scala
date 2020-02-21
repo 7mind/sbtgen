@@ -15,9 +15,13 @@ trait ModelSyntax {
     def :=(const: Const): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Assign, const, scope)
     def +=(const: Const): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Append, const, scope)
     def ++=(const: Const): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Extend, const, scope)
+    def -=(const: Const): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Remove, const, scope)
+    def --=(const: Const): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Subtract, const, scope)
 
     def ++=[T: Const.Conv](const: Seq[T]): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Extend, const, scope)
     def ++=[T: Const.Conv](const: Map[Const.Scalar, T]): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Extend, const, scope)
+    def --=[T: Const.Conv](const: Seq[T]): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Subtract, const, scope)
+    def --=[T: Const.Conv](const: Map[Const.Scalar, T]): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Subtract, const, scope)
 
     def :=(const: Seq[(SettingKey, Const)]): ScopedSettingDef = ScopedSettingDef(s, SettingOp.Assign, const, scope)
     def +=(const: Seq[(SettingKey, Const)]): ScopedSettingDef = ScopedSettingDef(s, SettingOp.Append, const, scope)

@@ -40,9 +40,13 @@ object SettingDef {
 
 sealed trait SettingOp
 object SettingOp {
-  case object Append extends SettingOp
   case object Assign extends SettingOp
+
+  case object Append extends SettingOp
   case object Extend extends SettingOp
+
+  case object Remove extends SettingOp
+  case object Subtract extends SettingOp
 }
 
 final case class SettingKey(language: Option[ScalaVersion], release: Option[Boolean])

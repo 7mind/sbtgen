@@ -588,12 +588,16 @@ trait Renderers
     }
 
     val op = settingDef.op match {
-      case SettingOp.Append =>
-        "+="
       case SettingOp.Assign =>
         ":="
+      case SettingOp.Append =>
+        "+="
       case SettingOp.Extend =>
         "++="
+      case SettingOp.Remove =>
+        "-="
+      case SettingOp.Subtract =>
+        "--="
     }
 
     val out = settingDef match {
