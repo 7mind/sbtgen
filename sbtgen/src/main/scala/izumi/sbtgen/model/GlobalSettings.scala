@@ -2,9 +2,9 @@ package izumi.sbtgen.model
 
 case class GlobalSettings(
                            groupId: String,
-                           sbtVersion: String = "1.3.7",
-                           scalaJsVersion: Version = Version.VConst("0.6.29"),
-                           crossProjectVersion: Version = Version.VConst("0.6.1"),
-                           scalaNativeVersion: Version = Version.VConst("0.3.7"),
+                           sbtVersion: Option[String] = Some("1.3.8"),
+                           scalaJsVersion: Version = Version.VConst("0.6.32"),
+                           scalaNativeVersion: Version = Version.VConst("0.4.0-M2"),
+                           crossProjectVersion: Version = Version.VConst("1.0.0"),
                            bundlerVersion: Version = Version.VConst("0.14.0"),
                          )
