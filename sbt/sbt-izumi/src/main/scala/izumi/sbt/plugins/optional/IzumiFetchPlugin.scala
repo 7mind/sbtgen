@@ -5,7 +5,6 @@ import java.io.File
 import coursier._
 import coursier.core.Authentication
 import coursier.maven.MavenRepository
-import coursier.util._
 import izumi.sbt.plugins.optional.IzumiPublishingPlugin.Keys.publishTargets
 import izumi.sbt.plugins.optional.IzumiPublishingPlugin.MavenTarget
 import sbt.Keys.{target, _}
@@ -142,7 +141,7 @@ object CoursierCompat {
           throw new IllegalArgumentException(s"Unexpected crossversion in $module")
       }
 
-      Dependency.of(
+      Dependency(
         module = Module(Organization(module.organization), ModuleName(name), module.extraAttributes),
         version = module.revision
       ).withAttributes(
@@ -157,7 +156,7 @@ class CoursierFetch {
   protected val logger: ConsoleLogger = ConsoleLogger()
 
   def resolve(repositories: Seq[MavenRepository], modules: Seq[Dependency]): Seq[File] = {
-    Fetch[Task]()
+    Fetch()
       .addDependencies(modules: _*)
       .addRepositories(repositories: _*)
       .run()
