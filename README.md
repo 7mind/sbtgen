@@ -111,7 +111,9 @@ Complete projects that use this tool:
 
 * Izumi framework build:
   * https://github.com/7mind/izumi/blob/develop/project/Deps.sc
-  * https://github.com/7mind/izumi/blob/develop/sbtgen.sc
+
+* `izumi-reflect` build:
+  * https://github.com/zio/izumi-reflect/blob/master/project/Deps.sc
 
 * Test project:
   * sbtgen script: https://github.com/7mind/sbtgen/blob/develop/sbtgen/src/test/scala/izumi/sbtgen/TestProject.scala
