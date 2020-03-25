@@ -140,7 +140,7 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
     addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.13"),
 
     // https://github.com/jrudolph/sbt-dependency-graph
-    addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.9.2"),
+    addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.10.0-RC1"),
 
     // https://github.com/sbt/sbt-duplicates-finder
     addSbtPlugin("com.github.sbt" % "sbt-duplicates-finder" % "1.0.0"),
