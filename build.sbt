@@ -1,3 +1,5 @@
+import sbt.internal.librarymanagement.mavenint.PomExtraDependencyAttributes.SbtVersionKey
+import sbt.internal.librarymanagement.mavenint.PomExtraDependencyAttributes.ScalaVersionKey
 import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 import xerial.sbt.Sonatype.autoImport.sonatypeProfileName
 
@@ -115,35 +117,35 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
     sbtPlugin := true,
     libraryDependencies ++= Seq(
       "io.get-coursier" %% "coursier" % "2.0.0-RC6-11",
+
+      // https://github.com/scoverage/sbt-scoverage
+      ("org.scoverage" % "sbt-scoverage" % "1.6.1").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
+
+      // http://www.scala-sbt.org/sbt-pgp/
+      ("com.jsuereth" % "sbt-pgp" % "2.0.1").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
+
+      // https://github.com/sbt/sbt-git
+      ("com.typesafe.sbt" % "sbt-git" % "1.0.0").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
+
+      // http://www.scalastyle.org/sbt.html
+      ("org.scalastyle" %% "scalastyle-sbt-plugin" % "1.0.0").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
+
+      // https://github.com/orrsella/sbt-stats
+      ("com.orrsella" % "sbt-stats" % "1.0.7").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
+
+      // https://github.com/xerial/sbt-sonatype
+      ("org.xerial.sbt" % "sbt-sonatype" % "3.8.1").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
+
+      // https://github.com/sbt/sbt-release
+      ("com.github.gseitz" % "sbt-release" % "1.0.13").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
+
+      // https://github.com/jrudolph/sbt-dependency-graph
+      ("net.virtual-void" % "sbt-dependency-graph" % "0.10.0-RC1").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
+
+      // https://github.com/sbt/sbt-duplicates-finder
+      ("com.github.sbt" % "sbt-duplicates-finder" % "1.0.0").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
     ),
     scalaOpts,
-
-    // https://github.com/scoverage/sbt-scoverage
-    addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.1"),
-
-    // http://www.scala-sbt.org/sbt-pgp/
-    addSbtPlugin("com.jsuereth" % "sbt-pgp" % "2.0.1"),
-
-    // https://github.com/sbt/sbt-git
-    addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "1.0.0"),
-
-    // http://www.scalastyle.org/sbt.html
-    addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "1.0.0"),
-
-    // https://github.com/orrsella/sbt-stats
-    addSbtPlugin("com.orrsella" % "sbt-stats" % "1.0.7"),
-
-    // https://github.com/xerial/sbt-sonatype
-    addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.8.1"),
-
-    // https://github.com/sbt/sbt-release
-    addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.13"),
-
-    // https://github.com/jrudolph/sbt-dependency-graph
-    addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.10.0-RC1"),
-
-    // https://github.com/sbt/sbt-duplicates-finder
-    addSbtPlugin("com.github.sbt" % "sbt-duplicates-finder" % "1.0.0"),
   )
 
 lazy val `sbt-tests` = (project in file("sbt/sbt-tests"))
