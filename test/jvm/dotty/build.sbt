@@ -7,11 +7,11 @@ lazy val `test` = project.in(file("test"))
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
     unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
     unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
-    unmanagedSourceDirectories in Compile := { (isSnapshot.value, scalaVersion.value) match {
+    unmanagedSourceDirectories in Compile += { (isSnapshot.value, scalaVersion.value) match {
       case (_, "0.23.0-RC1") => baseDirectory.value / "src/main/scala-3" 
       case (_, _) => baseDirectory.value / "src/main/scala-2" 
     } },
-    unmanagedSourceDirectories in Test := { (isSnapshot.value, scalaVersion.value) match {
+    unmanagedSourceDirectories in Test += { (isSnapshot.value, scalaVersion.value) match {
       case (_, "0.23.0-RC1") => baseDirectory.value / "src/test/scala-3" 
       case (_, _) => baseDirectory.value / "src/test/scala-2" 
     } },

@@ -5,11 +5,11 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 lazy val `test` = project.in(file("test"))
   .settings(
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile := { (isSnapshot.value, scalaVersion.value) match {
+    unmanagedSourceDirectories in Compile += { (isSnapshot.value, scalaVersion.value) match {
       case (_, "0.23.0-RC1") => baseDirectory.value / "src/main/scala-3" 
       case (_, _) => baseDirectory.value / "src/main/scala-2" 
     } },
-    unmanagedSourceDirectories in Test := { (isSnapshot.value, scalaVersion.value) match {
+    unmanagedSourceDirectories in Test += { (isSnapshot.value, scalaVersion.value) match {
       case (_, "0.23.0-RC1") => baseDirectory.value / "src/test/scala-3" 
       case (_, _) => baseDirectory.value / "src/test/scala-2" 
     } },
