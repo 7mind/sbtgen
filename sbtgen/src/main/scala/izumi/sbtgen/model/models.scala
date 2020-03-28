@@ -27,7 +27,7 @@ object Scope {
   final case class Raw(s: String) extends Scope
 }
 
-case class ScalaVersion(value: String)
+final case class ScalaVersion(value: String, isDotty: Boolean = false)
 
 sealed trait Platform {
   final def supportsPlatform(p: BasePlatform): Boolean = this == p || this == Platform.All

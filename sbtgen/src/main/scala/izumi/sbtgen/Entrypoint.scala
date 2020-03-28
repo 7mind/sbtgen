@@ -146,6 +146,13 @@ object Entrypoint {
            |""".stripMargin)
     }
 
+    if (project.aggregates.exists(_.merge.artifacts.exists(_.platforms.exists(_.language.exists(_.isDotty))))) {
+      b.append(
+        s"""// https://github.com/lampepfl/dotty-example-project#projectpluginssbt
+           |addSbtPlugin("ch.epfl.lamp" % "sbt-dotty" % ${renderer renderVersion config.settings.sbtDottyVersion})
+           |""".stripMargin)
+    }
+
     b.append('\n')
     b.append("/" * 80)
     b.append('\n')
