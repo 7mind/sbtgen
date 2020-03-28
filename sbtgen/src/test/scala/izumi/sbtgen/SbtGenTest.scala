@@ -12,8 +12,9 @@ class SbtGenTest extends AnyWordSpec {
       )
 
       val dir = "target/test-out-jvm/"
-      val out = Seq("-d", "-o", dir)
-      Entrypoint.main(Izumi.izumi, settings, out)
+      val out = Seq("-d", "-o", _: String)
+      Entrypoint.main(Izumi.izumi, settings, out(dir))
+      Entrypoint.main(TestDottyProject.project, settings, out(s"$dir/dotty"))
 
       import scala.sys.process._
       assert(s"diff -r $dir/ test/jvm/".!!.isEmpty)
@@ -25,8 +26,9 @@ class SbtGenTest extends AnyWordSpec {
       )
 
       val dir = "target/test-out-js/"
-      val out = Seq("--js", "-d", "-o", dir)
-      Entrypoint.main(Izumi.izumi, settings, out)
+      val out = Seq("--js", "-d", "-o", _: String)
+      Entrypoint.main(Izumi.izumi, settings, out(dir))
+      Entrypoint.main(TestDottyProject.project, settings, out(s"$dir/dotty"))
 
       import scala.sys.process._
       assert(s"diff -r $dir/ test/js/".!!.isEmpty)

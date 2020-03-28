@@ -590,6 +590,8 @@ trait Renderers
     val op = settingDef.op match {
       case SettingOp.Assign =>
         ":="
+      case SettingOp.Modify =>
+        "%="
       case SettingOp.Append =>
         "+="
       case SettingOp.Extend =>
