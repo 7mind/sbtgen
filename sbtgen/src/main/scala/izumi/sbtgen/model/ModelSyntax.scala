@@ -13,6 +13,7 @@ trait ModelSyntax {
     protected def scope: FullSettingScope
 
     def :=(const: Const): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Assign, const, scope)
+    def %=(const: Const): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Modify, const, scope)
     def +=(const: Const): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Append, const, scope)
     def ++=(const: Const): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Extend, const, scope)
     def -=(const: Const): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Remove, const, scope)

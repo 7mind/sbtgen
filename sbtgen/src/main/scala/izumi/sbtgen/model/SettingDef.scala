@@ -41,6 +41,7 @@ object SettingDef {
 sealed trait SettingOp
 object SettingOp {
   case object Assign extends SettingOp
+  case object Modify extends SettingOp
 
   case object Append extends SettingOp
   case object Extend extends SettingOp
@@ -91,5 +92,5 @@ object Const {
     ))
   }
   implicit def seqToConst[T: Conv]: Conv[Seq[T]] = (a: Seq[T]) => CSeq(a.map(Conv[T].to))
-  implicit def mapToConst[T: Conv]: Conv[Map[Scalar, T]] = (a: Map[Scalar, T]) => CMap(a.mapValues(Conv[T].to).toMap)
+  implicit def mapToConst[T: Conv]: Conv[Map[Scalar, T]] = (a: Map[Scalar, T]) => CMap(a.map { case (k, v) => k -> Conv[T].to(v) })
 }
