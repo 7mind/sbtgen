@@ -312,6 +312,20 @@ class Renderer(
       )
     } else Seq.empty
 
+    val dottySourceDirs = {
+      val dottyVersions = enabledPlatforms.flatMap(_.language).collect { case v if v.isDotty => v }.distinct
+      if (dottyVersions.isEmpty) {
+        Seq.empty
+      } else Seq(
+        "unmanagedSourceDirectories" in SettingScope.Compile += dottyVersions.map(
+          v => SettingKey(Some(v), None) -> """baseDirectory.value / "src/main/scala-3" """.raw,
+        ) ++ Seq(SettingKey(None, None) -> """baseDirectory.value / "src/main/scala-2" """.raw),
+        "unmanagedSourceDirectories" in SettingScope.Test += dottyVersions.map(
+          v => SettingKey(Some(v), None) -> """baseDirectory.value / "src/test/scala-3" """.raw,
+        ) ++ Seq(SettingKey(None, None) -> """baseDirectory.value / "src/test/scala-2" """.raw),
+      )
+    }
+
     val platformSettings = {
       enabledPlatforms.flatMap {
         penv =>
@@ -329,6 +343,7 @@ class Renderer(
     val settingsAll = Seq(
       Seq("organization" := groupId),
       jvmOnlyFix,
+      dottySourceDirs,
       artifactSettings,
       project.sharedSettings,
     ).flatten
