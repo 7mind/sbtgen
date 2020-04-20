@@ -113,4 +113,21 @@ object Defaults {
       """s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"""".raw,
     )
   )
+
+  final val CrossScalaSources = {
+    val addVersionSources =
+      """_.value.flatMap {
+        |  dir =>
+        |   val partialVersion = CrossVersion.partialVersion(scalaVersion.value)
+        |   def scalaDir(s: String) = file(dir.getPath + s)
+        |   Seq(dir) ++ (partialVersion match {
+        |     case Some((2, n)) => Seq(scalaDir("_2"), scalaDir("_2." + n.toString))
+        |     case Some((x, n)) => Seq(scalaDir("_3"), scalaDir("_" + x.toString + "." + n.toString))
+        |   })
+        |}""".stripMargin.raw
+    Seq(
+      "unmanagedSourceDirectories" in SettingScope.Compile %= addVersionSources,
+      "unmanagedSourceDirectories" in SettingScope.Test %= addVersionSources,
+    )
+  }
 }

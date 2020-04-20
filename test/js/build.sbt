@@ -529,9 +529,19 @@ lazy val `fundamentals-typesafe-config` = project.in(file("fundamentals/fundamen
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
       "org.scalatest" %% "scalatest" % "3.1.1" % Test,
-      "com.typesafe" % "config" % "1.3.4",
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value
-    )
+      "com.typesafe" % "config" % "1.3.4"
+    ),
+    libraryDependencies ++= { if (scalaVersion.value.beginsWith("2.")) Seq(
+      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
+    ) else Seq.empty },
+    libraryDependencies ++= {
+      val version = scalaVersion.value
+      if (version.beginsWith("0.") || version.beginsWith("3.")) {
+        Seq(
+          "ch.epfl.lamp" %% "tasty-reflect" % scalaVersion.value % Provided
+        )
+      } else Seq.empty
+    }
   )
   .settings(
     organization := "io.7mind",
@@ -647,9 +657,19 @@ lazy val `fundamentals-reflection` = crossProject(JVMPlatform, JSPlatform).cross
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
       "org.scalatest" %%% "scalatest" % "3.1.1" % Test,
-      "io.suzaku" %%% "boopickle" % "1.3.1",
+      "io.suzaku" %%% "boopickle" % "1.3.1"
+    ),
+    libraryDependencies ++= { if (scalaVersion.value.beginsWith("2.")) Seq(
       "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
-    )
+    ) else Seq.empty },
+    libraryDependencies ++= {
+      val version = scalaVersion.value
+      if (version.beginsWith("0.") || version.beginsWith("3.")) {
+        Seq(
+          "ch.epfl.lamp" %%% "tasty-reflect" % scalaVersion.value % Provided
+        )
+      } else Seq.empty
+    }
   )
   .settings(
     organization := "io.7mind",
@@ -922,9 +942,19 @@ lazy val `distage-model` = project.in(file("distage/distage-model"))
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
       "org.scalatest" %% "scalatest" % "3.1.1" % Test,
       "org.typelevel" %% "cats-core" % "2.0.0-RC1" % Optional,
-      "org.typelevel" %% "cats-effect" % "2.0.0-RC1" % Optional,
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value
-    )
+      "org.typelevel" %% "cats-effect" % "2.0.0-RC1" % Optional
+    ),
+    libraryDependencies ++= { if (scalaVersion.value.beginsWith("2.")) Seq(
+      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
+    ) else Seq.empty },
+    libraryDependencies ++= {
+      val version = scalaVersion.value
+      if (version.beginsWith("0.") || version.beginsWith("3.")) {
+        Seq(
+          "ch.epfl.lamp" %% "tasty-reflect" % scalaVersion.value % Provided
+        )
+      } else Seq.empty
+    }
   )
   .settings(
     organization := "io.7mind",
@@ -1041,7 +1071,7 @@ lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
       "org.scalatest" %% "scalatest" % "3.1.1" % Test,
-      "cglib" % "cglib-nodep" % "3.3.0" exclude("xxx", "yyy")
+      "cglib" % "cglib-nodep" % "3.3.0" exclude ("xxx", "yyy")
     )
   )
   .settings(
@@ -1157,7 +1187,7 @@ lazy val `distage-core` = project.in(file("distage/distage-core"))
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
       "org.scalatest" %% "scalatest" % "3.1.1" % Test,
-      "cglib" % "cglib-nodep" % "3.3.0" exclude("xxx", "yyy")
+      "cglib" % "cglib-nodep" % "3.3.0" exclude ("xxx", "yyy")
     )
   )
   .settings(
@@ -1985,9 +2015,19 @@ lazy val `logstage-api` = crossProject(JVMPlatform, JSPlatform).crossType(CrossT
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
       "org.scalatest" %%% "scalatest" % "3.1.1" % Test,
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided,
       "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC3"
-    )
+    ),
+    libraryDependencies ++= { if (scalaVersion.value.beginsWith("2.")) Seq(
+      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
+    ) else Seq.empty },
+    libraryDependencies ++= {
+      val version = scalaVersion.value
+      if (version.beginsWith("0.") || version.beginsWith("3.")) {
+        Seq(
+          "ch.epfl.lamp" %%% "tasty-reflect" % scalaVersion.value % Provided
+        )
+      } else Seq.empty
+    }
   )
   .settings(
     organization := "io.7mind",
@@ -2116,13 +2156,23 @@ lazy val `logstage-core` = crossProject(JVMPlatform, JSPlatform).crossType(Cross
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
       "org.scalatest" %%% "scalatest" % "3.1.1" % Test,
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided,
       "org.typelevel" %%% "cats-core" % "2.0.0-RC1" % Optional,
       "dev.zio" %%% "zio" % "1.0.0-RC11-1" % Optional,
       "org.typelevel" %%% "cats-core" % "2.0.0-RC1" % Test,
       "org.typelevel" %%% "cats-effect" % "2.0.0-RC1" % Test,
       "dev.zio" %%% "zio" % "1.0.0-RC11-1" % Test
-    )
+    ),
+    libraryDependencies ++= { if (scalaVersion.value.beginsWith("2.")) Seq(
+      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
+    ) else Seq.empty },
+    libraryDependencies ++= {
+      val version = scalaVersion.value
+      if (version.beginsWith("0.") || version.beginsWith("3.")) {
+        Seq(
+          "ch.epfl.lamp" %%% "tasty-reflect" % scalaVersion.value % Provided
+        )
+      } else Seq.empty
+    }
   )
   .settings(
     organization := "io.7mind",
@@ -3114,12 +3164,22 @@ lazy val `idealingua-v1-runtime-rpc-scala` = crossProject(JVMPlatform, JSPlatfor
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
       "org.scalatest" %%% "scalatest" % "3.1.1" % Test,
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided,
       "org.typelevel" %%% "cats-core" % "2.0.0-RC1",
       "org.typelevel" %%% "cats-effect" % "2.0.0-RC1",
       "dev.zio" %%% "zio" % "1.0.0-RC11-1",
       "dev.zio" %%% "zio-interop-cats" % "2.0.0.0-RC2"
-    )
+    ),
+    libraryDependencies ++= { if (scalaVersion.value.beginsWith("2.")) Seq(
+      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
+    ) else Seq.empty },
+    libraryDependencies ++= {
+      val version = scalaVersion.value
+      if (version.beginsWith("0.") || version.beginsWith("3.")) {
+        Seq(
+          "ch.epfl.lamp" %%% "tasty-reflect" % scalaVersion.value % Provided
+        )
+      } else Seq.empty
+    }
   )
   .settings(
     organization := "io.7mind",

@@ -80,7 +80,10 @@ object Izumi {
     final val scala_sbt = Library("org.scala-sbt", "sbt", Version.VExpr("sbtVersion.value"), LibraryType.Invariant)
     final val scala_compiler = Library("org.scala-lang", "scala-compiler", Version.VExpr("scalaVersion.value"), LibraryType.Invariant)
     final val scala_library = Library("org.scala-lang", "scala-library", Version.VExpr("scalaVersion.value"), LibraryType.Invariant)
-    final val scala_reflect = Library("org.scala-lang", "scala-reflect", Version.VExpr("scalaVersion.value"), LibraryType.Invariant)
+    final val scala_reflect = Seq(
+      Library("org.scala-lang", "scala-reflect", Version.VExpr("scalaVersion.value"), LibraryType.Invariant) in Scope.Provided.all.scalaVersion(ScalaVersionScope.AllScala2),
+      Library("ch.epfl.lamp", "tasty-reflect", Version.VExpr("scalaVersion.value"), LibraryType.Auto) in Scope.Provided.all.scalaVersion(ScalaVersionScope.AllScala3),
+    )
     final val scala_xml = Library("org.scala-lang.modules", "scala-xml", V.scala_xml) in Scope.Compile.all
     final val scalameta = Library("org.scalameta", "scalameta", V.scalameta) in Scope.Compile.all
 
@@ -299,14 +302,14 @@ object Izumi {
     Projects.fundamentals.id,
     Seq(
       Artifact(
-        Projects.fundamentals.fundamentalsCollections,
-        Seq.empty,
-        Seq.empty,
+        name = Projects.fundamentals.fundamentalsCollections,
+        libs = Seq.empty,
+        depends = Seq.empty,
       ),
       Artifact(
-        Projects.fundamentals.fundamentalsPlatform,
-        Seq.empty,
-        Seq(
+        name = Projects.fundamentals.fundamentalsPlatform,
+        libs = Seq.empty,
+        depends = Seq(
           Projects.fundamentals.fundamentalsCollections in Scope.Compile.all
         ),
         settings = Seq(
@@ -315,30 +318,30 @@ object Izumi {
         plugins = Plugins(Seq(Plugin("ScalaJSBundlerPlugin", Platform.Js))),
       ),
       Artifact(
-        Projects.fundamentals.functional,
-        Seq.empty,
-        Seq.empty,
+        name = Projects.fundamentals.functional,
+        libs = Seq.empty,
+        depends = Seq.empty,
       ),
       Artifact(
-        Projects.fundamentals.bio,
-        (cats_all ++ Seq(zio_core)).map(_ in Scope.Optional.all),
-        Seq(Projects.fundamentals.functional in Scope.Runtime.all),
+        name = Projects.fundamentals.bio,
+        libs = (cats_all ++ Seq(zio_core)).map(_ in Scope.Optional.all),
+        depends = Seq(Projects.fundamentals.functional in Scope.Runtime.all),
       ),
       Artifact(
-        Projects.fundamentals.typesafeConfig,
-        Seq(typesafe_config, scala_reflect in Scope.Compile.jvm),
-        Projects.fundamentals.basics ++ Seq(Projects.fundamentals.reflection in Scope.Runtime.jvm),
+        name = Projects.fundamentals.typesafeConfig,
+        libs = Seq(typesafe_config) ++ scala_reflect,
+        depends = Projects.fundamentals.basics ++ Seq(Projects.fundamentals.reflection in Scope.Runtime.jvm),
         platforms = Targets.jvm,
       ),
       Artifact(
-        Projects.fundamentals.reflection,
-        Seq(boopickle, scala_reflect in Scope.Provided.all),
-        Projects.fundamentals.basics,
+        name = Projects.fundamentals.reflection,
+        libs = Seq(boopickle) ++ scala_reflect,
+        depends = Projects.fundamentals.basics,
       ),
       Artifact(
-        Projects.fundamentals.fundamentalsJsonCirce,
-        circe ++ Seq(jawn in Scope.Compile.js),
-        Projects.fundamentals.basics,
+        name = Projects.fundamentals.fundamentalsJsonCirce,
+        libs = circe ++ Seq(jawn in Scope.Compile.js),
+        depends = Projects.fundamentals.basics,
       ),
     ),
     pathPrefix = Projects.fundamentals.basePath,
@@ -354,7 +357,7 @@ object Izumi {
     Seq(
       Artifact(
         Projects.distage.model,
-        (cats_all).map(_ in Scope.Optional.all) ++ Seq(scala_reflect in Scope.Compile.all),
+        cats_all.map(_ in Scope.Optional.all) ++ scala_reflect,
         Projects.fundamentals.basics ++ Seq(Projects.fundamentals.bio, Projects.fundamentals.reflection).map(_ in Scope.Compile.all),
       ),
       Artifact(
@@ -417,12 +420,12 @@ object Izumi {
     Seq(
       Artifact(
         Projects.logstage.api,
-        Seq(scala_reflect in Scope.Provided.all) ++ Seq(scala_java_time),
+        scala_reflect ++ Seq(scala_java_time),
         Seq(Projects.fundamentals.reflection).map(_ in Scope.Compile.all),
       ),
       Artifact(
         Projects.logstage.core,
-        Seq(scala_reflect in Scope.Provided.all) ++
+        scala_reflect ++
           Seq(cats_core, zio_core).map(_ in Scope.Optional.all) ++
           allMonadsTest,
         Seq(Projects.fundamentals.bio).map(_ in Scope.Compile.all) ++ Seq(Projects.logstage.api).map(_ tin Scope.Compile.all),
@@ -485,7 +488,7 @@ object Izumi {
       ),
       Artifact(
         Projects.idealingua.runtimeRpcScala,
-        Seq(scala_reflect in Scope.Provided.all) ++ (cats_all ++ zio_all).map(_ in Scope.Compile.all),
+        scala_reflect ++ (cats_all ++ zio_all).map(_ in Scope.Compile.all),
         Projects.fundamentals.basics ++ Seq(Projects.fundamentals.bio, Projects.fundamentals.fundamentalsJsonCirce).map(_ in Scope.Compile.all),
       ),
       Artifact(

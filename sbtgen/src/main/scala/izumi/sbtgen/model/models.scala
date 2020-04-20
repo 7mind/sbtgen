@@ -108,7 +108,13 @@ object Library {
   }
 }
 
-case class FullDependencyScope(scope: Scope, platform: Platform)
+case class FullDependencyScope(
+                                scope: Scope,
+                                platform: Platform,
+                                scalaVersionScope: ScalaVersionScope = ScalaVersionScope.AllVersions,
+                              ) {
+  def scalaVersion(scalaVersion: ScalaVersionScope): FullDependencyScope = copy(scalaVersionScope = scalaVersion)
+}
 
 case class ScopedLibrary(dependency: Library, scope: FullDependencyScope, compilerPlugin: Boolean = false)
 object ScopedLibrary {
@@ -120,6 +126,17 @@ case class ScopedDependency(name: ArtifactId, scope: FullDependencyScope, mergeT
 object ScopedDependency {
   implicit def fromDep(dep: ArtifactId): ScopedDependency = dep in Scope.Compile.all
   implicit def fromDepSeq(deps: Seq[ArtifactId]): Seq[ScopedDependency] = deps.map(fromDep)
+}
+
+sealed trait ScalaVersionScope
+object ScalaVersionScope {
+  case object AllVersions extends ScalaVersionScope
+  case object AllScala2 extends ScalaVersionScope
+  case object AllScala3 extends ScalaVersionScope
+  case class Versions(versions: Seq[ScalaVersion]) extends ScalaVersionScope
+  object Versions {
+    def apply(versions: ScalaVersion*)(implicit dummyImplicit: DummyImplicit): Versions = new Versions(versions)
+  }
 }
 
 case class Group(

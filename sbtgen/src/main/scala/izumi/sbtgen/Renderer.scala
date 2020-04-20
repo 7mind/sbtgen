@@ -110,7 +110,7 @@ class Renderer(
   }
 
   def render(): Seq[String] = {
-    val artifacts = aggregates.flatMap(_.filteredArtifacts).map(formatArtifact)
+    val artifacts = aggregates.flatMap(_.filteredArtifacts).map(a => renderArtifact(prepareArtifact(project, a)))
 
     val filteredAggs = aggregates.flatMap(prepareCrossAggregate).filterNot(_.aggregatedNames.isEmpty)
 
@@ -312,20 +312,6 @@ class Renderer(
       )
     } else Seq.empty
 
-    val dottySourceDirs = {
-      val dottyVersions = enabledPlatforms.flatMap(_.language).collect { case v if v.isDotty => v }.distinct
-      if (dottyVersions.isEmpty) {
-        Seq.empty
-      } else Seq(
-        "unmanagedSourceDirectories" in SettingScope.Compile += dottyVersions.map(
-          v => SettingKey(Some(v), None) -> """baseDirectory.value / "src/main/scala-3" """.raw,
-        ) ++ Seq(SettingKey(None, None) -> """baseDirectory.value / "src/main/scala-2" """.raw),
-        "unmanagedSourceDirectories" in SettingScope.Test += dottyVersions.map(
-          v => SettingKey(Some(v), None) -> """baseDirectory.value / "src/test/scala-3" """.raw,
-        ) ++ Seq(SettingKey(None, None) -> """baseDirectory.value / "src/test/scala-2" """.raw),
-      )
-    }
-
     val platformSettings = {
       enabledPlatforms.flatMap {
         penv =>
@@ -343,7 +329,6 @@ class Renderer(
     val settingsAll = Seq(
       Seq("organization" := groupId),
       jvmOnlyFix,
-      dottySourceDirs,
       artifactSettings,
       project.sharedSettings,
     ).flatten
@@ -417,11 +402,6 @@ class Renderer(
   }
 
   @deprecated(".", ".")
-  protected def formatArtifact(a: Artifact): String = {
-    renderArtifact(prepareArtifact(project, a))
-  }
-
-  @deprecated(".", ".")
   protected def formatPlugins(plugins: Plugins, platform: Platform, dot: Boolean, inclusive: Boolean): Seq[String] = {
     renderPlugins(dot)(preparePlugins(project, plugins, platform, inclusive))
   }
@@ -434,7 +414,7 @@ class Renderer(
     }
   }
 
-  protected def cacheIdxName(idx: Int) = {
+  protected def cacheIdxName(idx: Int): String = {
     s"setting_$idx"
   }
 
@@ -666,13 +646,37 @@ trait Renderers
 
   protected def renderLibDeps(isJvmOnly: Boolean, targetPlatform: Platform)(sharedArtDeps: Seq[ScopedLibrary]): Option[String] = {
     if (sharedArtDeps.nonEmpty) {
-      val libDeps: Seq[Const] = sharedArtDeps.map(renderLib(isJvmOnly, targetPlatform))
-      val settings = Seq("libraryDependencies" ++= libDeps)
-
+      val settings = renderLibs(isJvmOnly, targetPlatform)(sharedArtDeps)
       Some(renderSettings(targetPlatform, platformPrefix = false)(settings))
     } else {
       None
     }
+  }
+
+  protected def renderLibs(isJvmOnly: Boolean, targetPlatform: Platform)(allLibs: Seq[ScopedLibrary]): Seq[SettingDef] = {
+    def setting(c: Const) = Seq("libraryDependencies" ++= c)
+    def libConsts(libs: Seq[ScopedLibrary]): Seq[Const.CRaw] = libs.map(renderLib(isJvmOnly, targetPlatform))
+
+    allLibs.groupBy(_.scope.scalaVersionScope).flatMap {
+      case (scope, libs) => scope match {
+        case ScalaVersionScope.AllVersions =>
+          setting(libConsts(libs))
+
+        case ScalaVersionScope.AllScala2 =>
+          setting(s"""{ if (scalaVersion.value.beginsWith("2.")) ${renderConst(libConsts(libs))} else Seq.empty }""".raw)
+
+        case ScalaVersionScope.AllScala3 =>
+          setting(
+            s"""{
+               |  val version = scalaVersion.value
+               |  if (version.beginsWith("0.") || version.beginsWith("3.")) {
+               |${renderConst(libConsts(libs)).indent(4)}  } else Seq.empty
+               |}""".stripMargin.raw)
+
+        case ScalaVersionScope.Versions(versions) =>
+          setting(s"""{ if (${renderConst(versions.map(Const.CString apply _.value))} contains scalaVersion.value) ${renderConst(libConsts(libs))} else Seq.empty }""".raw)
+      }
+    }.toSeq
   }
 
   protected def renderLib(isJvmOnly: Boolean, targetPlatform: Platform)(lib: ScopedLibrary): Const.CRaw = {
@@ -715,7 +719,7 @@ trait Renderers
       value =>
         value match {
           case LibSetting.Exclusions(exclusions) =>
-            exclusions.map(e => s"exclude(${stringLit(e.group)}, ${stringLit(e.artifact)})")
+            exclusions.map(e => s"exclude (${stringLit(e.group)}, ${stringLit(e.artifact)})")
           case LibSetting.Classifier(value) =>
             Seq(s"classifier ${stringLit(value)}")
           case LibSetting.Raw(value) =>
@@ -723,13 +727,9 @@ trait Renderers
         }
     }
 
-    val depStr = Seq(stringLit(lib.dependency.group), sep, stringLit(lib.dependency.artifact), "%", renderVersion(lib.dependency.version))
+    val libLiteral = Seq(stringLit(lib.dependency.group), sep, stringLit(lib.dependency.artifact), "%", renderVersion(lib.dependency.version))
 
-    val out = Seq(
-      depStr,
-      suffix,
-      exclusionsOrRaw,
-    ).flatten.mkString(" ")
+    val out = Seq(libLiteral, suffix, exclusionsOrRaw).flatten.mkString(" ")
 
     if (lib.compilerPlugin) {
       s"compilerPlugin($out)".raw
@@ -792,9 +792,7 @@ trait Renderers
           "test->compile;compile->compile"
         }
     }
-    s"$name % ${
-      stringLit(scope)
-    }"
+    s"$name % ${stringLit(scope)}"
   }
 
   protected def renderConst(const: Const): String = {
