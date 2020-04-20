@@ -670,7 +670,8 @@ trait Renderers
             s"""{
                |  val version = scalaVersion.value
                |  if (version.beginsWith("0.") || version.beginsWith("3.")) {
-               |${renderConst(libConsts(libs)).indent(4)}  } else Seq.empty
+               |${renderConst(libConsts(libs)).shift(4)}
+               |  } else Seq.empty
                |}""".stripMargin.raw)
 
         case ScalaVersionScope.Versions(versions) =>
