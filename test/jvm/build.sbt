@@ -485,12 +485,12 @@ lazy val `fundamentals-typesafe-config` = project.in(file("fundamentals/fundamen
       "org.scalatest" %% "scalatest" % "3.1.1" % Test,
       "com.typesafe" % "config" % "1.3.4"
     ),
-    libraryDependencies ++= { if (scalaVersion.value.beginsWith("2.")) Seq(
+    libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
       "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
     ) else Seq.empty },
     libraryDependencies ++= {
       val version = scalaVersion.value
-      if (version.beginsWith("0.") || version.beginsWith("3.")) {
+      if (version.startsWith("0.") || version.startsWith("3.")) {
         Seq(
           "ch.epfl.lamp" %% "tasty-reflect" % scalaVersion.value % Provided
         )
@@ -617,12 +617,12 @@ lazy val `fundamentals-reflection` = project.in(file("fundamentals/fundamentals-
       "org.scalatest" %% "scalatest" % "3.1.1" % Test,
       "io.suzaku" %% "boopickle" % "1.3.1"
     ),
-    libraryDependencies ++= { if (scalaVersion.value.beginsWith("2.")) Seq(
+    libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
       "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
     ) else Seq.empty },
     libraryDependencies ++= {
       val version = scalaVersion.value
-      if (version.beginsWith("0.") || version.beginsWith("3.")) {
+      if (version.startsWith("0.") || version.startsWith("3.")) {
         Seq(
           "ch.epfl.lamp" %% "tasty-reflect" % scalaVersion.value % Provided
         )
@@ -877,12 +877,12 @@ lazy val `distage-model` = project.in(file("distage/distage-model"))
       "org.typelevel" %% "cats-core" % "2.0.0-RC1" % Optional,
       "org.typelevel" %% "cats-effect" % "2.0.0-RC1" % Optional
     ),
-    libraryDependencies ++= { if (scalaVersion.value.beginsWith("2.")) Seq(
+    libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
       "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
     ) else Seq.empty },
     libraryDependencies ++= {
       val version = scalaVersion.value
-      if (version.beginsWith("0.") || version.beginsWith("3.")) {
+      if (version.startsWith("0.") || version.startsWith("3.")) {
         Seq(
           "ch.epfl.lamp" %% "tasty-reflect" % scalaVersion.value % Provided
         )
@@ -1986,12 +1986,12 @@ lazy val `logstage-api` = project.in(file("logstage/logstage-api"))
       "org.scalatest" %% "scalatest" % "3.1.1" % Test,
       "io.github.cquiroz" %% "scala-java-time" % "2.0.0-RC3"
     ),
-    libraryDependencies ++= { if (scalaVersion.value.beginsWith("2.")) Seq(
+    libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
       "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
     ) else Seq.empty },
     libraryDependencies ++= {
       val version = scalaVersion.value
-      if (version.beginsWith("0.") || version.beginsWith("3.")) {
+      if (version.startsWith("0.") || version.startsWith("3.")) {
         Seq(
           "ch.epfl.lamp" %% "tasty-reflect" % scalaVersion.value % Provided
         )
@@ -2121,12 +2121,12 @@ lazy val `logstage-core` = project.in(file("logstage/logstage-core"))
       "org.typelevel" %% "cats-effect" % "2.0.0-RC1" % Test,
       "dev.zio" %% "zio" % "1.0.0-RC11-1" % Test
     ),
-    libraryDependencies ++= { if (scalaVersion.value.beginsWith("2.")) Seq(
+    libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
       "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
     ) else Seq.empty },
     libraryDependencies ++= {
       val version = scalaVersion.value
-      if (version.beginsWith("0.") || version.beginsWith("3.")) {
+      if (version.startsWith("0.") || version.startsWith("3.")) {
         Seq(
           "ch.epfl.lamp" %% "tasty-reflect" % scalaVersion.value % Provided
         )
@@ -3104,12 +3104,12 @@ lazy val `idealingua-v1-runtime-rpc-scala` = project.in(file("idealingua-v1/idea
       "dev.zio" %% "zio" % "1.0.0-RC11-1",
       "dev.zio" %% "zio-interop-cats" % "2.0.0.0-RC2"
     ),
-    libraryDependencies ++= { if (scalaVersion.value.beginsWith("2.")) Seq(
+    libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
       "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
     ) else Seq.empty },
     libraryDependencies ++= {
       val version = scalaVersion.value
-      if (version.beginsWith("0.") || version.beginsWith("3.")) {
+      if (version.startsWith("0.") || version.startsWith("3.")) {
         Seq(
           "ch.epfl.lamp" %% "tasty-reflect" % scalaVersion.value % Provided
         )

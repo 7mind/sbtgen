@@ -2,6 +2,7 @@ package izumi.sbtgen.model
 
 import izumi.sbtgen.model.Platform.BasePlatform
 
+import scala.collection.compat._
 import scala.collection.immutable.Queue
 import scala.language.implicitConversions
 
@@ -136,6 +137,20 @@ object ScalaVersionScope {
   case class Versions(versions: Seq[ScalaVersion]) extends ScalaVersionScope
   object Versions {
     def apply(versions: ScalaVersion*)(implicit dummyImplicit: DummyImplicit): Versions = new Versions(versions)
+  }
+
+  implicit val ord: Ordering[ScalaVersionScope] = {
+    import Ordering.Implicits._
+    val _ = IterableOnce // prevent unused import compat warning
+    Ordering.fromLessThan {
+      case (AllVersions, _) => true
+      case (AllScala2, AllVersions) => false
+      case (AllScala2, _) => true
+      case (AllScala3, AllVersions | AllScala2) => false
+      case (AllScala3, _) => true
+      case (Versions(s1), Versions(s2)) => s1.map(_.value).sorted < s2.map(_.value).sorted
+      case (Versions(_), _) => false
+    }
   }
 }
 

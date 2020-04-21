@@ -115,19 +115,20 @@ object Defaults {
   )
 
   final val CrossScalaSources = {
-    val addVersionSources =
-      """_.value.flatMap {
-        |  dir =>
-        |   val partialVersion = CrossVersion.partialVersion(scalaVersion.value)
-        |   def scalaDir(s: String) = file(dir.getPath + s)
-        |   Seq(dir) ++ (partialVersion match {
-        |     case Some((2, n)) => Seq(scalaDir("_2"), scalaDir("_2." + n.toString))
-        |     case Some((x, n)) => Seq(scalaDir("_3"), scalaDir("_" + x.toString + "." + n.toString))
-        |   })
-        |}""".stripMargin.raw
+    def addVersionSources(s: String) =
+      s"""$s.value.flatMap {
+         |  dir =>
+         |   val partialVersion = CrossVersion.partialVersion(scalaVersion.value)
+         |   def scalaDir(s: String) = file(dir.getPath + s)
+         |   (partialVersion match {
+         |     case Some((2, n)) => Seq(scalaDir("_2"), scalaDir("_2." + n.toString))
+         |     case Some((x, n)) => Seq(scalaDir("_3"), scalaDir("_" + x.toString + "." + n.toString))
+         |     case None         => Seq.empty
+         |   })
+         |}""".stripMargin.raw
     Seq(
-      "unmanagedSourceDirectories" in SettingScope.Compile %= addVersionSources,
-      "unmanagedSourceDirectories" in SettingScope.Test %= addVersionSources,
+      "unmanagedSourceDirectories" in SettingScope.Compile ++= addVersionSources("(unmanagedSourceDirectories in Compile)"),
+      "unmanagedSourceDirectories" in SettingScope.Test ++= addVersionSources("(unmanagedSourceDirectories in Test)"),
     )
   }
 }

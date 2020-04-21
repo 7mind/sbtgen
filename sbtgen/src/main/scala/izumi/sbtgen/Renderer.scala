@@ -7,7 +7,9 @@ import izumi.sbtgen.model._
 import izumi.sbtgen.sbtmeta.SbtgenMeta
 import izumi.sbtgen.tools.IzString._
 
+import scala.collection.immutable.SortedMap
 import scala.collection.mutable
+import scala.collection.compat._
 
 final case class PreparedAggregate(
                                     id: ArtifactId,
@@ -656,20 +658,21 @@ trait Renderers
   protected def renderLibs(isJvmOnly: Boolean, targetPlatform: Platform)(allLibs: Seq[ScopedLibrary]): Seq[SettingDef] = {
     def setting(c: Const) = Seq("libraryDependencies" ++= c)
     def libConsts(libs: Seq[ScopedLibrary]): Seq[Const.CRaw] = libs.map(renderLib(isJvmOnly, targetPlatform))
+    val _ = IterableOnce // prevent unused import compat warning
 
-    allLibs.groupBy(_.scope.scalaVersionScope).flatMap {
+    allLibs.groupBy(_.scope.scalaVersionScope).to(SortedMap).flatMap {
       case (scope, libs) => scope match {
         case ScalaVersionScope.AllVersions =>
           setting(libConsts(libs))
 
         case ScalaVersionScope.AllScala2 =>
-          setting(s"""{ if (scalaVersion.value.beginsWith("2.")) ${renderConst(libConsts(libs))} else Seq.empty }""".raw)
+          setting(s"""{ if (scalaVersion.value.startsWith("2.")) ${renderConst(libConsts(libs))} else Seq.empty }""".raw)
 
         case ScalaVersionScope.AllScala3 =>
           setting(
             s"""{
                |  val version = scalaVersion.value
-               |  if (version.beginsWith("0.") || version.beginsWith("3.")) {
+               |  if (version.startsWith("0.") || version.startsWith("3.")) {
                |${renderConst(libConsts(libs)).shift(4)}
                |  } else Seq.empty
                |}""".stripMargin.raw)
