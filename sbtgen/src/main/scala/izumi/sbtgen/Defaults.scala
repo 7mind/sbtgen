@@ -90,7 +90,7 @@ object Defaults {
     "-Wdead-code",
     "-Wextra-implicit",
     "-Wnumeric-widen",
-    "-Woctal-literal",
+//    "-Woctal-literal", // Spurious warnings on 2.13.2 https://github.com/scala/bug/issues/11950
     //"-Wself-implicit", // Spurious warnings for any top-level implicit, including scala.language._
     "-Wunused:_",
     "-Wvalue-discard",
