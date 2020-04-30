@@ -90,8 +90,8 @@ object Defaults {
     "-Wdead-code",
     "-Wextra-implicit",
     "-Wnumeric-widen",
-//    "-Woctal-literal", // Spurious warnings on 2.13.2 https://github.com/scala/bug/issues/11950
-    //"-Wself-implicit", // Spurious warnings for any top-level implicit, including scala.language._
+    // "-Woctal-literal", // Spurious warnings on 2.13.2 https://github.com/scala/bug/issues/11950
+    // "-Wself-implicit", // Even after fix in https://github.com/scala/scala/pull/8561 it generates errors such as 'recursive value x$18 needs type' when used with macros
     "-Wunused:_",
     "-Wvalue-discard",
 
