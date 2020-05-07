@@ -1,6 +1,11 @@
-// https://www.scala-sbt.org/0.13/docs/Testing-sbt-plugins.html
-libraryDependencies += { "org.scala-sbt" %% "scripted-plugin" % sbtVersion.value }
+import sbt.Defaults.sbtPluginExtra
 
+// https://www.scala-sbt.org/0.13/docs/Testing-sbt-plugins.html
+libraryDependencies += sbtPluginExtra(
+  "org.scala-sbt" %% "scripted-plugin" % sbtVersion.value,
+  sbtVersion.value,
+  sbtBinaryVersion.value
+)
 
 // https://github.com/sbt/sbt-release
 addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.13")
