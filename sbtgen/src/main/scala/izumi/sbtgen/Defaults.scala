@@ -90,8 +90,8 @@ object Defaults {
     "-Wdead-code",
     "-Wextra-implicit",
     "-Wnumeric-widen",
-    "-Woctal-literal",
-    //"-Wself-implicit", // Spurious warnings for any top-level implicit, including scala.language._
+    // "-Woctal-literal", // Spurious warnings on 2.13.2 https://github.com/scala/bug/issues/11950
+    // "-Wself-implicit", // Even after fix in https://github.com/scala/scala/pull/8561 it generates errors such as 'recursive value x$18 needs type' when used with macros
     "-Wunused:_",
     "-Wvalue-discard",
 
@@ -113,4 +113,22 @@ object Defaults {
       """s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"""".raw,
     )
   )
+
+  final val CrossScalaSources = {
+    def addVersionSources(s: String) =
+      s"""$s.value.flatMap {
+         |  dir =>
+         |   val partialVersion = CrossVersion.partialVersion(scalaVersion.value)
+         |   def scalaDir(s: String) = file(dir.getPath + s)
+         |   (partialVersion match {
+         |     case Some((2, n)) => Seq(scalaDir("_2"), scalaDir("_2." + n.toString))
+         |     case Some((x, n)) => Seq(scalaDir("_3"), scalaDir("_" + x.toString + "." + n.toString))
+         |     case None         => Seq.empty
+         |   })
+         |}""".stripMargin.raw
+    Seq(
+      "unmanagedSourceDirectories" in SettingScope.Compile ++= addVersionSources("(unmanagedSourceDirectories in Compile)"),
+      "unmanagedSourceDirectories" in SettingScope.Test ++= addVersionSources("(unmanagedSourceDirectories in Test)"),
+    )
+  }
 }

@@ -9,7 +9,7 @@ lazy val `fundamentals-collections` = crossProject(JVMPlatform, JSPlatform).cros
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.1" % Test
+      "org.scalatest" %%% "scalatest" % "3.1.2" % Test
     )
   )
   .settings(
@@ -99,7 +99,6 @@ lazy val `fundamentals-collections` = crossProject(JVMPlatform, JSPlatform).cros
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -137,7 +136,7 @@ lazy val `fundamentals-platform` = crossProject(JVMPlatform, JSPlatform).crossTy
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.1" % Test
+      "org.scalatest" %%% "scalatest" % "3.1.2" % Test
     )
   )
   .settings(
@@ -227,7 +226,6 @@ lazy val `fundamentals-platform` = crossProject(JVMPlatform, JSPlatform).crossTy
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -266,7 +264,7 @@ lazy val `fundamentals-functional` = crossProject(JVMPlatform, JSPlatform).cross
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.1" % Test
+      "org.scalatest" %%% "scalatest" % "3.1.2" % Test
     )
   )
   .settings(
@@ -356,7 +354,6 @@ lazy val `fundamentals-functional` = crossProject(JVMPlatform, JSPlatform).cross
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -394,7 +391,7 @@ lazy val `fundamentals-bio` = crossProject(JVMPlatform, JSPlatform).crossType(Cr
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.1" % Test,
+      "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
       "org.typelevel" %%% "cats-core" % "2.0.0-RC1" % Optional,
       "org.typelevel" %%% "cats-effect" % "2.0.0-RC1" % Optional,
       "dev.zio" %%% "zio" % "1.0.0-RC11-1" % Optional
@@ -487,7 +484,6 @@ lazy val `fundamentals-bio` = crossProject(JVMPlatform, JSPlatform).crossType(Cr
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -528,10 +524,20 @@ lazy val `fundamentals-typesafe-config` = project.in(file("fundamentals/fundamen
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.1" % Test,
-      "com.typesafe" % "config" % "1.3.4",
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value
-    )
+      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+      "com.typesafe" % "config" % "1.3.4"
+    ),
+    libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
+      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
+    ) else Seq.empty },
+    libraryDependencies ++= {
+      val version = scalaVersion.value
+      if (version.startsWith("0.") || version.startsWith("3.")) {
+        Seq(
+          "ch.epfl.lamp" %% "tasty-reflect" % scalaVersion.value % Provided
+        )
+      } else Seq.empty
+    }
   )
   .settings(
     organization := "io.7mind",
@@ -620,7 +626,6 @@ lazy val `fundamentals-typesafe-config` = project.in(file("fundamentals/fundamen
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -646,10 +651,20 @@ lazy val `fundamentals-reflection` = crossProject(JVMPlatform, JSPlatform).cross
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.1" % Test,
-      "io.suzaku" %%% "boopickle" % "1.3.1",
+      "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
+      "io.suzaku" %%% "boopickle" % "1.3.1"
+    ),
+    libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
       "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
-    )
+    ) else Seq.empty },
+    libraryDependencies ++= {
+      val version = scalaVersion.value
+      if (version.startsWith("0.") || version.startsWith("3.")) {
+        Seq(
+          "ch.epfl.lamp" %%% "tasty-reflect" % scalaVersion.value % Provided
+        )
+      } else Seq.empty
+    }
   )
   .settings(
     organization := "io.7mind",
@@ -738,7 +753,6 @@ lazy val `fundamentals-reflection` = crossProject(JVMPlatform, JSPlatform).cross
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -778,7 +792,7 @@ lazy val `fundamentals-json-circe` = crossProject(JVMPlatform, JSPlatform).cross
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.1" % Test,
+      "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
       "io.circe" %%% "circe-core" % "0.12.0-RC4",
       "io.circe" %%% "circe-parser" % "0.12.0-RC4",
       "io.circe" %%% "circe-literal" % "0.12.0-RC4",
@@ -873,7 +887,6 @@ lazy val `fundamentals-json-circe` = crossProject(JVMPlatform, JSPlatform).cross
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -920,11 +933,21 @@ lazy val `distage-model` = project.in(file("distage/distage-model"))
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.1" % Test,
+      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
       "org.typelevel" %% "cats-core" % "2.0.0-RC1" % Optional,
-      "org.typelevel" %% "cats-effect" % "2.0.0-RC1" % Optional,
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value
-    )
+      "org.typelevel" %% "cats-effect" % "2.0.0-RC1" % Optional
+    ),
+    libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
+      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
+    ) else Seq.empty },
+    libraryDependencies ++= {
+      val version = scalaVersion.value
+      if (version.startsWith("0.") || version.startsWith("3.")) {
+        Seq(
+          "ch.epfl.lamp" %% "tasty-reflect" % scalaVersion.value % Provided
+        )
+      } else Seq.empty
+    }
   )
   .settings(
     organization := "io.7mind",
@@ -1013,7 +1036,6 @@ lazy val `distage-model` = project.in(file("distage/distage-model"))
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -1040,8 +1062,8 @@ lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.1" % Test,
-      "cglib" % "cglib-nodep" % "3.3.0" exclude("xxx", "yyy")
+      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+      "cglib" % "cglib-nodep" % "3.3.0" exclude ("xxx", "yyy")
     )
   )
   .settings(
@@ -1131,7 +1153,6 @@ lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -1156,8 +1177,8 @@ lazy val `distage-core` = project.in(file("distage/distage-core"))
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.1" % Test,
-      "cglib" % "cglib-nodep" % "3.3.0" exclude("xxx", "yyy")
+      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+      "cglib" % "cglib-nodep" % "3.3.0" exclude ("xxx", "yyy")
     )
   )
   .settings(
@@ -1247,7 +1268,6 @@ lazy val `distage-core` = project.in(file("distage/distage-core"))
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -1273,7 +1293,7 @@ lazy val `distage-config` = project.in(file("distage/distage-config"))
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.1" % Test,
+      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
       "com.typesafe" % "config" % "1.3.4"
     )
   )
@@ -1364,7 +1384,6 @@ lazy val `distage-config` = project.in(file("distage/distage-config"))
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -1389,7 +1408,7 @@ lazy val `distage-roles-api` = project.in(file("distage/distage-roles-api"))
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.1" % Test
+      "org.scalatest" %% "scalatest" % "3.1.2" % Test
     )
   )
   .settings(
@@ -1479,7 +1498,6 @@ lazy val `distage-roles-api` = project.in(file("distage/distage-roles-api"))
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -1506,7 +1524,7 @@ lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.1" % Test,
+      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
       "io.github.classgraph" % "classgraph" % "4.8.47"
     )
   )
@@ -1597,7 +1615,6 @@ lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -1628,7 +1645,7 @@ lazy val `distage-roles` = project.in(file("distage/distage-roles"))
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.1" % Test,
+      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
       "org.typelevel" %% "cats-core" % "2.0.0-RC1" % Optional,
       "org.typelevel" %% "cats-effect" % "2.0.0-RC1" % Optional,
       "dev.zio" %% "zio" % "1.0.0-RC11-1" % Optional
@@ -1721,7 +1738,6 @@ lazy val `distage-roles` = project.in(file("distage/distage-roles"))
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -1746,7 +1762,7 @@ lazy val `distage-static` = project.in(file("distage/distage-static"))
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.1" % Test,
+      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
       "com.chuusai" %% "shapeless" % "2.3.3"
     )
   )
@@ -1837,7 +1853,6 @@ lazy val `distage-static` = project.in(file("distage/distage-static"))
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -1865,8 +1880,8 @@ lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.1" % Test,
-      "org.scalatest" %% "scalatest" % "3.1.1",
+      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+      "org.scalatest" %% "scalatest" % "3.1.2",
       "org.typelevel" %% "cats-core" % "2.0.0-RC1" % Test,
       "org.typelevel" %% "cats-effect" % "2.0.0-RC1" % Test,
       "dev.zio" %% "zio" % "1.0.0-RC11-1" % Test
@@ -1960,7 +1975,6 @@ lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -1984,10 +1998,20 @@ lazy val `logstage-api` = crossProject(JVMPlatform, JSPlatform).crossType(CrossT
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.1" % Test,
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided,
+      "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
       "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC3"
-    )
+    ),
+    libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
+      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
+    ) else Seq.empty },
+    libraryDependencies ++= {
+      val version = scalaVersion.value
+      if (version.startsWith("0.") || version.startsWith("3.")) {
+        Seq(
+          "ch.epfl.lamp" %%% "tasty-reflect" % scalaVersion.value % Provided
+        )
+      } else Seq.empty
+    }
   )
   .settings(
     organization := "io.7mind",
@@ -2076,7 +2100,6 @@ lazy val `logstage-api` = crossProject(JVMPlatform, JSPlatform).crossType(CrossT
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -2115,14 +2138,24 @@ lazy val `logstage-core` = crossProject(JVMPlatform, JSPlatform).crossType(Cross
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.1" % Test,
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided,
+      "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
       "org.typelevel" %%% "cats-core" % "2.0.0-RC1" % Optional,
       "dev.zio" %%% "zio" % "1.0.0-RC11-1" % Optional,
       "org.typelevel" %%% "cats-core" % "2.0.0-RC1" % Test,
       "org.typelevel" %%% "cats-effect" % "2.0.0-RC1" % Test,
       "dev.zio" %%% "zio" % "1.0.0-RC11-1" % Test
-    )
+    ),
+    libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
+      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
+    ) else Seq.empty },
+    libraryDependencies ++= {
+      val version = scalaVersion.value
+      if (version.startsWith("0.") || version.startsWith("3.")) {
+        Seq(
+          "ch.epfl.lamp" %%% "tasty-reflect" % scalaVersion.value % Provided
+        )
+      } else Seq.empty
+    }
   )
   .settings(
     organization := "io.7mind",
@@ -2211,7 +2244,6 @@ lazy val `logstage-core` = crossProject(JVMPlatform, JSPlatform).crossType(Cross
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -2250,7 +2282,7 @@ lazy val `logstage-rendering-circe` = crossProject(JVMPlatform, JSPlatform).cros
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.1" % Test
+      "org.scalatest" %%% "scalatest" % "3.1.2" % Test
     )
   )
   .settings(
@@ -2340,7 +2372,6 @@ lazy val `logstage-rendering-circe` = crossProject(JVMPlatform, JSPlatform).cros
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -2382,7 +2413,7 @@ lazy val `logstage-di` = project.in(file("logstage/logstage-di"))
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.1" % Test
+      "org.scalatest" %% "scalatest" % "3.1.2" % Test
     )
   )
   .settings(
@@ -2472,7 +2503,6 @@ lazy val `logstage-di` = project.in(file("logstage/logstage-di"))
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -2497,7 +2527,7 @@ lazy val `logstage-config` = project.in(file("logstage/logstage-config"))
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.1" % Test
+      "org.scalatest" %% "scalatest" % "3.1.2" % Test
     )
   )
   .settings(
@@ -2587,7 +2617,6 @@ lazy val `logstage-config` = project.in(file("logstage/logstage-config"))
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -2611,7 +2640,7 @@ lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-s
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.1" % Test,
+      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
       "org.slf4j" % "slf4j-api" % "1.7.28"
     )
   )
@@ -2705,7 +2734,6 @@ lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-s
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -2730,7 +2758,7 @@ lazy val `logstage-sink-slf4j` = project.in(file("logstage/logstage-sink-slf4j")
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.1" % Test,
+      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
       "org.slf4j" % "slf4j-api" % "1.7.28",
       "org.slf4j" % "slf4j-simple" % "1.7.28" % Test
     )
@@ -2822,7 +2850,6 @@ lazy val `logstage-sink-slf4j` = project.in(file("logstage/logstage-sink-slf4j")
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -2848,7 +2875,7 @@ lazy val `idealingua-v1-model` = crossProject(JVMPlatform, JSPlatform).crossType
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.1" % Test
+      "org.scalatest" %%% "scalatest" % "3.1.2" % Test
     )
   )
   .settings(
@@ -2938,7 +2965,6 @@ lazy val `idealingua-v1-model` = crossProject(JVMPlatform, JSPlatform).crossType
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -2980,7 +3006,7 @@ lazy val `idealingua-v1-core` = crossProject(JVMPlatform, JSPlatform).crossType(
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.1" % Test,
+      "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
       "com.lihaoyi" %%% "fastparse" % "2.1.3"
     )
   )
@@ -3071,7 +3097,6 @@ lazy val `idealingua-v1-core` = crossProject(JVMPlatform, JSPlatform).crossType(
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -3113,13 +3138,23 @@ lazy val `idealingua-v1-runtime-rpc-scala` = crossProject(JVMPlatform, JSPlatfor
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.1" % Test,
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided,
+      "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
       "org.typelevel" %%% "cats-core" % "2.0.0-RC1",
       "org.typelevel" %%% "cats-effect" % "2.0.0-RC1",
       "dev.zio" %%% "zio" % "1.0.0-RC11-1",
       "dev.zio" %%% "zio-interop-cats" % "2.0.0.0-RC2"
-    )
+    ),
+    libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
+      "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided
+    ) else Seq.empty },
+    libraryDependencies ++= {
+      val version = scalaVersion.value
+      if (version.startsWith("0.") || version.startsWith("3.")) {
+        Seq(
+          "ch.epfl.lamp" %%% "tasty-reflect" % scalaVersion.value % Provided
+        )
+      } else Seq.empty
+    }
   )
   .settings(
     organization := "io.7mind",
@@ -3208,7 +3243,6 @@ lazy val `idealingua-v1-runtime-rpc-scala` = crossProject(JVMPlatform, JSPlatfor
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -3249,7 +3283,7 @@ lazy val `idealingua-v1-runtime-rpc-http4s` = project.in(file("idealingua-v1/ide
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.1" % Test,
+      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
       "org.http4s" %% "http4s-dsl" % "0.21.0-M4",
       "org.http4s" %% "http4s-circe" % "0.21.0-M4",
       "org.http4s" %% "http4s-blaze-server" % "0.21.0-M4",
@@ -3344,7 +3378,6 @@ lazy val `idealingua-v1-runtime-rpc-http4s` = project.in(file("idealingua-v1/ide
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -3373,7 +3406,7 @@ lazy val `idealingua-v1-transpilers` = crossProject(JVMPlatform, JSPlatform).cro
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.1" % Test,
+      "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
       "org.scala-lang.modules" %%% "scala-xml" % "1.2.0",
       "org.scalameta" %%% "scalameta" % "4.2.3"
     )
@@ -3465,7 +3498,6 @@ lazy val `idealingua-v1-transpilers` = crossProject(JVMPlatform, JSPlatform).cro
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -3510,7 +3542,7 @@ lazy val `idealingua-v1-test-defs` = project.in(file("idealingua-v1/idealingua-v
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.1" % Test
+      "org.scalatest" %% "scalatest" % "3.1.2" % Test
     )
   )
   .settings(
@@ -3600,7 +3632,6 @@ lazy val `idealingua-v1-test-defs` = project.in(file("idealingua-v1/idealingua-v
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -3621,7 +3652,7 @@ lazy val `idealingua-v1-runtime-rpc-typescript` = project.in(file("idealingua-v1
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.1" % Test
+      "org.scalatest" %% "scalatest" % "3.1.2" % Test
     )
   )
   .settings(
@@ -3711,7 +3742,6 @@ lazy val `idealingua-v1-runtime-rpc-typescript` = project.in(file("idealingua-v1
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -3732,7 +3762,7 @@ lazy val `idealingua-v1-runtime-rpc-go` = project.in(file("idealingua-v1/idealin
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.1" % Test
+      "org.scalatest" %% "scalatest" % "3.1.2" % Test
     )
   )
   .settings(
@@ -3822,7 +3852,6 @@ lazy val `idealingua-v1-runtime-rpc-go` = project.in(file("idealingua-v1/idealin
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -3843,7 +3872,7 @@ lazy val `idealingua-v1-runtime-rpc-csharp` = project.in(file("idealingua-v1/ide
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.1" % Test
+      "org.scalatest" %% "scalatest" % "3.1.2" % Test
     )
   )
   .settings(
@@ -3933,7 +3962,6 @@ lazy val `idealingua-v1-runtime-rpc-csharp` = project.in(file("idealingua-v1/ide
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -3962,7 +3990,7 @@ lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.1" % Test,
+      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
       "com.typesafe" % "config" % "1.3.4"
     )
   )
@@ -4066,7 +4094,6 @@ lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -4112,7 +4139,7 @@ lazy val `microsite` = project.in(file("doc/microsite"))
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.1" % Test,
+      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
       "org.typelevel" %% "cats-core" % "2.0.0-RC1",
       "org.typelevel" %% "cats-effect" % "2.0.0-RC1",
       "dev.zio" %% "zio" % "1.0.0-RC11-1",
@@ -4262,7 +4289,6 @@ lazy val `microsite` = project.in(file("doc/microsite"))
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",
@@ -4283,7 +4309,7 @@ lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.1" % Test
+      "org.scalatest" %% "scalatest" % "3.1.2" % Test
     )
   )
   .settings(
@@ -4375,7 +4401,6 @@ lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
         "-Wdead-code",
         "-Wextra-implicit",
         "-Wnumeric-widen",
-        "-Woctal-literal",
         "-Wunused:_",
         "-Wvalue-discard",
         "-Ycache-plugin-class-loader:always",

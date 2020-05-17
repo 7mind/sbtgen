@@ -2,6 +2,7 @@ package izumi.sbtgen.model
 
 import izumi.sbtgen.model.Platform.BasePlatform
 
+import scala.collection.compat._
 import scala.collection.immutable.Queue
 import scala.language.implicitConversions
 
@@ -27,7 +28,9 @@ object Scope {
   final case class Raw(s: String) extends Scope
 }
 
-case class ScalaVersion(value: String)
+final case class ScalaVersion(value: String) {
+  def isDotty: Boolean = value.startsWith("0.")
+}
 
 sealed trait Platform {
   final def supportsPlatform(p: BasePlatform): Boolean = this == p || this == Platform.All
@@ -106,7 +109,13 @@ object Library {
   }
 }
 
-case class FullDependencyScope(scope: Scope, platform: Platform)
+case class FullDependencyScope(
+                                scope: Scope,
+                                platform: Platform,
+                                scalaVersionScope: ScalaVersionScope = ScalaVersionScope.AllVersions,
+                              ) {
+  def scalaVersion(scalaVersion: ScalaVersionScope): FullDependencyScope = copy(scalaVersionScope = scalaVersion)
+}
 
 case class ScopedLibrary(dependency: Library, scope: FullDependencyScope, compilerPlugin: Boolean = false)
 object ScopedLibrary {
@@ -118,6 +127,31 @@ case class ScopedDependency(name: ArtifactId, scope: FullDependencyScope, mergeT
 object ScopedDependency {
   implicit def fromDep(dep: ArtifactId): ScopedDependency = dep in Scope.Compile.all
   implicit def fromDepSeq(deps: Seq[ArtifactId]): Seq[ScopedDependency] = deps.map(fromDep)
+}
+
+sealed trait ScalaVersionScope
+object ScalaVersionScope {
+  case object AllVersions extends ScalaVersionScope
+  case object AllScala2 extends ScalaVersionScope
+  case object AllScala3 extends ScalaVersionScope
+  case class Versions(versions: Seq[ScalaVersion]) extends ScalaVersionScope
+  object Versions {
+    def apply(versions: ScalaVersion*)(implicit dummyImplicit: DummyImplicit): Versions = new Versions(versions)
+  }
+
+  implicit val ord: Ordering[ScalaVersionScope] = {
+    import Ordering.Implicits._
+    val _ = IterableOnce // prevent unused import compat warning
+    Ordering.fromLessThan {
+      case (AllVersions, _) => true
+      case (AllScala2, AllVersions) => false
+      case (AllScala2, _) => true
+      case (AllScala3, AllVersions | AllScala2) => false
+      case (AllScala3, _) => true
+      case (Versions(s1), Versions(s2)) => s1.map(_.value).sorted < s2.map(_.value).sorted
+      case (Versions(_), _) => false
+    }
+  }
 }
 
 case class Group(

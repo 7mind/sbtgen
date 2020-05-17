@@ -132,10 +132,17 @@ object Entrypoint {
            |
            |// https://github.com/portable-scala/sbt-crossproject
            |addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % ${renderer renderVersion config.settings.crossProjectVersion})
-           |
-           |// https://scalacenter.github.io/scalajs-bundler/
-           |addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % ${renderer renderVersion config.settings.bundlerVersion})
-           |""".stripMargin)
+           |""".stripMargin
+      )
+
+      config.settings.bundlerVersion.foreach { bv =>
+        b.append(
+         s"""|
+             |// https://scalacenter.github.io/scalajs-bundler/
+             |addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % ${renderer renderVersion bv})
+             |""".stripMargin
+        )
+      }
     }
 
     if (config.native) {
@@ -143,6 +150,13 @@ object Entrypoint {
         s"""addSbtPlugin("org.portable-scala" % "sbt-scala-native-crossproject" % ${renderer renderVersion config.settings.crossProjectVersion})
            |
            |addSbtPlugin("org.scala-native"   % "sbt-scala-native"              % ${renderer renderVersion config.settings.scalaNativeVersion})
+           |""".stripMargin)
+    }
+
+    if (project.aggregates.exists(_.merge.artifacts.exists(_.platforms.exists(_.language.exists(_.isDotty))))) {
+      b.append(
+        s"""// https://github.com/lampepfl/dotty-example-project#projectpluginssbt
+           |addSbtPlugin("ch.epfl.lamp" % "sbt-dotty" % ${renderer renderVersion config.settings.sbtDottyVersion})
            |""".stripMargin)
     }
 
