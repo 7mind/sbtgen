@@ -137,18 +137,18 @@ object Entrypoint {
 
       config.settings.bundlerVersion.foreach { bv =>
         b.append(
-         s"""|
-             |// https://github.com/scala-js/jsdependencies
-             |addSbtPlugin("org.scala-js" % "sbt-jsdependencies" % ${renderer renderVersion bv})
-             |""".stripMargin
+          s"""|
+             |// https://scalacenter.github.io/scalajs-bundler/
+              |addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % ${renderer renderVersion bv})
+              |""".stripMargin
         )
       }
 
       config.settings.sbtJsDependenciesVersion.foreach { bv =>
         b.append(
           s"""|
-              |// https://github.com/scala-js/jsdependencies
-              |addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % ${renderer renderVersion bv})
+             |// https://github.com/scala-js/jsdependencies
+              |addSbtPlugin("org.scala-js" % "sbt-jsdependencies" % ${renderer renderVersion bv})
               |""".stripMargin
         )
       }
