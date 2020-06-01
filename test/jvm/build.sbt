@@ -4636,7 +4636,7 @@ lazy val `izumi` = (project in file("."))
     scalacOptions in ThisBuild += s"-Xmacro-settings:product-group=${organization.value}",
     scalacOptions in ThisBuild += s"-Xmacro-settings:sbt-version=${sbtVersion.value}",
     scalacOptions in ThisBuild += s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-    scalacOptions in ThisBuild += """-Xmacro-settings:scalatest-version=3.1.1""",
+    scalacOptions in ThisBuild += """-Xmacro-settings:scalatest-version=3.1.2""",
     scalacOptions in ThisBuild += """-Xmacro-settings:scala-versions=2.12.9:2.13.0"""
   )
   .disablePlugins(AssemblyPlugin)

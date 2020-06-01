@@ -11,7 +11,7 @@ object V {
   val collection_compat = "2.1.2"
 
   val kind_projector = "0.10.3"
-  val scalatest = "3.1.1"
+  val scalatest = "3.1.2"
 
   val shapeless = "2.3.3"
 
