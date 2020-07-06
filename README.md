@@ -29,7 +29,7 @@ def entrypoint(args: String*): Unit = {
 object Platforms {
   val jvm = PlatformEnv(
     platform = Platform.Jvm,
-    language = Seq(ScalaVersion("2.13.1")),
+    language = Seq(ScalaVersion("2.13.3")),
     settings = Seq("scalacSettings" += "-Xlint:_"),
   )
 }

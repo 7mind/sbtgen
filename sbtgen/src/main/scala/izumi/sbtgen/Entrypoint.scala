@@ -115,11 +115,10 @@ object Entrypoint {
             s"""$n:
                |
                |$c
-               |""".stripMargin,
+               |""".stripMargin
           )
         }
     }
-    ,
   }
 
   private def makeMoreBoilerplate(config: GenConfig, project: Project, renderer: Renderer): Map[String, String] = {

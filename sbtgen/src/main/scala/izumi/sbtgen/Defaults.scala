@@ -83,7 +83,7 @@ object Defaults {
     //        "-Xsource:3.0", // is available
     //        "-Xsource:2.14", // Delay -Xsource:2.14 due to spurious warnings https://github.com/scala/bug/issues/11639
     //        "-Xsource:2.13", // Don't use -Xsource: since it's not recommended... https://github.com/scala/bug/issues/11661
-    "-Xlint:_,-eta-sam",
+    "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit", // byname-implicit false positives: https://github.com/scala/bug/issues/12072
 
     "-Ybackend-parallelism", CRaw("math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString"),
 
@@ -91,7 +91,6 @@ object Defaults {
     "-Wextra-implicit",
     "-Wnumeric-widen",
     // "-Woctal-literal", // Spurious warnings on 2.13.2 https://github.com/scala/bug/issues/11950
-    // "-Wself-implicit", // Even after fix in https://github.com/scala/scala/pull/8561 it generates errors such as 'recursive value x$18 needs type' when used with macros
     "-Wunused:_",
     "-Wvalue-discard",
 
