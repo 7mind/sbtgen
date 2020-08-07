@@ -9,7 +9,7 @@ lazy val `fundamentals-collections` = crossProject(JVMPlatform, JSPlatform).cros
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.2" % Test
+      "org.scalatest" %%% "scalatest" % "3.2.1" % Test
     )
   )
   .settings(
@@ -138,7 +138,7 @@ lazy val `fundamentals-platform` = crossProject(JVMPlatform, JSPlatform).crossTy
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.2" % Test
+      "org.scalatest" %%% "scalatest" % "3.2.1" % Test
     )
   )
   .settings(
@@ -268,7 +268,7 @@ lazy val `fundamentals-functional` = crossProject(JVMPlatform, JSPlatform).cross
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.2" % Test
+      "org.scalatest" %%% "scalatest" % "3.2.1" % Test
     )
   )
   .settings(
@@ -397,7 +397,7 @@ lazy val `fundamentals-bio` = crossProject(JVMPlatform, JSPlatform).crossType(Cr
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
+      "org.scalatest" %%% "scalatest" % "3.2.1" % Test,
       "org.typelevel" %%% "cats-core" % "2.0.0-RC1" % Optional,
       "org.typelevel" %%% "cats-effect" % "2.0.0-RC1" % Optional,
       "dev.zio" %%% "zio" % "1.0.0-RC11-1" % Optional
@@ -532,7 +532,7 @@ lazy val `fundamentals-typesafe-config` = project.in(file("fundamentals/fundamen
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+      "org.scalatest" %% "scalatest" % "3.2.1" % Test,
       "com.typesafe" % "config" % "1.3.4"
     ),
     libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
@@ -661,7 +661,7 @@ lazy val `fundamentals-reflection` = crossProject(JVMPlatform, JSPlatform).cross
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
+      "org.scalatest" %%% "scalatest" % "3.2.1" % Test,
       "io.suzaku" %%% "boopickle" % "1.3.1"
     ),
     libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
@@ -804,7 +804,7 @@ lazy val `fundamentals-json-circe` = crossProject(JVMPlatform, JSPlatform).cross
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
+      "org.scalatest" %%% "scalatest" % "3.2.1" % Test,
       "io.circe" %%% "circe-core" % "0.12.0-RC4",
       "io.circe" %%% "circe-parser" % "0.12.0-RC4",
       "io.circe" %%% "circe-literal" % "0.12.0-RC4",
@@ -947,7 +947,7 @@ lazy val `distage-model` = project.in(file("distage/distage-model"))
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+      "org.scalatest" %% "scalatest" % "3.2.1" % Test,
       "org.typelevel" %% "cats-core" % "2.0.0-RC1" % Optional,
       "org.typelevel" %% "cats-effect" % "2.0.0-RC1" % Optional
     ),
@@ -1078,7 +1078,7 @@ lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+      "org.scalatest" %% "scalatest" % "3.2.1" % Test,
       "cglib" % "cglib-nodep" % "3.3.0" exclude ("xxx", "yyy")
     )
   )
@@ -1195,7 +1195,7 @@ lazy val `distage-core` = project.in(file("distage/distage-core"))
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+      "org.scalatest" %% "scalatest" % "3.2.1" % Test,
       "cglib" % "cglib-nodep" % "3.3.0" exclude ("xxx", "yyy")
     )
   )
@@ -1313,7 +1313,7 @@ lazy val `distage-config` = project.in(file("distage/distage-config"))
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+      "org.scalatest" %% "scalatest" % "3.2.1" % Test,
       "com.typesafe" % "config" % "1.3.4"
     )
   )
@@ -1430,7 +1430,7 @@ lazy val `distage-roles-api` = project.in(file("distage/distage-roles-api"))
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test
+      "org.scalatest" %% "scalatest" % "3.2.1" % Test
     )
   )
   .settings(
@@ -1548,7 +1548,7 @@ lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+      "org.scalatest" %% "scalatest" % "3.2.1" % Test,
       "io.github.classgraph" % "classgraph" % "4.8.47"
     )
   )
@@ -1671,7 +1671,7 @@ lazy val `distage-roles` = project.in(file("distage/distage-roles"))
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+      "org.scalatest" %% "scalatest" % "3.2.1" % Test,
       "org.typelevel" %% "cats-core" % "2.0.0-RC1" % Optional,
       "org.typelevel" %% "cats-effect" % "2.0.0-RC1" % Optional,
       "dev.zio" %% "zio" % "1.0.0-RC11-1" % Optional
@@ -1790,7 +1790,7 @@ lazy val `distage-static` = project.in(file("distage/distage-static"))
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+      "org.scalatest" %% "scalatest" % "3.2.1" % Test,
       "com.chuusai" %% "shapeless" % "2.3.3"
     )
   )
@@ -1910,8 +1910,8 @@ lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
-      "org.scalatest" %% "scalatest" % "3.1.2",
+      "org.scalatest" %% "scalatest" % "3.2.1" % Test,
+      "org.scalatest" %% "scalatest" % "3.2.1",
       "org.typelevel" %% "cats-core" % "2.0.0-RC1" % Test,
       "org.typelevel" %% "cats-effect" % "2.0.0-RC1" % Test,
       "dev.zio" %% "zio" % "1.0.0-RC11-1" % Test
@@ -2030,7 +2030,7 @@ lazy val `logstage-api` = crossProject(JVMPlatform, JSPlatform).crossType(CrossT
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
+      "org.scalatest" %%% "scalatest" % "3.2.1" % Test,
       "io.github.cquiroz" %%% "scala-java-time" % "2.0.0-RC3"
     ),
     libraryDependencies ++= { if (scalaVersion.value.startsWith("2.")) Seq(
@@ -2172,7 +2172,7 @@ lazy val `logstage-core` = crossProject(JVMPlatform, JSPlatform).crossType(Cross
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
+      "org.scalatest" %%% "scalatest" % "3.2.1" % Test,
       "org.typelevel" %%% "cats-core" % "2.0.0-RC1" % Optional,
       "dev.zio" %%% "zio" % "1.0.0-RC11-1" % Optional,
       "org.typelevel" %%% "cats-core" % "2.0.0-RC1" % Test,
@@ -2318,7 +2318,7 @@ lazy val `logstage-rendering-circe` = crossProject(JVMPlatform, JSPlatform).cros
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.2" % Test
+      "org.scalatest" %%% "scalatest" % "3.2.1" % Test
     )
   )
   .settings(
@@ -2451,7 +2451,7 @@ lazy val `logstage-di` = project.in(file("logstage/logstage-di"))
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test
+      "org.scalatest" %% "scalatest" % "3.2.1" % Test
     )
   )
   .settings(
@@ -2567,7 +2567,7 @@ lazy val `logstage-config` = project.in(file("logstage/logstage-config"))
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test
+      "org.scalatest" %% "scalatest" % "3.2.1" % Test
     )
   )
   .settings(
@@ -2682,7 +2682,7 @@ lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-s
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+      "org.scalatest" %% "scalatest" % "3.2.1" % Test,
       "org.slf4j" % "slf4j-api" % "1.7.28"
     )
   )
@@ -2802,7 +2802,7 @@ lazy val `logstage-sink-slf4j` = project.in(file("logstage/logstage-sink-slf4j")
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+      "org.scalatest" %% "scalatest" % "3.2.1" % Test,
       "org.slf4j" % "slf4j-api" % "1.7.28",
       "org.slf4j" % "slf4j-simple" % "1.7.28" % Test
     )
@@ -2921,7 +2921,7 @@ lazy val `idealingua-v1-model` = crossProject(JVMPlatform, JSPlatform).crossType
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.2" % Test
+      "org.scalatest" %%% "scalatest" % "3.2.1" % Test
     )
   )
   .settings(
@@ -3054,7 +3054,7 @@ lazy val `idealingua-v1-core` = crossProject(JVMPlatform, JSPlatform).crossType(
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
+      "org.scalatest" %%% "scalatest" % "3.2.1" % Test,
       "com.lihaoyi" %%% "fastparse" % "2.1.3"
     )
   )
@@ -3188,7 +3188,7 @@ lazy val `idealingua-v1-runtime-rpc-scala` = crossProject(JVMPlatform, JSPlatfor
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
+      "org.scalatest" %%% "scalatest" % "3.2.1" % Test,
       "org.typelevel" %%% "cats-core" % "2.0.0-RC1",
       "org.typelevel" %%% "cats-effect" % "2.0.0-RC1",
       "dev.zio" %%% "zio" % "1.0.0-RC11-1",
@@ -3335,7 +3335,7 @@ lazy val `idealingua-v1-runtime-rpc-http4s` = project.in(file("idealingua-v1/ide
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+      "org.scalatest" %% "scalatest" % "3.2.1" % Test,
       "org.http4s" %% "http4s-dsl" % "0.21.0-M4",
       "org.http4s" %% "http4s-circe" % "0.21.0-M4",
       "org.http4s" %% "http4s-blaze-server" % "0.21.0-M4",
@@ -3460,7 +3460,7 @@ lazy val `idealingua-v1-transpilers` = crossProject(JVMPlatform, JSPlatform).cro
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %%% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %%% "scalatest" % "3.1.2" % Test,
+      "org.scalatest" %%% "scalatest" % "3.2.1" % Test,
       "org.scala-lang.modules" %%% "scala-xml" % "1.2.0",
       "org.scalameta" %%% "scalameta" % "4.2.3"
     )
@@ -3598,7 +3598,7 @@ lazy val `idealingua-v1-test-defs` = project.in(file("idealingua-v1/idealingua-v
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test
+      "org.scalatest" %% "scalatest" % "3.2.1" % Test
     )
   )
   .settings(
@@ -3710,7 +3710,7 @@ lazy val `idealingua-v1-runtime-rpc-typescript` = project.in(file("idealingua-v1
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test
+      "org.scalatest" %% "scalatest" % "3.2.1" % Test
     )
   )
   .settings(
@@ -3822,7 +3822,7 @@ lazy val `idealingua-v1-runtime-rpc-go` = project.in(file("idealingua-v1/idealin
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test
+      "org.scalatest" %% "scalatest" % "3.2.1" % Test
     )
   )
   .settings(
@@ -3934,7 +3934,7 @@ lazy val `idealingua-v1-runtime-rpc-csharp` = project.in(file("idealingua-v1/ide
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test
+      "org.scalatest" %% "scalatest" % "3.2.1" % Test
     )
   )
   .settings(
@@ -4054,7 +4054,7 @@ lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+      "org.scalatest" %% "scalatest" % "3.2.1" % Test,
       "com.typesafe" % "config" % "1.3.4"
     )
   )
@@ -4205,7 +4205,7 @@ lazy val `microsite` = project.in(file("doc/microsite"))
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test,
+      "org.scalatest" %% "scalatest" % "3.2.1" % Test,
       "org.typelevel" %% "cats-core" % "2.0.0-RC1",
       "org.typelevel" %% "cats-effect" % "2.0.0-RC1",
       "dev.zio" %% "zio" % "1.0.0-RC11-1",
@@ -4377,7 +4377,7 @@ lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
     libraryDependencies ++= Seq(
       compilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.2",
-      "org.scalatest" %% "scalatest" % "3.1.2" % Test
+      "org.scalatest" %% "scalatest" % "3.2.1" % Test
     )
   )
   .settings(
