@@ -85,6 +85,7 @@ object Defaults {
     //        "-Xsource:2.13", // Don't use -Xsource: since it's not recommended... https://github.com/scala/bug/issues/11661
     "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit", // byname-implicit false positives: https://github.com/scala/bug/issues/12072
     CRaw("""if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning""""), // enable fatal warnings on CI
+    "-Wconf:cat=optimizer:warning", // make optimizer (inliner) warnings non-fatal
 
     "-Ybackend-parallelism", CRaw("math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString"),
 
