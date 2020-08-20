@@ -95,6 +95,7 @@ lazy val `fundamentals-collections` = crossProject(JVMPlatform, JSPlatform).cros
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -224,6 +225,7 @@ lazy val `fundamentals-platform` = crossProject(JVMPlatform, JSPlatform).crossTy
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -354,6 +356,7 @@ lazy val `fundamentals-functional` = crossProject(JVMPlatform, JSPlatform).cross
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -486,6 +489,7 @@ lazy val `fundamentals-bio` = crossProject(JVMPlatform, JSPlatform).crossType(Cr
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -630,6 +634,7 @@ lazy val `fundamentals-typesafe-config` = project.in(file("fundamentals/fundamen
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -759,6 +764,7 @@ lazy val `fundamentals-reflection` = crossProject(JVMPlatform, JSPlatform).cross
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -895,6 +901,7 @@ lazy val `fundamentals-json-circe` = crossProject(JVMPlatform, JSPlatform).cross
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -1046,6 +1053,7 @@ lazy val `distage-model` = project.in(file("distage/distage-model"))
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -1165,6 +1173,7 @@ lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -1282,6 +1291,7 @@ lazy val `distage-core` = project.in(file("distage/distage-core"))
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -1400,6 +1410,7 @@ lazy val `distage-config` = project.in(file("distage/distage-config"))
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -1516,6 +1527,7 @@ lazy val `distage-roles-api` = project.in(file("distage/distage-roles-api"))
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -1635,6 +1647,7 @@ lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -1760,6 +1773,7 @@ lazy val `distage-roles` = project.in(file("distage/distage-roles"))
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -1877,6 +1891,7 @@ lazy val `distage-static` = project.in(file("distage/distage-static"))
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -2001,6 +2016,7 @@ lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -2128,6 +2144,7 @@ lazy val `logstage-api` = crossProject(JVMPlatform, JSPlatform).crossType(CrossT
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -2274,6 +2291,7 @@ lazy val `logstage-core` = crossProject(JVMPlatform, JSPlatform).crossType(Cross
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -2404,6 +2422,7 @@ lazy val `logstage-rendering-circe` = crossProject(JVMPlatform, JSPlatform).cros
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -2537,6 +2556,7 @@ lazy val `logstage-di` = project.in(file("logstage/logstage-di"))
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -2653,6 +2673,7 @@ lazy val `logstage-config` = project.in(file("logstage/logstage-config"))
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -2772,6 +2793,7 @@ lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-s
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -2890,6 +2912,7 @@ lazy val `logstage-sink-slf4j` = project.in(file("logstage/logstage-sink-slf4j")
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -3007,6 +3030,7 @@ lazy val `idealingua-v1-model` = crossProject(JVMPlatform, JSPlatform).crossType
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -3141,6 +3165,7 @@ lazy val `idealingua-v1-core` = crossProject(JVMPlatform, JSPlatform).crossType(
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -3289,6 +3314,7 @@ lazy val `idealingua-v1-runtime-rpc-scala` = crossProject(JVMPlatform, JSPlatfor
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -3426,6 +3452,7 @@ lazy val `idealingua-v1-runtime-rpc-http4s` = project.in(file("idealingua-v1/ide
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -3548,6 +3575,7 @@ lazy val `idealingua-v1-transpilers` = crossProject(JVMPlatform, JSPlatform).cro
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -3684,6 +3712,7 @@ lazy val `idealingua-v1-test-defs` = project.in(file("idealingua-v1/idealingua-v
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -3796,6 +3825,7 @@ lazy val `idealingua-v1-runtime-rpc-typescript` = project.in(file("idealingua-v1
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -3908,6 +3938,7 @@ lazy val `idealingua-v1-runtime-rpc-go` = project.in(file("idealingua-v1/idealin
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -4020,6 +4051,7 @@ lazy val `idealingua-v1-runtime-rpc-csharp` = project.in(file("idealingua-v1/ide
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -4154,6 +4186,7 @@ lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -4351,6 +4384,7 @@ lazy val `microsite` = project.in(file("doc/microsite"))
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
@@ -4465,6 +4499,7 @@ lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
       case (_, "2.13.0") => Seq(
         "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
         "-Ybackend-parallelism",
         math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
         "-Wdead-code",
