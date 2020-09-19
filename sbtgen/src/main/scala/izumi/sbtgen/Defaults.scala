@@ -4,7 +4,7 @@ import izumi.sbtgen.model.Const.CRaw
 import izumi.sbtgen.model._
 
 object Defaults {
-  final val SharedOptions = Seq(
+  final val SharedOptions: Seq[SettingDef.UnscopedSettingDef] = Seq(
     "publishMavenStyle" in SettingScope.Build := true,
     "scalacOptions" in SettingScope.Build ++= Seq[Const](
       "-encoding", "UTF-8",
@@ -110,6 +110,7 @@ object Defaults {
 
   final val SbtMeta = Seq(
     "scalacOptions" ++= Seq(
+      """s"-Xmacro-settings:product-name=${name.value}"""".raw,
       """s"-Xmacro-settings:scala-version=${scalaVersion.value}"""".raw,
       """s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"""".raw,
     )
