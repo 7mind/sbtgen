@@ -1,5 +1,6 @@
 package izumi.sbtgen.model
 
+import izumi.sbtgen.model.LibSetting.Exclusion
 import izumi.sbtgen.model.Platform.BasePlatform
 
 import scala.collection.compat._
@@ -66,13 +67,16 @@ object SbtPlugin {
 
 sealed trait LibSetting
 object LibSetting {
-  case class Exclusion(group: String, artifact: String)
   case class Exclusions(exclusions: Seq[Exclusion]) extends LibSetting
   case class Classifier(classifier: String) extends LibSetting
   case class Raw(value: String) extends LibSetting
+
+  case class Exclusion(group: String, artifact: String)
 }
 
 case class Library(group: String, artifact: String, version: Version, kind: LibraryType, more: Seq[LibSetting]) {
+  def exclude(exclusions: Exclusion*): Library = copy(more = more :+ LibSetting.Exclusions(exclusions))
+  def exclude(group: String, artifact: String): Library = exclude(Exclusion(group, artifact))
   def classifier(s: String): Library = copy(more = more :+ LibSetting.Classifier(s))
   def more(settings: LibSetting): Library = copy(more = more :+ settings)
 }
