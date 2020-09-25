@@ -30,10 +30,10 @@ object Defaults {
       """s"-Xmacro-settings:sbt-version=${sbtVersion.value}"""".raw,
       """s"-Xmacro-settings:scala-version=${scalaVersion.value}"""".raw,
       """s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"""".raw,
-      """s"-Xmacro-settings:git-repo-clean=${gitUncommittedChanges.value}"""".raw,
-      """s"-Xmacro-settings:git-branch=${gitCurrentBranch.value}"""".raw,
-      """s"-Xmacro-settings:git-described-version=${gitDescribedVersion.value.getOrElse("")}"""".raw,
-      """s"-Xmacro-settings:git-head-commit=${gitHeadCommit.value.getOrElse("")}"""".raw,
+      """s"-Xmacro-settings:git-repo-clean=${com.typesafe.sbt.SbtGit.GitKeys.gitUncommittedChanges.value}"""".raw,
+      """s"-Xmacro-settings:git-branch=${com.typesafe.sbt.SbtGit.GitKeys.gitCurrentBranch.value}"""".raw,
+      """s"-Xmacro-settings:git-described-version=${com.typesafe.sbt.SbtGit.GitKeys.gitDescribedVersion.value.getOrElse("")}"""".raw,
+      """s"-Xmacro-settings:git-head-commit=${com.typesafe.sbt.SbtGit.GitKeys.gitHeadCommit.value.getOrElse("")}"""".raw,
     )
   )
 
