@@ -4918,7 +4918,13 @@ lazy val `izumi` = (project in file("."))
     scalacOptions in ThisBuild ++= Seq(
       s"-Xmacro-settings:product-version=${version.value}",
       s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:sbt-version=${sbtVersion.value}"
+      s"-Xmacro-settings:sbt-version=${sbtVersion.value}",
+      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}",
+      s"-Xmacro-settings:git-repo-clean=${com.typesafe.sbt.SbtGit.GitKeys.gitUncommittedChanges.value}",
+      s"-Xmacro-settings:git-branch=${com.typesafe.sbt.SbtGit.GitKeys.gitCurrentBranch.value}",
+      s"-Xmacro-settings:git-described-version=${com.typesafe.sbt.SbtGit.GitKeys.gitDescribedVersion.value.getOrElse("")}",
+      s"-Xmacro-settings:git-head-commit=${com.typesafe.sbt.SbtGit.GitKeys.gitHeadCommit.value.getOrElse("")}"
     ),
     crossScalaVersions := Nil,
     scalaVersion := "2.12.9",
@@ -4929,12 +4935,7 @@ lazy val `izumi` = (project in file("."))
               Developer(id = "7mind", name = "Septimal Mind", url = url("https://github.com/7mind"), email = "team@7mind.io"),
             ),
     scmInfo in ThisBuild := Some(ScmInfo(url("https://github.com/7mind/izumi"), "scm:git:https://github.com/7mind/izumi.git")),
-    scalacOptions in ThisBuild += s"-Xmacro-settings:product-version=${version.value}",
-    scalacOptions in ThisBuild += s"-Xmacro-settings:product-group=${organization.value}",
-    scalacOptions in ThisBuild += s"-Xmacro-settings:sbt-version=${sbtVersion.value}",
-    scalacOptions in ThisBuild += s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-    scalacOptions in ThisBuild += """-Xmacro-settings:scalatest-version=3.1.2""",
-    scalacOptions in ThisBuild += """-Xmacro-settings:scala-versions=2.12.9:2.13.0"""
+    scalacOptions in ThisBuild += """-Xmacro-settings:scalatest-version=3.1.2"""
   )
   .disablePlugins(AssemblyPlugin)
   .aggregate(
