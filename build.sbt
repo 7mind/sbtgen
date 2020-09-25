@@ -97,7 +97,7 @@ lazy val sbtgen = (project in file("sbtgen"))
     scalaVersion := crossScalaVersions.value.head,
     //    libraryDependencies += "com.github.scopt" %% "scopt" % "4.0.0-RC2",
     libraryDependencies += "com.github.scopt" %% "scopt" % "3.7.1",
-    libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.1.6",
+    libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.2.0",
     libraryDependencies in ThisBuild += "org.scalatest" %% "scalatest" % "3.2.2" % "test",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-version=${version.value}",
@@ -116,7 +116,7 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
     crossSbtVersions := Seq(sbtVersion.value),
     sbtPlugin := true,
     libraryDependencies ++= Seq(
-      "io.get-coursier" %% "coursier" % "2.0.0-RC6-25",
+      "io.get-coursier" %% "coursier" % "2.0.0-RC6-26",
 
       // https://github.com/scoverage/sbt-scoverage
       ("org.scoverage" % "sbt-scoverage" % "1.6.1").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),

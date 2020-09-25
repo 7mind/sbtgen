@@ -4,7 +4,7 @@ import izumi.sbtgen.model.Const.CRaw
 import izumi.sbtgen.model._
 
 object Defaults {
-  final val SharedOptions = Seq(
+  final val SharedOptions: Seq[SettingDef.UnscopedSettingDef] = Seq(
     "publishMavenStyle" in SettingScope.Build := true,
     "scalacOptions" in SettingScope.Build ++= Seq[Const](
       "-encoding", "UTF-8",
@@ -28,6 +28,12 @@ object Defaults {
       """s"-Xmacro-settings:product-version=${version.value}"""".raw,
       """s"-Xmacro-settings:product-group=${organization.value}"""".raw,
       """s"-Xmacro-settings:sbt-version=${sbtVersion.value}"""".raw,
+      """s"-Xmacro-settings:scala-version=${scalaVersion.value}"""".raw,
+      """s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"""".raw,
+      """s"-Xmacro-settings:git-repo-clean=${com.typesafe.sbt.SbtGit.GitKeys.gitUncommittedChanges.value}"""".raw,
+      """s"-Xmacro-settings:git-branch=${com.typesafe.sbt.SbtGit.GitKeys.gitCurrentBranch.value}"""".raw,
+      """s"-Xmacro-settings:git-described-version=${com.typesafe.sbt.SbtGit.GitKeys.gitDescribedVersion.value.getOrElse("")}"""".raw,
+      """s"-Xmacro-settings:git-head-commit=${com.typesafe.sbt.SbtGit.GitKeys.gitHeadCommit.value.getOrElse("")}"""".raw,
     )
   )
 
@@ -110,6 +116,7 @@ object Defaults {
 
   final val SbtMeta = Seq(
     "scalacOptions" ++= Seq(
+      """s"-Xmacro-settings:product-name=${name.value}"""".raw,
       """s"-Xmacro-settings:scala-version=${scalaVersion.value}"""".raw,
       """s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"""".raw,
     )
