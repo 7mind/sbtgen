@@ -28,6 +28,12 @@ object Defaults {
       """s"-Xmacro-settings:product-version=${version.value}"""".raw,
       """s"-Xmacro-settings:product-group=${organization.value}"""".raw,
       """s"-Xmacro-settings:sbt-version=${sbtVersion.value}"""".raw,
+      """s"-Xmacro-settings:scala-version=${scalaVersion.value}"""".raw,
+      """s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"""".raw,
+      """s"-Xmacro-settings:git-repo-clean=${gitUncommittedChanges.value}"""".raw,
+      """s"-Xmacro-settings:git-branch=${gitCurrentBranch.value}"""".raw,
+      """s"-Xmacro-settings:git-described-version=${gitDescribedVersion.value.getOrElse("")}"""".raw,
+      """s"-Xmacro-settings:git-head-commit=${gitHeadCommit.value.getOrElse("")}"""".raw,
     )
   )
 
