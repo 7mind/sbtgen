@@ -194,7 +194,7 @@ object Izumi {
         "scalacOptions" in SettingScope.Build += s"""${"\"" * 3}-Xmacro-settings:scalatest-version=${V.scalatest}${"\"" * 3}""".raw,
       )
 
-      final val sharedSettings = Seq(
+      final val sharedSettings = Defaults.SbtMetaOptions ++ Seq(
         "testOptions" in SettingScope.Test += """Tests.Argument("-oDF")""".raw,
         "scalacOptions" ++= Seq(
           SettingKey(Some(scala212), None) := Defaults.Scala212Options,
@@ -665,8 +665,8 @@ object Izumi {
   )
 
   val izumi: Project = Project(
-    Projects.root.id,
-    Seq(
+    name = Projects.root.id,
+    aggregates = Seq(
       fundamentals,
       distage,
       logstage,
@@ -674,12 +674,12 @@ object Izumi {
       docs,
       sbtplugins,
     ),
-    Projects.root.settings,
-    Projects.root.sharedSettings,
-    Projects.root.sharedAggSettings,
-    Projects.root.sharedRootSettings,
-    Seq.empty,
-    Seq(
+    topLevelSettings = Projects.root.settings,
+    sharedSettings = Projects.root.sharedSettings,
+    sharedAggSettings = Projects.root.sharedAggSettings,
+    rootSettings = Projects.root.sharedRootSettings,
+    imports = Seq.empty,
+    globalLibs = Seq(
       ScopedLibrary(projector, FullDependencyScope(Scope.Compile, Platform.All), compilerPlugin = true),
       collection_compat in Scope.Compile.all,
       scalatest,

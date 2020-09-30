@@ -4,6 +4,9 @@ import izumi.sbtgen.model.Const.CRaw
 import izumi.sbtgen.model._
 
 object Defaults {
+  /**
+    * For [[Project.rootSettings]]
+    */
   final val SharedOptions: Seq[SettingDef.UnscopedSettingDef] = Seq(
     "publishMavenStyle" in SettingScope.Build := true,
     "scalacOptions" in SettingScope.Build ++= Seq[Const](
@@ -33,6 +36,9 @@ object Defaults {
     )
   )
 
+  /**
+    * For [[Project.sharedSettings]]
+    */
   final val SbtMetaOptions = Seq(
     "scalacOptions" ++= Seq(
       """s"-Xmacro-settings:product-name=${name.value}"""".raw,
@@ -63,11 +69,10 @@ object Defaults {
 
   final val Scala212Options = Seq[Const](
     "-Xsource:2.13",
-
-    "-Ybackend-parallelism", CRaw("math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString"),
-
     "-Ypartial-unification", // 2.12 only
     "-Yno-adapted-args", // 2.12 only
+
+    "-Ybackend-parallelism", CRaw("math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString"),
 
     "-Xlint:adapted-args", // Warn if an argument list is modified to match the receiver.
     "-Xlint:by-name-right-associative", // By-name parameter of right associative operator.
@@ -112,7 +117,7 @@ object Defaults {
   final val Scala213Options = Seq[Const](
     //        "-Xsource:3.0", // is available
     //        "-Xsource:2.14", // Delay -Xsource:2.14 due to spurious warnings https://github.com/scala/bug/issues/11639
-    //        "-Xsource:2.13", // Don't use -Xsource: since it's not recommended... https://github.com/scala/bug/issues/11661
+    //        "-Xsource:2.13", // Don't use -Xsource: at all since it's not recommended... https://github.com/scala/bug/issues/11661
     "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit", // byname-implicit false positives: https://github.com/scala/bug/issues/12072
     CRaw("""if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning""""), // enable fatal warnings on CI
     "-Wconf:cat=optimizer:warning", // make optimizer (inliner) warnings non-fatal
