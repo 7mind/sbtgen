@@ -25,17 +25,41 @@ object Defaults {
       "-XDignore.symbol.file"
     ),
     "scalacOptions" in SettingScope.Build ++= Seq(
-      """s"-Xmacro-settings:product-version=${version.value}"""".raw,
-      """s"-Xmacro-settings:product-group=${organization.value}"""".raw,
       """s"-Xmacro-settings:sbt-version=${sbtVersion.value}"""".raw,
-      """s"-Xmacro-settings:scala-version=${scalaVersion.value}"""".raw,
-      """s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"""".raw,
       """s"-Xmacro-settings:git-repo-clean=${com.typesafe.sbt.SbtGit.GitKeys.gitUncommittedChanges.value}"""".raw,
       """s"-Xmacro-settings:git-branch=${com.typesafe.sbt.SbtGit.GitKeys.gitCurrentBranch.value}"""".raw,
       """s"-Xmacro-settings:git-described-version=${com.typesafe.sbt.SbtGit.GitKeys.gitDescribedVersion.value.getOrElse("")}"""".raw,
       """s"-Xmacro-settings:git-head-commit=${com.typesafe.sbt.SbtGit.GitKeys.gitHeadCommit.value.getOrElse("")}"""".raw,
     )
   )
+
+  final val SbtMetaOptions = Seq(
+    "scalacOptions" ++= Seq(
+      """s"-Xmacro-settings:product-name=${name.value}"""".raw,
+      """s"-Xmacro-settings:product-version=${version.value}"""".raw,
+      """s"-Xmacro-settings:product-group=${organization.value}"""".raw,
+      """s"-Xmacro-settings:scala-version=${scalaVersion.value}"""".raw,
+      """s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"""".raw,
+    )
+  )
+
+  final val CrossScalaSources = {
+    def addVersionSources(s: String) =
+      s"""$s.value.flatMap {
+         |  dir =>
+         |   val partialVersion = CrossVersion.partialVersion(scalaVersion.value)
+         |   def scalaDir(s: String) = file(dir.getPath + s)
+         |   (partialVersion match {
+         |     case Some((2, n)) => Seq(scalaDir("_2"), scalaDir("_2." + n.toString))
+         |     case Some((x, n)) => Seq(scalaDir("_3"), scalaDir("_" + x.toString + "." + n.toString))
+         |     case None         => Seq.empty
+         |   })
+         |}""".stripMargin.raw
+    Seq(
+      "unmanagedSourceDirectories" in SettingScope.Compile ++= addVersionSources("(unmanagedSourceDirectories in Compile)"),
+      "unmanagedSourceDirectories" in SettingScope.Test ++= addVersionSources("(unmanagedSourceDirectories in Test)"),
+    )
+  }
 
   final val Scala212Options = Seq[Const](
     "-Xsource:2.13",
@@ -114,29 +138,4 @@ object Defaults {
     SbtPlugin("io.7mind.izumi.sbt", "sbt-izumi", Version.SbtGen),
   )
 
-  final val SbtMeta = Seq(
-    "scalacOptions" ++= Seq(
-      """s"-Xmacro-settings:product-name=${name.value}"""".raw,
-      """s"-Xmacro-settings:scala-version=${scalaVersion.value}"""".raw,
-      """s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"""".raw,
-    )
-  )
-
-  final val CrossScalaSources = {
-    def addVersionSources(s: String) =
-      s"""$s.value.flatMap {
-         |  dir =>
-         |   val partialVersion = CrossVersion.partialVersion(scalaVersion.value)
-         |   def scalaDir(s: String) = file(dir.getPath + s)
-         |   (partialVersion match {
-         |     case Some((2, n)) => Seq(scalaDir("_2"), scalaDir("_2." + n.toString))
-         |     case Some((x, n)) => Seq(scalaDir("_3"), scalaDir("_" + x.toString + "." + n.toString))
-         |     case None         => Seq.empty
-         |   })
-         |}""".stripMargin.raw
-    Seq(
-      "unmanagedSourceDirectories" in SettingScope.Compile ++= addVersionSources("(unmanagedSourceDirectories in Compile)"),
-      "unmanagedSourceDirectories" in SettingScope.Test ++= addVersionSources("(unmanagedSourceDirectories in Test)"),
-    )
-  }
 }
