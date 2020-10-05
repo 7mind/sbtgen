@@ -89,7 +89,8 @@ object IzumiExposedTestScopesPlugin extends AutoPlugin {
 
         import scala.collection.JavaConverters._
         analysis.readSourceInfos().getAllSourceInfos.asScala.filter {
-          case (sourceFile, _) =>
+          case (sourceFile0, _) =>
+            val sourceFile = file(sourceFile0.name())
             val isExposed = try {
               // TODO: better criterion involving tree parsing, dependencies
               IO.read(sourceFile).contains("@ExposedTestScope")
@@ -99,13 +100,14 @@ object IzumiExposedTestScopesPlugin extends AutoPlugin {
                 false
             }
             isExposed
+          case _ => false
         }.foreach {
           case (sourceFile, _) =>
             val products = analysis.relations.products(sourceFile)
             products.foreach {
               p =>
-                val targetProduct = targetExposed.resolve(classDirectory.toPath.relativize(p.toPath))
-                IO.copyFile(p, targetProduct.toFile)
+                val targetProduct = targetExposed.resolve(classDirectory.toPath.relativize(file(p.name()).toPath))
+                IO.copyFile(file(p.name()), targetProduct.toFile)
             }
         }
     }
