@@ -116,7 +116,7 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
     crossSbtVersions := Seq(sbtVersion.value),
     sbtPlugin := true,
     libraryDependencies ++= Seq(
-      "io.get-coursier" %% "coursier" % "2.0.0",
+      "io.get-coursier" %% "coursier" % "2.0.2",
 
       // https://github.com/scoverage/sbt-scoverage
       ("org.scoverage" % "sbt-scoverage" % "1.6.1").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
