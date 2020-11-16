@@ -5,10 +5,10 @@ addSbtPlugin("org.scala-js" % "sbt-scalajs" % "1.1.0")
 addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % "1.0.0")
 
 // https://scalacenter.github.io/scalajs-bundler/
-addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "0.17.0")
+addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "0.18.0")
 
 // https://github.com/scala-js/jsdependencies
-addSbtPlugin("org.scala-js" % "sbt-jsdependencies" % "1.0.1")
+addSbtPlugin("org.scala-js" % "sbt-jsdependencies" % "1.0.2")
 // https://github.com/lampepfl/dotty-example-project#projectpluginssbt
 addSbtPlugin("ch.epfl.lamp" % "sbt-dotty" % "0.4.1")
 
