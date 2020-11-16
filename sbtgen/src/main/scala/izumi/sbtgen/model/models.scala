@@ -30,7 +30,7 @@ object Scope {
 }
 
 final case class ScalaVersion(value: String) {
-  def isDotty: Boolean = value.startsWith("0.")
+  def isDotty: Boolean = value.startsWith("0.") || value.startsWith("3.")
 }
 
 sealed trait Platform {
