@@ -15,7 +15,7 @@ Create a file `sbtgen.sc` and paste the following code:
 coursier launch com.lihaoyi:ammonite_2.13.0:1.6.9 --fork -M ammonite.Main -- sbtgen.sc $*
 exit
 !#
-import $ivy.`io.7mind.izumi.sbt::sbtgen:0.0.51`, izumi.sbtgen._, izumi.sbtgen.model._
+import $ivy.`io.7mind.izumi.sbt::sbtgen:0.0.66`, izumi.sbtgen._, izumi.sbtgen.model._
 
 val globalSettings = GlobalSettings(
   groupId = "my.org",
