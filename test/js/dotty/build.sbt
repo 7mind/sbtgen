@@ -4,11 +4,11 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 lazy val `test` = project.in(file("test"))
   .settings(
-    organization := "io.7mind",
     scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "0.23.0-RC1"
-    )
+    ),
+    organization := "io.7mind"
   )
 
 lazy val `test-agg` = (project in file(".agg/test-agg"))

@@ -580,6 +580,11 @@ lazy val `fundamentals-typesafe-config` = project.in(file("fundamentals/fundamen
     }
   )
   .settings(
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -682,12 +687,7 @@ lazy val `fundamentals-typesafe-config` = project.in(file("fundamentals/fundamen
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, _) => Seq.empty
-    } },
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
+    } }
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -1020,6 +1020,11 @@ lazy val `distage-model` = project.in(file("distage/distage-model"))
     }
   )
   .settings(
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -1122,12 +1127,7 @@ lazy val `distage-model` = project.in(file("distage/distage-model"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, _) => Seq.empty
-    } },
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
+    } }
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -1147,6 +1147,11 @@ lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
     )
   )
   .settings(
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -1249,12 +1254,7 @@ lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, _) => Seq.empty
-    } },
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
+    } }
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -1272,6 +1272,11 @@ lazy val `distage-core` = project.in(file("distage/distage-core"))
     )
   )
   .settings(
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -1374,12 +1379,7 @@ lazy val `distage-core` = project.in(file("distage/distage-core"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, _) => Seq.empty
-    } },
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
+    } }
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -1398,6 +1398,12 @@ lazy val `distage-config` = project.in(file("distage/distage-config"))
     )
   )
   .settings(
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
+    fork in Test := true,
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -1500,13 +1506,7 @@ lazy val `distage-config` = project.in(file("distage/distage-config"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, _) => Seq.empty
-    } },
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    fork in Test := true
+    } }
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -1522,6 +1522,11 @@ lazy val `distage-roles-api` = project.in(file("distage/distage-roles-api"))
     )
   )
   .settings(
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -1624,12 +1629,7 @@ lazy val `distage-roles-api` = project.in(file("distage/distage-roles-api"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, _) => Seq.empty
-    } },
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
+    } }
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -1649,6 +1649,12 @@ lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
     )
   )
   .settings(
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
+    fork in Test := true,
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -1751,13 +1757,7 @@ lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, _) => Seq.empty
-    } },
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    fork in Test := true
+    } }
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -1782,6 +1782,11 @@ lazy val `distage-roles` = project.in(file("distage/distage-roles"))
     )
   )
   .settings(
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -1884,12 +1889,7 @@ lazy val `distage-roles` = project.in(file("distage/distage-roles"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, _) => Seq.empty
-    } },
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
+    } }
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -1907,6 +1907,11 @@ lazy val `distage-static` = project.in(file("distage/distage-static"))
     )
   )
   .settings(
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -2009,12 +2014,7 @@ lazy val `distage-static` = project.in(file("distage/distage-static"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, _) => Seq.empty
-    } },
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
+    } }
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -2038,8 +2038,12 @@ lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
     )
   )
   .settings(
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
     organization := "io.7mind",
-    classLoaderLayeringStrategy in Test := ClassLoaderLayeringStrategy.Flat,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -2142,11 +2146,7 @@ lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
       )
       case (_, _) => Seq.empty
     } },
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
+    classLoaderLayeringStrategy in Test := ClassLoaderLayeringStrategy.Flat
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -2607,6 +2607,11 @@ lazy val `logstage-di` = project.in(file("logstage/logstage-di"))
     )
   )
   .settings(
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -2709,12 +2714,7 @@ lazy val `logstage-di` = project.in(file("logstage/logstage-di"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, _) => Seq.empty
-    } },
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
+    } }
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -2731,6 +2731,11 @@ lazy val `logstage-config` = project.in(file("logstage/logstage-config"))
     )
   )
   .settings(
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -2833,12 +2838,7 @@ lazy val `logstage-config` = project.in(file("logstage/logstage-config"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, _) => Seq.empty
-    } },
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
+    } }
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -2855,10 +2855,12 @@ lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-s
     )
   )
   .settings(
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
     organization := "io.7mind",
-    compileOrder in Compile := CompileOrder.Mixed,
-    compileOrder in Test := CompileOrder.Mixed,
-    classLoaderLayeringStrategy in Test := ClassLoaderLayeringStrategy.Flat,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -2961,11 +2963,9 @@ lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-s
       )
       case (_, _) => Seq.empty
     } },
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
+    compileOrder in Compile := CompileOrder.Mixed,
+    compileOrder in Test := CompileOrder.Mixed,
+    classLoaderLayeringStrategy in Test := ClassLoaderLayeringStrategy.Flat
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -2984,6 +2984,11 @@ lazy val `logstage-sink-slf4j` = project.in(file("logstage/logstage-sink-slf4j")
     )
   )
   .settings(
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -3086,12 +3091,7 @@ lazy val `logstage-sink-slf4j` = project.in(file("logstage/logstage-sink-slf4j")
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, _) => Seq.empty
-    } },
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
+    } }
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -3552,6 +3552,11 @@ lazy val `idealingua-v1-runtime-rpc-http4s` = project.in(file("idealingua-v1/ide
     )
   )
   .settings(
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -3654,12 +3659,7 @@ lazy val `idealingua-v1-runtime-rpc-http4s` = project.in(file("idealingua-v1/ide
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, _) => Seq.empty
-    } },
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
+    } }
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -3826,6 +3826,11 @@ lazy val `idealingua-v1-test-defs` = project.in(file("idealingua-v1/idealingua-v
     )
   )
   .settings(
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -3928,12 +3933,7 @@ lazy val `idealingua-v1-test-defs` = project.in(file("idealingua-v1/idealingua-v
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, _) => Seq.empty
-    } },
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
+    } }
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -3946,6 +3946,11 @@ lazy val `idealingua-v1-runtime-rpc-typescript` = project.in(file("idealingua-v1
     )
   )
   .settings(
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -4048,12 +4053,7 @@ lazy val `idealingua-v1-runtime-rpc-typescript` = project.in(file("idealingua-v1
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, _) => Seq.empty
-    } },
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
+    } }
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -4066,6 +4066,11 @@ lazy val `idealingua-v1-runtime-rpc-go` = project.in(file("idealingua-v1/idealin
     )
   )
   .settings(
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -4168,12 +4173,7 @@ lazy val `idealingua-v1-runtime-rpc-go` = project.in(file("idealingua-v1/idealin
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, _) => Seq.empty
-    } },
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
+    } }
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -4186,6 +4186,11 @@ lazy val `idealingua-v1-runtime-rpc-csharp` = project.in(file("idealingua-v1/ide
     )
   )
   .settings(
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -4288,12 +4293,7 @@ lazy val `idealingua-v1-runtime-rpc-csharp` = project.in(file("idealingua-v1/ide
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, _) => Seq.empty
-    } },
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
+    } }
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -4315,20 +4315,12 @@ lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1
     )
   )
   .settings(
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
     organization := "io.7mind",
-    mainClass in assembly := Some("izumi.idealingua.compiler.CommandlineIDLCompiler"),
-    assemblyMergeStrategy in assembly := {
-          // FIXME: workaround for https://github.com/zio/interop-cats/issues/16
-          case path if path.contains("zio/BuildInfo$.class") =>
-            MergeStrategy.last
-          case p =>
-            (assemblyMergeStrategy in assembly).value(p)
-    },
-    artifact in (Compile, assembly) := {
-          val art = (artifact in(Compile, assembly)).value
-          art.withClassifier(Some("assembly"))
-    },
-    addArtifact(artifact in(Compile, assembly), assembly),
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -4431,11 +4423,19 @@ lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1
       )
       case (_, _) => Seq.empty
     } },
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
+    mainClass in assembly := Some("izumi.idealingua.compiler.CommandlineIDLCompiler"),
+    assemblyMergeStrategy in assembly := {
+          // FIXME: workaround for https://github.com/zio/interop-cats/issues/16
+          case path if path.contains("zio/BuildInfo$.class") =>
+            MergeStrategy.last
+          case p =>
+            (assemblyMergeStrategy in assembly).value(p)
+    },
+    artifact in (Compile, assembly) := {
+          val art = (artifact in(Compile, assembly)).value
+          art.withClassifier(Some("assembly"))
+    },
+    addArtifact(artifact in(Compile, assembly), assembly)
   )
   .enablePlugins(AssemblyPlugin)
 
@@ -4481,7 +4481,113 @@ lazy val `microsite` = project.in(file("doc/microsite"))
     )
   )
   .settings(
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.8"
+    ),
     organization := "io.7mind",
+    scalacOptions ++= Seq(
+      s"-Xmacro-settings:product-name=${name.value}",
+      s"-Xmacro-settings:product-version=${version.value}",
+      s"-Xmacro-settings:product-group=${organization.value}",
+      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
+      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
+    ),
+    testOptions in Test += Tests.Argument("-oDF"),
+    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
+      case (_, "2.12.9") => Seq(
+        "-Xsource:2.13",
+        "-Ypartial-unification",
+        "-Yno-adapted-args",
+        "-Ybackend-parallelism",
+        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+        "-Xlint:adapted-args",
+        "-Xlint:by-name-right-associative",
+        "-Xlint:constant",
+        "-Xlint:delayedinit-select",
+        "-Xlint:doc-detached",
+        "-Xlint:inaccessible",
+        "-Xlint:infer-any",
+        "-Xlint:missing-interpolator",
+        "-Xlint:nullary-override",
+        "-Xlint:nullary-unit",
+        "-Xlint:option-implicit",
+        "-Xlint:package-object-classes",
+        "-Xlint:poly-implicit-overload",
+        "-Xlint:private-shadow",
+        "-Xlint:stars-align",
+        "-Xlint:type-parameter-shadow",
+        "-Xlint:unsound-match",
+        "-opt-warnings:_",
+        "-Ywarn-extra-implicit",
+        "-Ywarn-unused:_",
+        "-Ywarn-adapted-args",
+        "-Ywarn-dead-code",
+        "-Ywarn-inaccessible",
+        "-Ywarn-infer-any",
+        "-Ywarn-nullary-override",
+        "-Ywarn-nullary-unit",
+        "-Ywarn-numeric-widen",
+        "-Ywarn-unused-import",
+        "-Ywarn-value-discard",
+        "-Ycache-plugin-class-loader:always",
+        "-Ycache-macro-class-loader:last-modified"
+      )
+      case (_, "2.12.8") => Seq(
+        "-Xsource:2.13",
+        "-Ypartial-unification",
+        "-Yno-adapted-args",
+        "-Ybackend-parallelism",
+        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+        "-Xlint:adapted-args",
+        "-Xlint:by-name-right-associative",
+        "-Xlint:constant",
+        "-Xlint:delayedinit-select",
+        "-Xlint:doc-detached",
+        "-Xlint:inaccessible",
+        "-Xlint:infer-any",
+        "-Xlint:missing-interpolator",
+        "-Xlint:nullary-override",
+        "-Xlint:nullary-unit",
+        "-Xlint:option-implicit",
+        "-Xlint:package-object-classes",
+        "-Xlint:poly-implicit-overload",
+        "-Xlint:private-shadow",
+        "-Xlint:stars-align",
+        "-Xlint:type-parameter-shadow",
+        "-Xlint:unsound-match",
+        "-opt-warnings:_",
+        "-Ywarn-extra-implicit",
+        "-Ywarn-unused:_",
+        "-Ywarn-adapted-args",
+        "-Ywarn-dead-code",
+        "-Ywarn-inaccessible",
+        "-Ywarn-infer-any",
+        "-Ywarn-nullary-override",
+        "-Ywarn-nullary-unit",
+        "-Ywarn-numeric-widen",
+        "-Ywarn-unused-import",
+        "-Ywarn-value-discard",
+        "-Ycache-plugin-class-loader:always",
+        "-Ycache-macro-class-loader:last-modified"
+      )
+      case (_, "2.13.0") => Seq(
+        "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
+        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
+        "-Wconf:cat=optimizer:warning",
+        "-Ybackend-parallelism",
+        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
+        "-Wdead-code",
+        "-Wextra-implicit",
+        "-Wnumeric-widen",
+        "-Woctal-literal",
+        "-Wunused:_",
+        "-Wvalue-discard",
+        "-Ycache-plugin-class-loader:always",
+        "-Ycache-macro-class-loader:last-modified"
+      )
+      case (_, _) => Seq.empty
+    } },
     crossScalaVersions := Seq(
       "2.12.8"
     ),
@@ -4533,113 +4639,7 @@ lazy val `microsite` = project.in(file("doc/microsite"))
                       f.toPath.startsWith((ghpagesRepository.value / "media").toPath) ||
                       f.toPath.startsWith((ghpagesRepository.value / "v0.5.50-SNAPSHOT").toPath)
                   }
-                },
-    scalacOptions ++= Seq(
-      s"-Xmacro-settings:product-name=${name.value}",
-      s"-Xmacro-settings:product-version=${version.value}",
-      s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:scala-version=${scalaVersion.value}",
-      s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
-    ),
-    testOptions in Test += Tests.Argument("-oDF"),
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        "-Xsource:2.13",
-        "-Ypartial-unification",
-        "-Yno-adapted-args",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.12.8") => Seq(
-        "-Xsource:2.13",
-        "-Ypartial-unification",
-        "-Yno-adapted-args",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Xlint:adapted-args",
-        "-Xlint:by-name-right-associative",
-        "-Xlint:constant",
-        "-Xlint:delayedinit-select",
-        "-Xlint:doc-detached",
-        "-Xlint:inaccessible",
-        "-Xlint:infer-any",
-        "-Xlint:missing-interpolator",
-        "-Xlint:nullary-override",
-        "-Xlint:nullary-unit",
-        "-Xlint:option-implicit",
-        "-Xlint:package-object-classes",
-        "-Xlint:poly-implicit-overload",
-        "-Xlint:private-shadow",
-        "-Xlint:stars-align",
-        "-Xlint:type-parameter-shadow",
-        "-Xlint:unsound-match",
-        "-opt-warnings:_",
-        "-Ywarn-extra-implicit",
-        "-Ywarn-unused:_",
-        "-Ywarn-adapted-args",
-        "-Ywarn-dead-code",
-        "-Ywarn-inaccessible",
-        "-Ywarn-infer-any",
-        "-Ywarn-nullary-override",
-        "-Ywarn-nullary-unit",
-        "-Ywarn-numeric-widen",
-        "-Ywarn-unused-import",
-        "-Ywarn-value-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, "2.13.0") => Seq(
-        "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit",
-        if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
-        "-Wconf:cat=optimizer:warning",
-        "-Ybackend-parallelism",
-        math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString,
-        "-Wdead-code",
-        "-Wextra-implicit",
-        "-Wnumeric-widen",
-        "-Woctal-literal",
-        "-Wunused:_",
-        "-Wvalue-discard",
-        "-Ycache-plugin-class-loader:always",
-        "-Ycache-macro-class-loader:last-modified"
-      )
-      case (_, _) => Seq.empty
-    } },
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.8"
-    )
+                }
   )
   .enablePlugins(ScalaUnidocPlugin, ParadoxSitePlugin, SitePlugin, GhpagesPlugin, ParadoxMaterialThemePlugin, PreprocessPlugin, MdocPlugin)
   .disablePlugins(ScoverageSbtPlugin, AssemblyPlugin)
@@ -4653,9 +4653,12 @@ lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
     )
   )
   .settings(
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
     organization := "io.7mind",
-    sbtPlugin := true,
-    withBuildInfo("izumi.sbt.deps", "Izumi"),
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -4758,11 +4761,8 @@ lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
       )
       case (_, _) => Seq.empty
     } },
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
+    sbtPlugin := true,
+    withBuildInfo("izumi.sbt.deps", "Izumi")
   )
   .disablePlugins(AssemblyPlugin)
 

@@ -2,15 +2,15 @@
 
 lazy val `test` = project.in(file("test"))
   .settings(
+    scalaVersion := crossScalaVersions.value.head,
+    crossScalaVersions := Seq(
+      "0.23.0-RC1"
+    ),
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
     unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "0.23.0-RC1"
-    )
+    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" 
   )
 
 lazy val `test-agg` = (project in file(".agg/test-agg"))
