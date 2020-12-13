@@ -192,23 +192,15 @@ case class Aggregate(
   def merge: Aggregate = {
     val newArtifacts = artifacts.map {
       a =>
-        val newPlatforms = if (a.platforms.isEmpty) {
-          defaultPlatforms
-        } else {
-          a.platforms
-        }
-        val newPrefix = if (a.pathPrefix.isEmpty) {
-          pathPrefix
-        } else {
-          a.pathPrefix
-        }
+        val newPlatforms = if (a.platforms.isEmpty) defaultPlatforms else a.platforms
+        val newPrefix = if (a.pathPrefix.isEmpty) pathPrefix else a.pathPrefix
         a.copy(
           platforms = newPlatforms,
           pathPrefix = newPrefix,
-          depends = a.depends ++ this.sharedDeps,
-          libs = a.libs ++ this.sharedLibs,
-          plugins = Plugins(a.plugins.enabled ++ this.sharedPlugins.enabled, a.plugins.disabled ++ this.sharedPlugins.disabled),
-          settings = a.settings ++ this.sharedSettings
+          depends = this.sharedDeps ++ a.depends,
+          libs = this.sharedLibs ++ a.libs,
+          plugins = Plugins(this.sharedPlugins.enabled ++ a.plugins.enabled, this.sharedPlugins.disabled ++ a.plugins.disabled),
+          settings = this.sharedSettings ++ a.settings
         )
     }
     this.copy(artifacts = newArtifacts)

@@ -331,11 +331,12 @@ class Renderer(
     val settingsAll = Seq(
       Seq("organization" := groupId),
       jvmOnlyFix,
-      artifactSettings,
       project.sharedSettings,
+      artifactSettings,
     ).flatten
 
-    filterSettings(settingsAll, Platform.All) ++ platformSettings
+    platformSettings ++
+    filterSettings(settingsAll, Platform.All)
   }
 
   protected def preparePlatformArtifacts(project: Project, artifact: Artifact, jvmOnly: Boolean)(enabledPlatforms: Seq[PlatformEnv]): Seq[PreparedArtifact] = {
