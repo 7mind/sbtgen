@@ -70,7 +70,9 @@ object Defaults {
   final val Scala212Options = Seq[Const](
     "-Xsource:2.13",
     "-Ypartial-unification", // 2.12 only
-    "-Yno-adapted-args", // 2.12 only
+    CRaw("""if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning""""), // enable fatal warnings on CI
+    "-Wconf:cat=optimizer:warning", // make optimizer (inliner) warnings non-fatal
+    "-Wconf:msg=kind-projector:silent", // ignore kind-projector's deprecation of `?` syntax
 
     "-Ybackend-parallelism", CRaw("math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString"),
 
@@ -121,6 +123,7 @@ object Defaults {
     "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit", // byname-implicit false positives: https://github.com/scala/bug/issues/12072
     CRaw("""if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning""""), // enable fatal warnings on CI
     "-Wconf:cat=optimizer:warning", // make optimizer (inliner) warnings non-fatal
+    "-Wconf:msg=kind-projector:silent", // ignore kind-projector's deprecation of `?` syntax
 
     "-Ybackend-parallelism", CRaw("math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString"),
 
