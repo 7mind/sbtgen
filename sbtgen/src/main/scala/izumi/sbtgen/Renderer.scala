@@ -177,28 +177,31 @@ class Renderer(
   protected def prepareCrossAggregate(aggregate: Aggregate): Seq[PreparedAggregate] = {
     val enableSharedSettings = aggregate.enableProjectSharedAggSettings
     val noSuperAgg = aggregate.dontIncludeInSuperAgg
-    val fullAgg = aggregate.filteredArtifacts.flatMap {
-      a =>
-        a.platforms
-          .filter(p => platformEnabled(p.platform))
-          .map(p => if (a.isJvmOnly) renderName(a.name) else a.nameOn(p.platform))
+
+    val allAggregate = {
+      val fullAgg = aggregate.filteredArtifacts.flatMap {
+        a =>
+          a.platforms
+            .filter(p => platformEnabled(p.platform))
+            .map(p => if (a.isJvmOnly) renderName(a.name) else a.nameOn(p.platform))
+      }
+
+      PreparedAggregate(
+        id = aggregate.name,
+        pathPrefix = Seq(".agg", (aggregate.pathPrefix :+ aggregate.name.value).mkString("-")),
+        aggregatedNames = fullAgg,
+        platform = Platform.All,
+        plugins = project.globalPlugins,
+        isRoot = false,
+        enableProjectSharedAggSettings = enableSharedSettings,
+        dontIncludeInSuperAgg = noSuperAgg,
+        settings = aggregate.settings,
+      )
     }
 
-    val allAggregate = PreparedAggregate(
-      id = aggregate.name,
-      pathPrefix = Seq(".agg", (aggregate.pathPrefix :+ aggregate.name.value).mkString("-")),
-      aggregatedNames = fullAgg,
-      platform = Platform.All,
-      plugins = project.globalPlugins,
-      isRoot = false,
-      enableProjectSharedAggSettings = enableSharedSettings,
-      dontIncludeInSuperAgg = noSuperAgg,
-      settings = aggregate.settings,
-    )
-
-    val jvmOnly = prepareAggregate(aggregate, Platform.Jvm, enableSharedSettings, noSuperAgg)
-    val jsOnly = prepareAggregate(aggregate, Platform.Js, enableSharedSettings, noSuperAgg)
-    val nativeOnly = prepareAggregate(aggregate, Platform.Native, enableSharedSettings, noSuperAgg)
+    val jvmOnly = preparePlatformAggregate(aggregate, Platform.Jvm, enableSharedSettings, noSuperAgg)
+    val jsOnly = preparePlatformAggregate(aggregate, Platform.Js, enableSharedSettings, noSuperAgg)
+    val nativeOnly = preparePlatformAggregate(aggregate, Platform.Native, enableSharedSettings, noSuperAgg)
 
     Seq(
       Some(allAggregate),
@@ -208,25 +211,25 @@ class Renderer(
     ).flatten
   }
 
-  protected def prepareAggregate(agg: Aggregate, platform: BasePlatform, sharedSettings: Boolean, disableSuperAgg: Boolean): Option[PreparedAggregate] = {
+  protected def preparePlatformAggregate(agg: Aggregate, platform: BasePlatform, sharedSettings: Boolean, disableSuperAgg: Boolean): Option[PreparedAggregate] = {
     if (!isPlatformEnabled(platform)) {
       None
     } else {
-      val jvmAgg = agg.filteredArtifacts.flatMap {
+      val platformAgg = agg.filteredArtifacts.flatMap {
         a =>
           if (a.isJvmOnly) {
             Seq(renderName(a.name))
           } else {
-            a.platforms.filter(_.platform == platform).map(p => a.nameOn(p.platform))
+            a.platforms.filter(_.platform == platform).map(a nameOn _.platform)
           }
       }
-      if (jvmAgg.nonEmpty) {
+      if (platformAgg.nonEmpty) {
         val artname = Seq(agg.name.value, platformName(platform))
         val id = ArtifactId(artname.mkString("-"))
         Some(PreparedAggregate(
           id = id,
           pathPrefix = Seq(".agg", (agg.pathPrefix ++ artname).mkString("-")),
-          aggregatedNames = jvmAgg,
+          aggregatedNames = platformAgg,
           platform = platform,
           plugins = project.globalPlugins,
           isRoot = false,
@@ -411,10 +414,12 @@ class Renderer(
 
   @deprecated(".", ".")
   protected def formatSettings(settings: Seq[SettingDef], platform: Platform, platformPrefix: Boolean): String = {
-    renderSettings(platform, platformPrefix) {
-      settings
-        .filter(s => s.scope.platform == platform || s.scope.platform == Platform.All || (config.jvmOnly && platform == Platform.All && s.scope.platform == Platform.Jvm))
+    val filteredSettings = settings.filter { s =>
+      s.scope.platform == platform ||
+        s.scope.platform == Platform.All ||
+        (config.jvmOnly && platform == Platform.All && s.scope.platform == Platform.Jvm)
     }
+    renderSettings(platform, platformPrefix)(filteredSettings)
   }
 
   protected def cacheIdxName(idx: Int): String = {
