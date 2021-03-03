@@ -318,8 +318,8 @@ class Renderer(
       enabledPlatforms.flatMap {
         penv =>
           val psettings = Seq(
-            "scalaVersion" := "crossScalaVersions.value.head".raw,
             "crossScalaVersions" := penv.language.map(_.value),
+            "scalaVersion" := "crossScalaVersions.value.head".raw,
           ) ++ penv.settings
 
           filterSettings(psettings.map(_.withPlatform(penv.platform)), penv.platform) ++

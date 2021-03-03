@@ -4,10 +4,10 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 lazy val `test` = project.in(file("test"))
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "0.23.0-RC1"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind"
   )
 

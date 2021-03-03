@@ -126,18 +126,18 @@ lazy val `fundamentals-collections` = crossProject(JVMPlatform, JSPlatform).cros
     } }
   )
   .jvmSettings(
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
-  )
-  .jsSettings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head
+  )
+  .jsSettings(
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
+    scalaVersion := crossScalaVersions.value.head,
     coverageEnabled := false,
     scalaJSModuleKind := ModuleKind.CommonJSModule
   )
@@ -271,18 +271,18 @@ lazy val `fundamentals-platform` = crossProject(JVMPlatform, JSPlatform).crossTy
     } }
   )
   .jvmSettings(
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
-  )
-  .jsSettings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head
+  )
+  .jsSettings(
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
+    scalaVersion := crossScalaVersions.value.head,
     coverageEnabled := false,
     scalaJSModuleKind := ModuleKind.CommonJSModule,
     npmDependencies in Compile ++= Seq(
@@ -417,18 +417,18 @@ lazy val `fundamentals-functional` = crossProject(JVMPlatform, JSPlatform).cross
     } }
   )
   .jvmSettings(
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
-  )
-  .jsSettings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head
+  )
+  .jsSettings(
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
+    scalaVersion := crossScalaVersions.value.head,
     coverageEnabled := false,
     scalaJSModuleKind := ModuleKind.CommonJSModule
   )
@@ -565,18 +565,18 @@ lazy val `fundamentals-bio` = crossProject(JVMPlatform, JSPlatform).crossType(Cr
     } }
   )
   .jvmSettings(
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
-  )
-  .jsSettings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head
+  )
+  .jsSettings(
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
+    scalaVersion := crossScalaVersions.value.head,
     coverageEnabled := false,
     scalaJSModuleKind := ModuleKind.CommonJSModule
   )
@@ -612,11 +612,11 @@ lazy val `fundamentals-typesafe-config` = project.in(file("fundamentals/fundamen
     }
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -870,18 +870,18 @@ lazy val `fundamentals-reflection` = crossProject(JVMPlatform, JSPlatform).cross
     } }
   )
   .jvmSettings(
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
-  )
-  .jsSettings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head
+  )
+  .jsSettings(
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
+    scalaVersion := crossScalaVersions.value.head,
     coverageEnabled := false,
     scalaJSModuleKind := ModuleKind.CommonJSModule
   )
@@ -1022,18 +1022,18 @@ lazy val `fundamentals-json-circe` = crossProject(JVMPlatform, JSPlatform).cross
     } }
   )
   .jvmSettings(
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
-  )
-  .jsSettings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head
+  )
+  .jsSettings(
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
+    scalaVersion := crossScalaVersions.value.head,
     coverageEnabled := false,
     scalaJSModuleKind := ModuleKind.CommonJSModule
   )
@@ -1076,11 +1076,11 @@ lazy val `distage-model` = project.in(file("distage/distage-model"))
     }
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -1211,11 +1211,11 @@ lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -1344,11 +1344,11 @@ lazy val `distage-core` = project.in(file("distage/distage-core"))
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -1478,11 +1478,11 @@ lazy val `distage-config` = project.in(file("distage/distage-config"))
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     fork in Test := true,
     organization := "io.7mind",
     scalacOptions ++= Seq(
@@ -1610,11 +1610,11 @@ lazy val `distage-roles-api` = project.in(file("distage/distage-roles-api"))
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -1745,11 +1745,11 @@ lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     fork in Test := true,
     organization := "io.7mind",
     scalacOptions ++= Seq(
@@ -1886,11 +1886,11 @@ lazy val `distage-roles` = project.in(file("distage/distage-roles"))
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -2019,11 +2019,11 @@ lazy val `distage-static` = project.in(file("distage/distage-static"))
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -2158,11 +2158,11 @@ lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -2415,18 +2415,18 @@ lazy val `logstage-api` = crossProject(JVMPlatform, JSPlatform).crossType(CrossT
     } }
   )
   .jvmSettings(
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
-  )
-  .jsSettings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head
+  )
+  .jsSettings(
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
+    scalaVersion := crossScalaVersions.value.head,
     coverageEnabled := false,
     scalaJSModuleKind := ModuleKind.CommonJSModule
   )
@@ -2577,18 +2577,18 @@ lazy val `logstage-core` = crossProject(JVMPlatform, JSPlatform).crossType(Cross
     } }
   )
   .jvmSettings(
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
-  )
-  .jsSettings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head
+  )
+  .jsSettings(
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
+    scalaVersion := crossScalaVersions.value.head,
     coverageEnabled := false,
     scalaJSModuleKind := ModuleKind.CommonJSModule
   )
@@ -2723,18 +2723,18 @@ lazy val `logstage-rendering-circe` = crossProject(JVMPlatform, JSPlatform).cros
     } }
   )
   .jvmSettings(
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
-  )
-  .jsSettings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head
+  )
+  .jsSettings(
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
+    scalaVersion := crossScalaVersions.value.head,
     coverageEnabled := false,
     scalaJSModuleKind := ModuleKind.CommonJSModule
   )
@@ -2759,11 +2759,11 @@ lazy val `logstage-di` = project.in(file("logstage/logstage-di"))
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -2891,11 +2891,11 @@ lazy val `logstage-config` = project.in(file("logstage/logstage-config"))
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -3023,11 +3023,11 @@ lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-s
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -3160,11 +3160,11 @@ lazy val `logstage-sink-slf4j` = project.in(file("logstage/logstage-sink-slf4j")
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -3406,18 +3406,18 @@ lazy val `idealingua-v1-model` = crossProject(JVMPlatform, JSPlatform).crossType
     } }
   )
   .jvmSettings(
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
-  )
-  .jsSettings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head
+  )
+  .jsSettings(
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
+    scalaVersion := crossScalaVersions.value.head,
     coverageEnabled := false,
     scalaJSModuleKind := ModuleKind.CommonJSModule
   )
@@ -3556,18 +3556,18 @@ lazy val `idealingua-v1-core` = crossProject(JVMPlatform, JSPlatform).crossType(
     } }
   )
   .jvmSettings(
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
-  )
-  .jsSettings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head
+  )
+  .jsSettings(
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
+    scalaVersion := crossScalaVersions.value.head,
     coverageEnabled := false,
     scalaJSModuleKind := ModuleKind.CommonJSModule
   )
@@ -3720,18 +3720,18 @@ lazy val `idealingua-v1-runtime-rpc-scala` = crossProject(JVMPlatform, JSPlatfor
     } }
   )
   .jvmSettings(
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    )
-  )
-  .jsSettings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head
+  )
+  .jsSettings(
+    crossScalaVersions := Seq(
+      "2.12.9",
+      "2.13.0"
+    ),
+    scalaVersion := crossScalaVersions.value.head,
     coverageEnabled := false,
     scalaJSModuleKind := ModuleKind.CommonJSModule
   )
@@ -3760,11 +3760,11 @@ lazy val `idealingua-v1-runtime-rpc-http4s` = project.in(file("idealingua-v1/ide
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -4011,19 +4011,19 @@ lazy val `idealingua-v1-transpilers` = crossProject(JVMPlatform, JSPlatform).cro
     } }
   )
   .jvmSettings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     fork in Test := true
   )
   .jsSettings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     coverageEnabled := false,
     scalaJSModuleKind := ModuleKind.CommonJSModule
   )
@@ -4050,11 +4050,11 @@ lazy val `idealingua-v1-test-defs` = project.in(file("idealingua-v1/idealingua-v
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -4178,11 +4178,11 @@ lazy val `idealingua-v1-runtime-rpc-typescript` = project.in(file("idealingua-v1
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -4306,11 +4306,11 @@ lazy val `idealingua-v1-runtime-rpc-go` = project.in(file("idealingua-v1/idealin
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -4434,11 +4434,11 @@ lazy val `idealingua-v1-runtime-rpc-csharp` = project.in(file("idealingua-v1/ide
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -4571,11 +4571,11 @@ lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -4745,10 +4745,10 @@ lazy val `microsite` = project.in(file("doc/microsite"))
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.8"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -4925,11 +4925,11 @@ lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",

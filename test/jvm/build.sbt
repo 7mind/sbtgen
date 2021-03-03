@@ -11,11 +11,11 @@ lazy val `fundamentals-collections` = project.in(file("fundamentals/fundamentals
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -146,11 +146,11 @@ lazy val `fundamentals-platform` = project.in(file("fundamentals/fundamentals-pl
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -278,11 +278,11 @@ lazy val `fundamentals-functional` = project.in(file("fundamentals/fundamentals-
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -416,11 +416,11 @@ lazy val `fundamentals-bio` = project.in(file("fundamentals/fundamentals-bio"))
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -566,11 +566,11 @@ lazy val `fundamentals-typesafe-config` = project.in(file("fundamentals/fundamen
     }
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -715,11 +715,11 @@ lazy val `fundamentals-reflection` = project.in(file("fundamentals/fundamentals-
     }
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -857,11 +857,11 @@ lazy val `fundamentals-json-circe` = project.in(file("fundamentals/fundamentals-
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -1009,11 +1009,11 @@ lazy val `distage-model` = project.in(file("distage/distage-model"))
     }
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -1148,11 +1148,11 @@ lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -1285,11 +1285,11 @@ lazy val `distage-core` = project.in(file("distage/distage-core"))
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -1423,11 +1423,11 @@ lazy val `distage-config` = project.in(file("distage/distage-config"))
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     fork in Test := true,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
@@ -1559,11 +1559,11 @@ lazy val `distage-roles-api` = project.in(file("distage/distage-roles-api"))
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -1698,11 +1698,11 @@ lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     fork in Test := true,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
@@ -1843,11 +1843,11 @@ lazy val `distage-roles` = project.in(file("distage/distage-roles"))
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -1980,11 +1980,11 @@ lazy val `distage-static` = project.in(file("distage/distage-static"))
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -2123,11 +2123,11 @@ lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -2271,11 +2271,11 @@ lazy val `logstage-api` = project.in(file("logstage/logstage-api"))
     }
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -2423,11 +2423,11 @@ lazy val `logstage-core` = project.in(file("logstage/logstage-core"))
     }
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -2559,11 +2559,11 @@ lazy val `logstage-rendering-circe` = project.in(file("logstage/logstage-renderi
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -2698,11 +2698,11 @@ lazy val `logstage-di` = project.in(file("logstage/logstage-di"))
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -2834,11 +2834,11 @@ lazy val `logstage-config` = project.in(file("logstage/logstage-config"))
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -2970,11 +2970,11 @@ lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-s
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -3111,11 +3111,11 @@ lazy val `logstage-sink-slf4j` = project.in(file("logstage/logstage-sink-slf4j")
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -3248,11 +3248,11 @@ lazy val `idealingua-v1-model` = project.in(file("idealingua-v1/idealingua-v1-mo
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -3388,11 +3388,11 @@ lazy val `idealingua-v1-core` = project.in(file("idealingua-v1/idealingua-v1-cor
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -3542,11 +3542,11 @@ lazy val `idealingua-v1-runtime-rpc-scala` = project.in(file("idealingua-v1/idea
     }
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -3685,11 +3685,11 @@ lazy val `idealingua-v1-runtime-rpc-http4s` = project.in(file("idealingua-v1/ide
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -3831,11 +3831,11 @@ lazy val `idealingua-v1-transpilers` = project.in(file("idealingua-v1/idealingua
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     fork in Test := true,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
@@ -3967,11 +3967,11 @@ lazy val `idealingua-v1-test-defs` = project.in(file("idealingua-v1/idealingua-v
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -4099,11 +4099,11 @@ lazy val `idealingua-v1-runtime-rpc-typescript` = project.in(file("idealingua-v1
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -4231,11 +4231,11 @@ lazy val `idealingua-v1-runtime-rpc-go` = project.in(file("idealingua-v1/idealin
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -4363,11 +4363,11 @@ lazy val `idealingua-v1-runtime-rpc-csharp` = project.in(file("idealingua-v1/ide
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -4504,11 +4504,11 @@ lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -4682,10 +4682,10 @@ lazy val `microsite` = project.in(file("doc/microsite"))
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.8"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
@@ -4866,11 +4866,11 @@ lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
     )
   )
   .settings(
-    scalaVersion := crossScalaVersions.value.head,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
     ),
+    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
     unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
