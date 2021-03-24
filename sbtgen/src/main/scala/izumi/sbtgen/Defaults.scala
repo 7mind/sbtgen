@@ -3,6 +3,8 @@ package izumi.sbtgen
 import izumi.sbtgen.model.Const.CRaw
 import izumi.sbtgen.model._
 
+import scala.collection.immutable.{AbstractSeq, LinearSeq}
+
 object Defaults {
   /**
     * For [[Project.rootSettings]]
@@ -133,8 +135,9 @@ object Defaults {
     "-Wextra-implicit",
     "-Wnumeric-widen",
     "-Woctal-literal",
-    "-Wunused:_",
     "-Wvalue-discard",
+    "-Wunused:_",
+    "-Wmacros:after", // Count variables as used when used in macros (e.g izumi.reflect.TagK evidences)
 
     // https://github.com/scala/scala/pull/6412
     // https://twitter.com/olafurpg/status/1191299377064824832
@@ -142,7 +145,12 @@ object Defaults {
     //   around 20/30%, see https://github.com/scala/scala-dev/issues/458
     "-Ycache-plugin-class-loader:always",
     "-Ycache-macro-class-loader:last-modified",
-  )
+  ) match {
+    case seq: AbstractSeq[_] =>
+    case seq: IndexedSeq[_] =>
+    case seq: LinearSeq[_] =>
+    case _ =>
+  }
 
   final val SbtGenPlugins = Seq(
     SbtPlugin("io.7mind.izumi.sbt", "sbt-izumi", Version.SbtGen),
