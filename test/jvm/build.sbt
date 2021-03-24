@@ -124,8 +124,9 @@ lazy val `fundamentals-collections` = project.in(file("fundamentals/fundamentals
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -259,8 +260,9 @@ lazy val `fundamentals-platform` = project.in(file("fundamentals/fundamentals-pl
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -391,8 +393,9 @@ lazy val `fundamentals-functional` = project.in(file("fundamentals/fundamentals-
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -529,8 +532,9 @@ lazy val `fundamentals-bio` = project.in(file("fundamentals/fundamentals-bio"))
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -679,8 +683,9 @@ lazy val `fundamentals-typesafe-config` = project.in(file("fundamentals/fundamen
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -828,8 +833,9 @@ lazy val `fundamentals-reflection` = project.in(file("fundamentals/fundamentals-
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -970,8 +976,9 @@ lazy val `fundamentals-json-circe` = project.in(file("fundamentals/fundamentals-
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -1122,8 +1129,9 @@ lazy val `distage-model` = project.in(file("distage/distage-model"))
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -1261,8 +1269,9 @@ lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -1398,8 +1407,9 @@ lazy val `distage-core` = project.in(file("distage/distage-core"))
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -1537,8 +1547,9 @@ lazy val `distage-config` = project.in(file("distage/distage-config"))
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -1672,8 +1683,9 @@ lazy val `distage-roles-api` = project.in(file("distage/distage-roles-api"))
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -1812,8 +1824,9 @@ lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -1956,8 +1969,9 @@ lazy val `distage-roles` = project.in(file("distage/distage-roles"))
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -2093,8 +2107,9 @@ lazy val `distage-static` = project.in(file("distage/distage-static"))
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -2236,8 +2251,9 @@ lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -2384,8 +2400,9 @@ lazy val `logstage-api` = project.in(file("logstage/logstage-api"))
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -2536,8 +2553,9 @@ lazy val `logstage-core` = project.in(file("logstage/logstage-core"))
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -2672,8 +2690,9 @@ lazy val `logstage-rendering-circe` = project.in(file("logstage/logstage-renderi
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -2811,8 +2830,9 @@ lazy val `logstage-di` = project.in(file("logstage/logstage-di"))
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -2947,8 +2967,9 @@ lazy val `logstage-config` = project.in(file("logstage/logstage-config"))
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -3083,8 +3104,9 @@ lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-s
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -3224,8 +3246,9 @@ lazy val `logstage-sink-slf4j` = project.in(file("logstage/logstage-sink-slf4j")
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -3361,8 +3384,9 @@ lazy val `idealingua-v1-model` = project.in(file("idealingua-v1/idealingua-v1-mo
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -3501,8 +3525,9 @@ lazy val `idealingua-v1-core` = project.in(file("idealingua-v1/idealingua-v1-cor
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -3655,8 +3680,9 @@ lazy val `idealingua-v1-runtime-rpc-scala` = project.in(file("idealingua-v1/idea
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -3798,8 +3824,9 @@ lazy val `idealingua-v1-runtime-rpc-http4s` = project.in(file("idealingua-v1/ide
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -3945,8 +3972,9 @@ lazy val `idealingua-v1-transpilers` = project.in(file("idealingua-v1/idealingua
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -4080,8 +4108,9 @@ lazy val `idealingua-v1-test-defs` = project.in(file("idealingua-v1/idealingua-v
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -4212,8 +4241,9 @@ lazy val `idealingua-v1-runtime-rpc-typescript` = project.in(file("idealingua-v1
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -4344,8 +4374,9 @@ lazy val `idealingua-v1-runtime-rpc-go` = project.in(file("idealingua-v1/idealin
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -4476,8 +4507,9 @@ lazy val `idealingua-v1-runtime-rpc-csharp` = project.in(file("idealingua-v1/ide
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -4617,8 +4649,9 @@ lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -4794,8 +4827,9 @@ lazy val `microsite` = project.in(file("doc/microsite"))
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )
@@ -4979,8 +5013,9 @@ lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
         "-Wextra-implicit",
         "-Wnumeric-widen",
         "-Woctal-literal",
-        "-Wunused:_",
         "-Wvalue-discard",
+        "-Wunused:_",
+        "-Wmacros:after",
         "-Ycache-plugin-class-loader:always",
         "-Ycache-macro-class-loader:last-modified"
       )

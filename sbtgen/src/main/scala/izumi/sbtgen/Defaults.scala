@@ -3,8 +3,6 @@ package izumi.sbtgen
 import izumi.sbtgen.model.Const.CRaw
 import izumi.sbtgen.model._
 
-import scala.collection.immutable.{AbstractSeq, LinearSeq}
-
 object Defaults {
   /**
     * For [[Project.rootSettings]]
@@ -145,12 +143,7 @@ object Defaults {
     //   around 20/30%, see https://github.com/scala/scala-dev/issues/458
     "-Ycache-plugin-class-loader:always",
     "-Ycache-macro-class-loader:last-modified",
-  ) match {
-    case seq: AbstractSeq[_] =>
-    case seq: IndexedSeq[_] =>
-    case seq: LinearSeq[_] =>
-    case _ =>
-  }
+  )
 
   final val SbtGenPlugins = Seq(
     SbtPlugin("io.7mind.izumi.sbt", "sbt-izumi", Version.SbtGen),
