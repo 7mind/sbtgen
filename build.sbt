@@ -139,8 +139,8 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
       // https://github.com/sbt/sbt-release
       ("com.github.sbt" % "sbt-release" % "1.0.15").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
 
-      // https://github.com/jrudolph/sbt-dependency-graph
-      ("net.virtual-void" % "sbt-dependency-graph" % "0.10.0-RC1").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
+      // https://github.com/sbt/sbt-dependency-graph
+      ("org.scala-sbt" % "sbt-dependency-tree" % sbtVersion.value).extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
 
       // https://github.com/sbt/sbt-duplicates-finder
       ("com.github.sbt" % "sbt-duplicates-finder" % "1.1.0").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
