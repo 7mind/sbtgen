@@ -97,8 +97,8 @@ lazy val sbtgen = (project in file("sbtgen"))
     scalaVersion := crossScalaVersions.value.head,
     //    libraryDependencies += "com.github.scopt" %% "scopt" % "4.0.0-RC2",
     libraryDependencies += "com.github.scopt" %% "scopt" % "3.7.1",
-    libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.4.2",
-    libraryDependencies in ThisBuild += "org.scalatest" %% "scalatest" % "3.2.7" % "test",
+    libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.4.3",
+    libraryDependencies in ThisBuild += "org.scalatest" %% "scalatest" % "3.2.7" % Test,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-version=${version.value}",
       s"-Xmacro-settings:product-group=${organization.value}",
@@ -127,9 +127,6 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
       // https://github.com/sbt/sbt-git
       ("com.typesafe.sbt" % "sbt-git" % "1.0.0").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
 
-      // http://www.scalastyle.org/sbt.html
-      ("org.scalastyle" %% "scalastyle-sbt-plugin" % "1.0.0").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
-
       // https://github.com/orrsella/sbt-stats
       ("com.orrsella" % "sbt-stats" % "1.0.7").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
 
@@ -139,8 +136,8 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
       // https://github.com/sbt/sbt-release
       ("com.github.sbt" % "sbt-release" % "1.0.15").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
 
-      // https://github.com/jrudolph/sbt-dependency-graph
-      ("net.virtual-void" % "sbt-dependency-graph" % "0.10.0-RC1").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
+      // https://github.com/sbt/sbt-dependency-graph
+      ("org.scala-sbt" % "sbt-dependency-tree" % sbtVersion.value).extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
 
       // https://github.com/sbt/sbt-duplicates-finder
       ("com.github.sbt" % "sbt-duplicates-finder" % "1.1.0").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
