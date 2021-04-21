@@ -7,15 +7,15 @@ lazy val `test` = project.in(file("test"))
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" 
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" 
   )
 
 lazy val `test-agg` = (project in file(".agg/test-agg"))
   .settings(
-    skip in publish := true
+    publish / skip := true
   )
   .aggregate(
     `test`
@@ -23,7 +23,7 @@ lazy val `test-agg` = (project in file(".agg/test-agg"))
 
 lazy val `test-agg-jvm` = (project in file(".agg/test-agg-jvm"))
   .settings(
-    skip in publish := true
+    publish / skip := true
   )
   .aggregate(
     `test`
@@ -31,7 +31,7 @@ lazy val `test-agg-jvm` = (project in file(".agg/test-agg-jvm"))
 
 lazy val `test-dotty-jvm` = (project in file(".agg/.agg-jvm"))
   .settings(
-    skip in publish := true
+    publish / skip := true
   )
   .aggregate(
     `test-agg-jvm`
@@ -39,7 +39,7 @@ lazy val `test-dotty-jvm` = (project in file(".agg/.agg-jvm"))
 
 lazy val `test-dotty` = (project in file("."))
   .settings(
-    skip in publish := true
+    publish / skip := true
   )
   .aggregate(
     `test-agg`

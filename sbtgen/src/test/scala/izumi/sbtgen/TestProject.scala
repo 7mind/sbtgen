@@ -548,12 +548,12 @@ object Izumi {
               |      case p =>
               |        (assemblyMergeStrategy in assembly).value(p)
               |}""".stripMargin.raw,
-          "artifact" in SettingScope.Raw("(Compile, assembly)") :=
+          "artifact" in SettingScope.Raw("Compile / assembly") :=
             """{
-              |      val art = (artifact in(Compile, assembly)).value
+              |      val art = (Compile / assembly / artifact).value
               |      art.withClassifier(Some("assembly"))
               |}""".stripMargin.raw,
-          SettingDef.RawSettingDef("addArtifact(artifact in(Compile, assembly), assembly)")
+          SettingDef.RawSettingDef("addArtifact(Compile / assembly / artifact, assembly)")
         )
       ),
     ),
