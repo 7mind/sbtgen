@@ -3,20 +3,20 @@ import sbt.internal.librarymanagement.mavenint.PomExtraDependencyAttributes.Scal
 import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
 import xerial.sbt.Sonatype.autoImport.sonatypeProfileName
 
-turbo in ThisBuild := true
-classLoaderLayeringStrategy in ThisBuild := ClassLoaderLayeringStrategy.ScalaLibrary
+ThisBuild / turbo :=true
+ThisBuild / classLoaderLayeringStrategy :=ClassLoaderLayeringStrategy.ScalaLibrary
 
-organization in ThisBuild := "io.7mind.izumi.sbt"
+ThisBuild / organization :="io.7mind.izumi.sbt"
 
-homepage in ThisBuild := Some(url("https://izumi.7mind.io"))
-licenses in ThisBuild := Seq("BSD-style" -> url("http://www.opensource.org/licenses/bsd-license.php"))
-developers in ThisBuild := List(
+ThisBuild / homepage :=Some(url("https://izumi.7mind.io"))
+ThisBuild / licenses :=Seq("BSD-style" -> url("http://www.opensource.org/licenses/bsd-license.php"))
+ThisBuild / developers :=List(
   Developer(id = "7mind", name = "Septimal Mind", url = url("https://github.com/7mind"), email = "team@7mind.io"),
 )
-scmInfo in ThisBuild := Some(ScmInfo(url("https://github.com/7mind/sbtgen"), "scm:git:https://github.com/7mind/sbtgen.git"))
-credentials in ThisBuild += Credentials(file(".secrets/credentials.sonatype-nexus.properties"))
+ThisBuild / scmInfo :=Some(ScmInfo(url("https://github.com/7mind/sbtgen"), "scm:git:https://github.com/7mind/sbtgen.git"))
+(ThisBuild / credentials) += Credentials(file(".secrets/credentials.sonatype-nexus.properties"))
 
-publishTo in ThisBuild := (if (!isSnapshot.value) {
+ThisBuild / publishTo :=(if (!isSnapshot.value) {
   sonatypePublishToBundle.value
 } else {
   Some(Opts.resolver.sonatypeSnapshots)
@@ -98,7 +98,7 @@ lazy val sbtgen = (project in file("sbtgen"))
     //    libraryDependencies += "com.github.scopt" %% "scopt" % "4.0.0-RC2",
     libraryDependencies += "com.github.scopt" %% "scopt" % "3.7.1",
     libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.4.3",
-    libraryDependencies in ThisBuild += "org.scalatest" %% "scalatest" % "3.2.8" % Test,
+    (ThisBuild / libraryDependencies) += "org.scalatest" %% "scalatest" % "3.2.8" % Test,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-version=${version.value}",
       s"-Xmacro-settings:product-group=${organization.value}",
@@ -119,28 +119,28 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
       "io.get-coursier" %% "coursier" % "2.0.16",
 
       // https://github.com/scoverage/sbt-scoverage
-      ("org.scoverage" % "sbt-scoverage" % "1.6.1").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
+      ("org.scoverage" % "sbt-scoverage" % "1.6.1").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
 
       // http://www.scala-sbt.org/sbt-pgp/
-      ("com.github.sbt" % "sbt-pgp" % "2.1.2").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
+      ("com.github.sbt" % "sbt-pgp" % "2.1.2").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
 
       // https://github.com/sbt/sbt-git
-      ("com.typesafe.sbt" % "sbt-git" % "1.0.0").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
+      ("com.typesafe.sbt" % "sbt-git" % "1.0.0").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
 
       // https://github.com/orrsella/sbt-stats
-      ("com.orrsella" % "sbt-stats" % "1.0.7").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
+      ("com.orrsella" % "sbt-stats" % "1.0.7").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
 
       // https://github.com/xerial/sbt-sonatype
-      ("org.xerial.sbt" % "sbt-sonatype" % "3.9.7").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
+      ("org.xerial.sbt" % "sbt-sonatype" % "3.9.7").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
 
       // https://github.com/sbt/sbt-release
-      ("com.github.sbt" % "sbt-release" % "1.0.15").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
+      ("com.github.sbt" % "sbt-release" % "1.0.15").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
 
       // https://github.com/sbt/sbt-dependency-graph
-      ("org.scala-sbt" % "sbt-dependency-tree" % sbtVersion.value).extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
+      ("org.scala-sbt" % "sbt-dependency-tree" % sbtVersion.value).extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
 
       // https://github.com/sbt/sbt-duplicates-finder
-      ("com.github.sbt" % "sbt-duplicates-finder" % "1.1.0").extra(SbtVersionKey -> (sbtBinaryVersion in pluginCrossBuild).value, ScalaVersionKey -> (scalaBinaryVersion in update).value).withCrossVersion(Disabled()),
+      ("com.github.sbt" % "sbt-duplicates-finder" % "1.1.0").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
     ),
     scalaOpts,
   )
@@ -156,7 +156,7 @@ lazy val `sbt-tests` = (project in file("sbt/sbt-tests"))
     libraryDependencies ++= Seq(
       "org.scala-sbt" % "sbt" % sbtVersion.value
     ),
-    skip in publish := true,
+    publish / skip :=true,
     scriptedLaunchOpts := {
       Seq(
         scriptedLaunchOpts.value,
@@ -183,7 +183,7 @@ lazy val `sbtgen-root` = (project in file("."))
     name := "izumi-sbtgen",
     scalaVersion := ScalaVersions.scala_212,
     crossScalaVersions := Nil,
-    skip in publish := true,
+    publish / skip :=true,
     sonatypeProfileName := "io.7mind",
     releaseProcess := Seq[ReleaseStep](
       checkSnapshotDependencies, // : ReleaseStep
