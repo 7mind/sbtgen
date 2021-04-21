@@ -21,7 +21,7 @@ lazy val `fundamentals-collections` = crossProject(JVMPlatform, JSPlatform).cros
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -167,7 +167,7 @@ lazy val `fundamentals-platform` = crossProject(JVMPlatform, JSPlatform).crossTy
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -287,7 +287,7 @@ lazy val `fundamentals-platform` = crossProject(JVMPlatform, JSPlatform).crossTy
     scalaVersion := crossScalaVersions.value.head,
     coverageEnabled := false,
     scalaJSModuleKind := ModuleKind.CommonJSModule,
-    npmDependencies in Compile ++= Seq(
+    Compile / npmDependencies ++= Seq(
       (  "hash.js",  "1.1.7")
     )
   )
@@ -314,7 +314,7 @@ lazy val `fundamentals-functional` = crossProject(JVMPlatform, JSPlatform).cross
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -463,7 +463,7 @@ lazy val `fundamentals-bio` = crossProject(JVMPlatform, JSPlatform).crossType(Cr
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -629,7 +629,7 @@ lazy val `fundamentals-typesafe-config` = project.in(file("fundamentals/fundamen
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -770,7 +770,7 @@ lazy val `fundamentals-reflection` = crossProject(JVMPlatform, JSPlatform).cross
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -923,7 +923,7 @@ lazy val `fundamentals-json-circe` = crossProject(JVMPlatform, JSPlatform).cross
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -1096,7 +1096,7 @@ lazy val `distage-model` = project.in(file("distage/distage-model"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -1232,7 +1232,7 @@ lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -1366,7 +1366,7 @@ lazy val `distage-core` = project.in(file("distage/distage-core"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -1493,7 +1493,7 @@ lazy val `distage-config` = project.in(file("distage/distage-config"))
       "2.13.0"
     ),
     scalaVersion := crossScalaVersions.value.head,
-    fork in Test := true,
+    Test / fork := true,
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -1502,7 +1502,7 @@ lazy val `distage-config` = project.in(file("distage/distage-config"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -1634,7 +1634,7 @@ lazy val `distage-roles-api` = project.in(file("distage/distage-roles-api"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -1762,7 +1762,7 @@ lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
       "2.13.0"
     ),
     scalaVersion := crossScalaVersions.value.head,
-    fork in Test := true,
+    Test / fork := true,
     organization := "io.7mind",
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
@@ -1771,7 +1771,7 @@ lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -1912,7 +1912,7 @@ lazy val `distage-roles` = project.in(file("distage/distage-roles"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -2046,7 +2046,7 @@ lazy val `distage-static` = project.in(file("distage/distage-static"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -2186,7 +2186,7 @@ lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -2290,7 +2290,7 @@ lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
       )
       case (_, _) => Seq.empty
     } },
-    classLoaderLayeringStrategy in Test := ClassLoaderLayeringStrategy.Flat
+    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -2326,7 +2326,7 @@ lazy val `logstage-api` = crossProject(JVMPlatform, JSPlatform).crossType(CrossT
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -2489,7 +2489,7 @@ lazy val `logstage-core` = crossProject(JVMPlatform, JSPlatform).crossType(Cross
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -2636,7 +2636,7 @@ lazy val `logstage-rendering-circe` = crossProject(JVMPlatform, JSPlatform).cros
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -2791,7 +2791,7 @@ lazy val `logstage-di` = project.in(file("logstage/logstage-di"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -2924,7 +2924,7 @@ lazy val `logstage-config` = project.in(file("logstage/logstage-config"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -3057,7 +3057,7 @@ lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-s
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -3161,9 +3161,9 @@ lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-s
       )
       case (_, _) => Seq.empty
     } },
-    compileOrder in Compile := CompileOrder.Mixed,
-    compileOrder in Test := CompileOrder.Mixed,
-    classLoaderLayeringStrategy in Test := ClassLoaderLayeringStrategy.Flat
+    Compile / compileOrder := CompileOrder.Mixed,
+    Test / compileOrder := CompileOrder.Mixed,
+    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -3195,7 +3195,7 @@ lazy val `logstage-sink-slf4j` = project.in(file("logstage/logstage-sink-slf4j")
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -3324,7 +3324,7 @@ lazy val `idealingua-v1-model` = crossProject(JVMPlatform, JSPlatform).crossType
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -3475,7 +3475,7 @@ lazy val `idealingua-v1-core` = crossProject(JVMPlatform, JSPlatform).crossType(
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -3640,7 +3640,7 @@ lazy val `idealingua-v1-runtime-rpc-scala` = crossProject(JVMPlatform, JSPlatfor
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -3799,7 +3799,7 @@ lazy val `idealingua-v1-runtime-rpc-http4s` = project.in(file("idealingua-v1/ide
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -3933,7 +3933,7 @@ lazy val `idealingua-v1-transpilers` = crossProject(JVMPlatform, JSPlatform).cro
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -4044,7 +4044,7 @@ lazy val `idealingua-v1-transpilers` = crossProject(JVMPlatform, JSPlatform).cro
       "2.13.0"
     ),
     scalaVersion := crossScalaVersions.value.head,
-    fork in Test := true
+    Test / fork := true
   )
   .jsSettings(
     crossScalaVersions := Seq(
@@ -4091,7 +4091,7 @@ lazy val `idealingua-v1-test-defs` = project.in(file("idealingua-v1/idealingua-v
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -4220,7 +4220,7 @@ lazy val `idealingua-v1-runtime-rpc-typescript` = project.in(file("idealingua-v1
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -4349,7 +4349,7 @@ lazy val `idealingua-v1-runtime-rpc-go` = project.in(file("idealingua-v1/idealin
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -4478,7 +4478,7 @@ lazy val `idealingua-v1-runtime-rpc-csharp` = project.in(file("idealingua-v1/ide
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -4616,7 +4616,7 @@ lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -4720,19 +4720,19 @@ lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1
       )
       case (_, _) => Seq.empty
     } },
-    mainClass in assembly := Some("izumi.idealingua.compiler.CommandlineIDLCompiler"),
-    assemblyMergeStrategy in assembly := {
+    assembly / mainClass := Some("izumi.idealingua.compiler.CommandlineIDLCompiler"),
+    assembly / assemblyMergeStrategy := {
           // FIXME: workaround for https://github.com/zio/interop-cats/issues/16
           case path if path.contains("zio/BuildInfo$.class") =>
             MergeStrategy.last
           case p =>
             (assemblyMergeStrategy in assembly).value(p)
     },
-    artifact in (Compile, assembly) := {
-          val art = (artifact in(Compile, assembly)).value
+    Compile / assembly / artifact := {
+          val art = (Compile / assembly / artifact).value
           art.withClassifier(Some("assembly"))
     },
-    addArtifact(artifact in(Compile, assembly), assembly)
+    addArtifact(Compile / assembly / artifact, assembly)
   )
   .enablePlugins(AssemblyPlugin)
 
@@ -4790,7 +4790,7 @@ lazy val `microsite` = project.in(file("doc/microsite"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -4899,7 +4899,7 @@ lazy val `microsite` = project.in(file("doc/microsite"))
     ),
     scalaVersion := crossScalaVersions.value.head,
     coverageEnabled := false,
-    skip in publish := true,
+    publish / skip := true,
     DocKeys.prefix := {if (isSnapshot.value) {
                 "latest/snapshot"
               } else {
@@ -4907,18 +4907,18 @@ lazy val `microsite` = project.in(file("doc/microsite"))
               }},
     previewFixedPort := Some(9999),
     git.remoteRepo := "git@github.com:7mind/izumi-microsite.git",
-    classLoaderLayeringStrategy in Compile := ClassLoaderLayeringStrategy.Flat,
+    Compile / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
     mdocIn := baseDirectory.value / "src/main/tut",
-    sourceDirectory in Paradox := mdocOut.value,
+    Paradox / sourceDirectory := mdocOut.value,
     mdocExtraArguments ++= Seq(
       " --no-link-hygiene"
     ),
-    mappings in SitePlugin.autoImport.makeSite := {
+    SitePlugin.autoImport.makeSite / mappings := {
                 (mappings in SitePlugin.autoImport.makeSite)
                   .dependsOn(mdoc.toTask(" "))
                   .value
               },
-    version in Paradox := version.value,
+    Paradox / version := version.value,
     ParadoxMaterialThemePlugin.paradoxMaterialThemeSettings(Paradox),
     addMappingsToSiteDir(mappings in(ScalaUnidoc, packageDoc), siteSubdirName in ScalaUnidoc),
     unidocProjectFilter in(ScalaUnidoc, unidoc) := inAggregates(`izumi-jvm`, transitive=true),
@@ -4927,8 +4927,8 @@ lazy val `microsite` = project.in(file("doc/microsite"))
                   .withRepository(uri("https://github.com/7mind/izumi"))
                 //        .withColor("222", "434343")
               },
-    siteSubdirName in ScalaUnidoc := s"${DocKeys.prefix.value}/api",
-    siteSubdirName in Paradox := s"${DocKeys.prefix.value}/doc",
+    ScalaUnidoc / siteSubdirName := s"${DocKeys.prefix.value}/api",
+    Paradox / siteSubdirName := s"${DocKeys.prefix.value}/doc",
     paradoxProperties ++= Map(
                 "scaladoc.izumi.base_url" -> s"/${DocKeys.prefix.value}/api/com/github/pshirshov/",
                 "scaladoc.base_url" -> s"/${DocKeys.prefix.value}/api/",
@@ -4972,7 +4972,7 @@ lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -5083,7 +5083,7 @@ lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
 
 lazy val `fundamentals` = (project in file(".agg/fundamentals-fundamentals"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5109,7 +5109,7 @@ lazy val `fundamentals` = (project in file(".agg/fundamentals-fundamentals"))
 
 lazy val `fundamentals-jvm` = (project in file(".agg/fundamentals-fundamentals-jvm"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5129,7 +5129,7 @@ lazy val `fundamentals-jvm` = (project in file(".agg/fundamentals-fundamentals-j
 
 lazy val `fundamentals-js` = (project in file(".agg/fundamentals-fundamentals-js"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5149,7 +5149,7 @@ lazy val `fundamentals-js` = (project in file(".agg/fundamentals-fundamentals-js
 
 lazy val `distage` = (project in file(".agg/distage-distage"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5171,7 +5171,7 @@ lazy val `distage` = (project in file(".agg/distage-distage"))
 
 lazy val `distage-jvm` = (project in file(".agg/distage-distage-jvm"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5193,7 +5193,7 @@ lazy val `distage-jvm` = (project in file(".agg/distage-distage-jvm"))
 
 lazy val `distage-js` = (project in file(".agg/distage-distage-js"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5215,7 +5215,7 @@ lazy val `distage-js` = (project in file(".agg/distage-distage-js"))
 
 lazy val `logstage` = (project in file(".agg/logstage-logstage"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5238,7 +5238,7 @@ lazy val `logstage` = (project in file(".agg/logstage-logstage"))
 
 lazy val `logstage-jvm` = (project in file(".agg/logstage-logstage-jvm"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5258,7 +5258,7 @@ lazy val `logstage-jvm` = (project in file(".agg/logstage-logstage-jvm"))
 
 lazy val `logstage-js` = (project in file(".agg/logstage-logstage-js"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5278,7 +5278,7 @@ lazy val `logstage-js` = (project in file(".agg/logstage-logstage-js"))
 
 lazy val `idealingua` = (project in file(".agg/idealingua-v1-idealingua"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5305,7 +5305,7 @@ lazy val `idealingua` = (project in file(".agg/idealingua-v1-idealingua"))
 
 lazy val `idealingua-jvm` = (project in file(".agg/idealingua-v1-idealingua-jvm"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5328,7 +5328,7 @@ lazy val `idealingua-jvm` = (project in file(".agg/idealingua-v1-idealingua-jvm"
 
 lazy val `idealingua-js` = (project in file(".agg/idealingua-v1-idealingua-js"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5351,7 +5351,7 @@ lazy val `idealingua-js` = (project in file(".agg/idealingua-v1-idealingua-js"))
 
 lazy val `doc` = (project in file(".agg/doc-doc"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.8"
     ),
@@ -5364,7 +5364,7 @@ lazy val `doc` = (project in file(".agg/doc-doc"))
 
 lazy val `doc-jvm` = (project in file(".agg/doc-doc-jvm"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.8"
     ),
@@ -5377,7 +5377,7 @@ lazy val `doc-jvm` = (project in file(".agg/doc-doc-jvm"))
 
 lazy val `doc-js` = (project in file(".agg/doc-doc-js"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.8"
     ),
@@ -5390,7 +5390,7 @@ lazy val `doc-js` = (project in file(".agg/doc-doc-js"))
 
 lazy val `sbt-plugins` = (project in file(".agg/sbt-plugins-sbt-plugins"))
   .settings(
-    skip in publish := true
+    publish / skip := true
   )
   .disablePlugins(AssemblyPlugin)
   .aggregate(
@@ -5399,7 +5399,7 @@ lazy val `sbt-plugins` = (project in file(".agg/sbt-plugins-sbt-plugins"))
 
 lazy val `sbt-plugins-jvm` = (project in file(".agg/sbt-plugins-sbt-plugins-jvm"))
   .settings(
-    skip in publish := true
+    publish / skip := true
   )
   .disablePlugins(AssemblyPlugin)
   .aggregate(
@@ -5408,7 +5408,7 @@ lazy val `sbt-plugins-jvm` = (project in file(".agg/sbt-plugins-sbt-plugins-jvm"
 
 lazy val `sbt-plugins-js` = (project in file(".agg/sbt-plugins-sbt-plugins-js"))
   .settings(
-    skip in publish := true
+    publish / skip := true
   )
   .disablePlugins(AssemblyPlugin)
   .aggregate(
@@ -5417,7 +5417,7 @@ lazy val `sbt-plugins-js` = (project in file(".agg/sbt-plugins-sbt-plugins-js"))
 
 lazy val `izumi-jvm` = (project in file(".agg/.agg-jvm"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5434,7 +5434,7 @@ lazy val `izumi-jvm` = (project in file(".agg/.agg-jvm"))
 
 lazy val `izumi-js` = (project in file(".agg/.agg-js"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5451,9 +5451,9 @@ lazy val `izumi-js` = (project in file(".agg/.agg-js"))
 
 lazy val `izumi` = (project in file("."))
   .settings(
-    skip in publish := true,
-    publishMavenStyle in ThisBuild := true,
-    scalacOptions in ThisBuild ++= Seq(
+    publish / skip := true,
+    ThisBuild / publishMavenStyle := true,
+    ThisBuild / scalacOptions ++= Seq(
       "-encoding",
       "UTF-8",
       "-target:jvm-1.8",
@@ -5463,7 +5463,7 @@ lazy val `izumi` = (project in file("."))
       "-language:higherKinds",
       "-explaintypes"
     ),
-    javacOptions in ThisBuild ++= Seq(
+    ThisBuild / javacOptions ++= Seq(
       "-encoding",
       "UTF-8",
       "-source",
@@ -5475,7 +5475,7 @@ lazy val `izumi` = (project in file("."))
       "-Xlint:all",
       "-XDignore.symbol.file"
     ),
-    scalacOptions in ThisBuild ++= Seq(
+    ThisBuild / scalacOptions ++= Seq(
       s"-Xmacro-settings:sbt-version=${sbtVersion.value}",
       s"-Xmacro-settings:git-repo-clean=${com.typesafe.sbt.SbtGit.GitKeys.gitUncommittedChanges.value}",
       s"-Xmacro-settings:git-branch=${com.typesafe.sbt.SbtGit.GitKeys.gitCurrentBranch.value}",
@@ -5484,14 +5484,14 @@ lazy val `izumi` = (project in file("."))
     ),
     crossScalaVersions := Nil,
     scalaVersion := "2.12.9",
-    organization in ThisBuild := "io.7mind.izumi",
-    homepage in ThisBuild := Some(url("https://izumi.7mind.io")),
-    licenses in ThisBuild := Seq("BSD-style" -> url("http://www.opensource.org/licenses/bsd-license.php")),
-    developers in ThisBuild := List(
+    ThisBuild / organization := "io.7mind.izumi",
+    ThisBuild / homepage := Some(url("https://izumi.7mind.io")),
+    ThisBuild / licenses := Seq("BSD-style" -> url("http://www.opensource.org/licenses/bsd-license.php")),
+    ThisBuild / developers := List(
               Developer(id = "7mind", name = "Septimal Mind", url = url("https://github.com/7mind"), email = "team@7mind.io"),
             ),
-    scmInfo in ThisBuild := Some(ScmInfo(url("https://github.com/7mind/izumi"), "scm:git:https://github.com/7mind/izumi.git")),
-    scalacOptions in ThisBuild += """-Xmacro-settings:scalatest-version=3.1.2"""
+    ThisBuild / scmInfo := Some(ScmInfo(url("https://github.com/7mind/izumi"), "scm:git:https://github.com/7mind/izumi.git")),
+    ThisBuild / scalacOptions += """-Xmacro-settings:scalatest-version=3.1.2"""
   )
   .disablePlugins(AssemblyPlugin)
   .aggregate(

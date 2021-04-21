@@ -581,13 +581,13 @@ trait Renderers
       case SettingScope.Project =>
         Seq.empty
       case SettingScope.Build =>
-        Seq("in", "ThisBuild")
+        Seq("ThisBuild", "/")
       case SettingScope.Test =>
-        Seq("in", "Test")
+        Seq("Test", "/")
       case SettingScope.Compile =>
-        Seq("in", "Compile")
+        Seq("Compile", "/")
       case SettingScope.Raw(value) =>
-        Seq("in", value)
+        Seq(value, "/")
     }
 
     val op = settingDef.op match {
@@ -648,7 +648,7 @@ trait Renderers
         }
     }
 
-    val all = Seq(name) ++ in ++ Seq(op, out)
+    val all = in ++ Seq(name) ++ Seq(op, out)
     all.mkString(" ")
   }
 

@@ -13,7 +13,7 @@ lazy val `test` = project.in(file("test"))
 
 lazy val `test-agg` = (project in file(".agg/test-agg"))
   .settings(
-    skip in publish := true
+    publish / skip := true
   )
   .aggregate(
     `test`
@@ -21,7 +21,7 @@ lazy val `test-agg` = (project in file(".agg/test-agg"))
 
 lazy val `test-agg-jvm` = (project in file(".agg/test-agg-jvm"))
   .settings(
-    skip in publish := true
+    publish / skip := true
   )
   .aggregate(
     `test`
@@ -29,7 +29,7 @@ lazy val `test-agg-jvm` = (project in file(".agg/test-agg-jvm"))
 
 lazy val `test-agg-js` = (project in file(".agg/test-agg-js"))
   .settings(
-    skip in publish := true
+    publish / skip := true
   )
   .aggregate(
     `test`
@@ -37,7 +37,7 @@ lazy val `test-agg-js` = (project in file(".agg/test-agg-js"))
 
 lazy val `test-dotty-jvm` = (project in file(".agg/.agg-jvm"))
   .settings(
-    skip in publish := true
+    publish / skip := true
   )
   .aggregate(
     `test-agg-jvm`
@@ -45,7 +45,7 @@ lazy val `test-dotty-jvm` = (project in file(".agg/.agg-jvm"))
 
 lazy val `test-dotty-js` = (project in file(".agg/.agg-js"))
   .settings(
-    skip in publish := true
+    publish / skip := true
   )
   .aggregate(
     `test-agg-js`
@@ -53,7 +53,7 @@ lazy val `test-dotty-js` = (project in file(".agg/.agg-js"))
 
 lazy val `test-dotty` = (project in file("."))
   .settings(
-    skip in publish := true
+    publish / skip := true
   )
   .aggregate(
     `test-agg`

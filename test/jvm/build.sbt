@@ -17,10 +17,10 @@ lazy val `fundamentals-collections` = project.in(file("fundamentals/fundamentals
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -28,7 +28,7 @@ lazy val `fundamentals-collections` = project.in(file("fundamentals/fundamentals
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -153,10 +153,10 @@ lazy val `fundamentals-platform` = project.in(file("fundamentals/fundamentals-pl
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -164,7 +164,7 @@ lazy val `fundamentals-platform` = project.in(file("fundamentals/fundamentals-pl
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -286,10 +286,10 @@ lazy val `fundamentals-functional` = project.in(file("fundamentals/fundamentals-
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -297,7 +297,7 @@ lazy val `fundamentals-functional` = project.in(file("fundamentals/fundamentals-
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -425,10 +425,10 @@ lazy val `fundamentals-bio` = project.in(file("fundamentals/fundamentals-bio"))
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -436,7 +436,7 @@ lazy val `fundamentals-bio` = project.in(file("fundamentals/fundamentals-bio"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -576,10 +576,10 @@ lazy val `fundamentals-typesafe-config` = project.in(file("fundamentals/fundamen
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -587,7 +587,7 @@ lazy val `fundamentals-typesafe-config` = project.in(file("fundamentals/fundamen
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -726,10 +726,10 @@ lazy val `fundamentals-reflection` = project.in(file("fundamentals/fundamentals-
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -737,7 +737,7 @@ lazy val `fundamentals-reflection` = project.in(file("fundamentals/fundamentals-
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -869,10 +869,10 @@ lazy val `fundamentals-json-circe` = project.in(file("fundamentals/fundamentals-
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -880,7 +880,7 @@ lazy val `fundamentals-json-circe` = project.in(file("fundamentals/fundamentals-
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -1022,10 +1022,10 @@ lazy val `distage-model` = project.in(file("distage/distage-model"))
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -1033,7 +1033,7 @@ lazy val `distage-model` = project.in(file("distage/distage-model"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -1162,10 +1162,10 @@ lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -1173,7 +1173,7 @@ lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -1300,10 +1300,10 @@ lazy val `distage-core` = project.in(file("distage/distage-core"))
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -1311,7 +1311,7 @@ lazy val `distage-core` = project.in(file("distage/distage-core"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -1438,12 +1438,12 @@ lazy val `distage-config` = project.in(file("distage/distage-config"))
       "2.13.0"
     ),
     scalaVersion := crossScalaVersions.value.head,
-    fork in Test := true,
+    Test / fork := true,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -1451,7 +1451,7 @@ lazy val `distage-config` = project.in(file("distage/distage-config"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -1576,10 +1576,10 @@ lazy val `distage-roles-api` = project.in(file("distage/distage-roles-api"))
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -1587,7 +1587,7 @@ lazy val `distage-roles-api` = project.in(file("distage/distage-roles-api"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -1715,12 +1715,12 @@ lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
       "2.13.0"
     ),
     scalaVersion := crossScalaVersions.value.head,
-    fork in Test := true,
+    Test / fork := true,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -1728,7 +1728,7 @@ lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -1862,10 +1862,10 @@ lazy val `distage-roles` = project.in(file("distage/distage-roles"))
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -1873,7 +1873,7 @@ lazy val `distage-roles` = project.in(file("distage/distage-roles"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -2000,10 +2000,10 @@ lazy val `distage-static` = project.in(file("distage/distage-static"))
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -2011,7 +2011,7 @@ lazy val `distage-static` = project.in(file("distage/distage-static"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -2144,10 +2144,10 @@ lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -2155,7 +2155,7 @@ lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -2259,7 +2259,7 @@ lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
       )
       case (_, _) => Seq.empty
     } },
-    classLoaderLayeringStrategy in Test := ClassLoaderLayeringStrategy.Flat
+    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -2293,10 +2293,10 @@ lazy val `logstage-api` = project.in(file("logstage/logstage-api"))
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -2304,7 +2304,7 @@ lazy val `logstage-api` = project.in(file("logstage/logstage-api"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -2446,10 +2446,10 @@ lazy val `logstage-core` = project.in(file("logstage/logstage-core"))
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -2457,7 +2457,7 @@ lazy val `logstage-core` = project.in(file("logstage/logstage-core"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -2583,10 +2583,10 @@ lazy val `logstage-rendering-circe` = project.in(file("logstage/logstage-renderi
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -2594,7 +2594,7 @@ lazy val `logstage-rendering-circe` = project.in(file("logstage/logstage-renderi
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -2723,10 +2723,10 @@ lazy val `logstage-di` = project.in(file("logstage/logstage-di"))
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -2734,7 +2734,7 @@ lazy val `logstage-di` = project.in(file("logstage/logstage-di"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -2860,10 +2860,10 @@ lazy val `logstage-config` = project.in(file("logstage/logstage-config"))
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -2871,7 +2871,7 @@ lazy val `logstage-config` = project.in(file("logstage/logstage-config"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -2997,10 +2997,10 @@ lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-s
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -3008,7 +3008,7 @@ lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-s
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -3112,9 +3112,9 @@ lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-s
       )
       case (_, _) => Seq.empty
     } },
-    compileOrder in Compile := CompileOrder.Mixed,
-    compileOrder in Test := CompileOrder.Mixed,
-    classLoaderLayeringStrategy in Test := ClassLoaderLayeringStrategy.Flat
+    Compile / compileOrder := CompileOrder.Mixed,
+    Test / compileOrder := CompileOrder.Mixed,
+    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat
   )
   .disablePlugins(AssemblyPlugin)
 
@@ -3139,10 +3139,10 @@ lazy val `logstage-sink-slf4j` = project.in(file("logstage/logstage-sink-slf4j")
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -3150,7 +3150,7 @@ lazy val `logstage-sink-slf4j` = project.in(file("logstage/logstage-sink-slf4j")
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -3277,10 +3277,10 @@ lazy val `idealingua-v1-model` = project.in(file("idealingua-v1/idealingua-v1-mo
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -3288,7 +3288,7 @@ lazy val `idealingua-v1-model` = project.in(file("idealingua-v1/idealingua-v1-mo
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -3418,10 +3418,10 @@ lazy val `idealingua-v1-core` = project.in(file("idealingua-v1/idealingua-v1-cor
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -3429,7 +3429,7 @@ lazy val `idealingua-v1-core` = project.in(file("idealingua-v1/idealingua-v1-cor
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -3573,10 +3573,10 @@ lazy val `idealingua-v1-runtime-rpc-scala` = project.in(file("idealingua-v1/idea
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -3584,7 +3584,7 @@ lazy val `idealingua-v1-runtime-rpc-scala` = project.in(file("idealingua-v1/idea
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -3717,10 +3717,10 @@ lazy val `idealingua-v1-runtime-rpc-http4s` = project.in(file("idealingua-v1/ide
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -3728,7 +3728,7 @@ lazy val `idealingua-v1-runtime-rpc-http4s` = project.in(file("idealingua-v1/ide
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -3863,12 +3863,12 @@ lazy val `idealingua-v1-transpilers` = project.in(file("idealingua-v1/idealingua
       "2.13.0"
     ),
     scalaVersion := crossScalaVersions.value.head,
-    fork in Test := true,
+    Test / fork := true,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -3876,7 +3876,7 @@ lazy val `idealingua-v1-transpilers` = project.in(file("idealingua-v1/idealingua
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -4001,10 +4001,10 @@ lazy val `idealingua-v1-test-defs` = project.in(file("idealingua-v1/idealingua-v
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -4012,7 +4012,7 @@ lazy val `idealingua-v1-test-defs` = project.in(file("idealingua-v1/idealingua-v
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -4134,10 +4134,10 @@ lazy val `idealingua-v1-runtime-rpc-typescript` = project.in(file("idealingua-v1
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -4145,7 +4145,7 @@ lazy val `idealingua-v1-runtime-rpc-typescript` = project.in(file("idealingua-v1
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -4267,10 +4267,10 @@ lazy val `idealingua-v1-runtime-rpc-go` = project.in(file("idealingua-v1/idealin
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -4278,7 +4278,7 @@ lazy val `idealingua-v1-runtime-rpc-go` = project.in(file("idealingua-v1/idealin
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -4400,10 +4400,10 @@ lazy val `idealingua-v1-runtime-rpc-csharp` = project.in(file("idealingua-v1/ide
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -4411,7 +4411,7 @@ lazy val `idealingua-v1-runtime-rpc-csharp` = project.in(file("idealingua-v1/ide
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -4542,10 +4542,10 @@ lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -4553,7 +4553,7 @@ lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -4657,19 +4657,19 @@ lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1
       )
       case (_, _) => Seq.empty
     } },
-    mainClass in assembly := Some("izumi.idealingua.compiler.CommandlineIDLCompiler"),
-    assemblyMergeStrategy in assembly := {
+    assembly / mainClass := Some("izumi.idealingua.compiler.CommandlineIDLCompiler"),
+    assembly / assemblyMergeStrategy := {
           // FIXME: workaround for https://github.com/zio/interop-cats/issues/16
           case path if path.contains("zio/BuildInfo$.class") =>
             MergeStrategy.last
           case p =>
             (assemblyMergeStrategy in assembly).value(p)
     },
-    artifact in (Compile, assembly) := {
-          val art = (artifact in(Compile, assembly)).value
+    Compile / assembly / artifact := {
+          val art = (Compile / assembly / artifact).value
           art.withClassifier(Some("assembly"))
     },
-    addArtifact(artifact in(Compile, assembly), assembly)
+    addArtifact(Compile / assembly / artifact, assembly)
   )
   .enablePlugins(AssemblyPlugin)
 
@@ -4720,10 +4720,10 @@ lazy val `microsite` = project.in(file("doc/microsite"))
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -4731,7 +4731,7 @@ lazy val `microsite` = project.in(file("doc/microsite"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -4840,7 +4840,7 @@ lazy val `microsite` = project.in(file("doc/microsite"))
     ),
     scalaVersion := crossScalaVersions.value.head,
     coverageEnabled := false,
-    skip in publish := true,
+    publish / skip := true,
     DocKeys.prefix := {if (isSnapshot.value) {
                 "latest/snapshot"
               } else {
@@ -4848,18 +4848,18 @@ lazy val `microsite` = project.in(file("doc/microsite"))
               }},
     previewFixedPort := Some(9999),
     git.remoteRepo := "git@github.com:7mind/izumi-microsite.git",
-    classLoaderLayeringStrategy in Compile := ClassLoaderLayeringStrategy.Flat,
+    Compile / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
     mdocIn := baseDirectory.value / "src/main/tut",
-    sourceDirectory in Paradox := mdocOut.value,
+    Paradox / sourceDirectory := mdocOut.value,
     mdocExtraArguments ++= Seq(
       " --no-link-hygiene"
     ),
-    mappings in SitePlugin.autoImport.makeSite := {
+    SitePlugin.autoImport.makeSite / mappings := {
                 (mappings in SitePlugin.autoImport.makeSite)
                   .dependsOn(mdoc.toTask(" "))
                   .value
               },
-    version in Paradox := version.value,
+    Paradox / version := version.value,
     ParadoxMaterialThemePlugin.paradoxMaterialThemeSettings(Paradox),
     addMappingsToSiteDir(mappings in(ScalaUnidoc, packageDoc), siteSubdirName in ScalaUnidoc),
     unidocProjectFilter in(ScalaUnidoc, unidoc) := inAggregates(`izumi-jvm`, transitive=true),
@@ -4868,8 +4868,8 @@ lazy val `microsite` = project.in(file("doc/microsite"))
                   .withRepository(uri("https://github.com/7mind/izumi"))
                 //        .withColor("222", "434343")
               },
-    siteSubdirName in ScalaUnidoc := s"${DocKeys.prefix.value}/api",
-    siteSubdirName in Paradox := s"${DocKeys.prefix.value}/doc",
+    ScalaUnidoc / siteSubdirName := s"${DocKeys.prefix.value}/api",
+    Paradox / siteSubdirName := s"${DocKeys.prefix.value}/doc",
     paradoxProperties ++= Map(
                 "scaladoc.izumi.base_url" -> s"/${DocKeys.prefix.value}/api/com/github/pshirshov/",
                 "scaladoc.base_url" -> s"/${DocKeys.prefix.value}/api/",
@@ -4906,10 +4906,10 @@ lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
     ),
     scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    unmanagedSourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/scala" ,
-    unmanagedResourceDirectories in Compile += baseDirectory.value / ".jvm/src/main/resources" ,
-    unmanagedSourceDirectories in Test += baseDirectory.value / ".jvm/src/test/scala" ,
-    unmanagedResourceDirectories in Test += baseDirectory.value / ".jvm/src/test/resources" ,
+    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
+    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
+    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
+    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-name=${name.value}",
       s"-Xmacro-settings:product-version=${version.value}",
@@ -4917,7 +4917,7 @@ lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"
     ),
-    testOptions in Test += Tests.Argument("-oDF"),
+    Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         "-Xsource:2.13",
@@ -5028,7 +5028,7 @@ lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
 
 lazy val `fundamentals` = (project in file(".agg/fundamentals-fundamentals"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5048,7 +5048,7 @@ lazy val `fundamentals` = (project in file(".agg/fundamentals-fundamentals"))
 
 lazy val `fundamentals-jvm` = (project in file(".agg/fundamentals-fundamentals-jvm"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5068,7 +5068,7 @@ lazy val `fundamentals-jvm` = (project in file(".agg/fundamentals-fundamentals-j
 
 lazy val `distage` = (project in file(".agg/distage-distage"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5090,7 +5090,7 @@ lazy val `distage` = (project in file(".agg/distage-distage"))
 
 lazy val `distage-jvm` = (project in file(".agg/distage-distage-jvm"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5112,7 +5112,7 @@ lazy val `distage-jvm` = (project in file(".agg/distage-distage-jvm"))
 
 lazy val `logstage` = (project in file(".agg/logstage-logstage"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5132,7 +5132,7 @@ lazy val `logstage` = (project in file(".agg/logstage-logstage"))
 
 lazy val `logstage-jvm` = (project in file(".agg/logstage-logstage-jvm"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5152,7 +5152,7 @@ lazy val `logstage-jvm` = (project in file(".agg/logstage-logstage-jvm"))
 
 lazy val `idealingua` = (project in file(".agg/idealingua-v1-idealingua"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5175,7 +5175,7 @@ lazy val `idealingua` = (project in file(".agg/idealingua-v1-idealingua"))
 
 lazy val `idealingua-jvm` = (project in file(".agg/idealingua-v1-idealingua-jvm"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5198,7 +5198,7 @@ lazy val `idealingua-jvm` = (project in file(".agg/idealingua-v1-idealingua-jvm"
 
 lazy val `doc` = (project in file(".agg/doc-doc"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.8"
     ),
@@ -5211,7 +5211,7 @@ lazy val `doc` = (project in file(".agg/doc-doc"))
 
 lazy val `doc-jvm` = (project in file(".agg/doc-doc-jvm"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.8"
     ),
@@ -5224,7 +5224,7 @@ lazy val `doc-jvm` = (project in file(".agg/doc-doc-jvm"))
 
 lazy val `sbt-plugins` = (project in file(".agg/sbt-plugins-sbt-plugins"))
   .settings(
-    skip in publish := true
+    publish / skip := true
   )
   .disablePlugins(AssemblyPlugin)
   .aggregate(
@@ -5233,7 +5233,7 @@ lazy val `sbt-plugins` = (project in file(".agg/sbt-plugins-sbt-plugins"))
 
 lazy val `sbt-plugins-jvm` = (project in file(".agg/sbt-plugins-sbt-plugins-jvm"))
   .settings(
-    skip in publish := true
+    publish / skip := true
   )
   .disablePlugins(AssemblyPlugin)
   .aggregate(
@@ -5242,7 +5242,7 @@ lazy val `sbt-plugins-jvm` = (project in file(".agg/sbt-plugins-sbt-plugins-jvm"
 
 lazy val `izumi-jvm` = (project in file(".agg/.agg-jvm"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     crossScalaVersions := Seq(
       "2.12.9",
       "2.13.0"
@@ -5259,9 +5259,9 @@ lazy val `izumi-jvm` = (project in file(".agg/.agg-jvm"))
 
 lazy val `izumi` = (project in file("."))
   .settings(
-    skip in publish := true,
-    publishMavenStyle in ThisBuild := true,
-    scalacOptions in ThisBuild ++= Seq(
+    publish / skip := true,
+    ThisBuild / publishMavenStyle := true,
+    ThisBuild / scalacOptions ++= Seq(
       "-encoding",
       "UTF-8",
       "-target:jvm-1.8",
@@ -5271,7 +5271,7 @@ lazy val `izumi` = (project in file("."))
       "-language:higherKinds",
       "-explaintypes"
     ),
-    javacOptions in ThisBuild ++= Seq(
+    ThisBuild / javacOptions ++= Seq(
       "-encoding",
       "UTF-8",
       "-source",
@@ -5283,7 +5283,7 @@ lazy val `izumi` = (project in file("."))
       "-Xlint:all",
       "-XDignore.symbol.file"
     ),
-    scalacOptions in ThisBuild ++= Seq(
+    ThisBuild / scalacOptions ++= Seq(
       s"-Xmacro-settings:sbt-version=${sbtVersion.value}",
       s"-Xmacro-settings:git-repo-clean=${com.typesafe.sbt.SbtGit.GitKeys.gitUncommittedChanges.value}",
       s"-Xmacro-settings:git-branch=${com.typesafe.sbt.SbtGit.GitKeys.gitCurrentBranch.value}",
@@ -5292,14 +5292,14 @@ lazy val `izumi` = (project in file("."))
     ),
     crossScalaVersions := Nil,
     scalaVersion := "2.12.9",
-    organization in ThisBuild := "io.7mind.izumi",
-    homepage in ThisBuild := Some(url("https://izumi.7mind.io")),
-    licenses in ThisBuild := Seq("BSD-style" -> url("http://www.opensource.org/licenses/bsd-license.php")),
-    developers in ThisBuild := List(
+    ThisBuild / organization := "io.7mind.izumi",
+    ThisBuild / homepage := Some(url("https://izumi.7mind.io")),
+    ThisBuild / licenses := Seq("BSD-style" -> url("http://www.opensource.org/licenses/bsd-license.php")),
+    ThisBuild / developers := List(
               Developer(id = "7mind", name = "Septimal Mind", url = url("https://github.com/7mind"), email = "team@7mind.io"),
             ),
-    scmInfo in ThisBuild := Some(ScmInfo(url("https://github.com/7mind/izumi"), "scm:git:https://github.com/7mind/izumi.git")),
-    scalacOptions in ThisBuild += """-Xmacro-settings:scalatest-version=3.1.2"""
+    ThisBuild / scmInfo := Some(ScmInfo(url("https://github.com/7mind/izumi"), "scm:git:https://github.com/7mind/izumi.git")),
+    ThisBuild / scalacOptions += """-Xmacro-settings:scalatest-version=3.1.2"""
   )
   .disablePlugins(AssemblyPlugin)
   .aggregate(
