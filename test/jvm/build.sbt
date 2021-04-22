@@ -4663,7 +4663,7 @@ lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1
           case path if path.contains("zio/BuildInfo$.class") =>
             MergeStrategy.last
           case p =>
-            (assemblyMergeStrategy in assembly).value(p)
+            (assembly / assemblyMergeStrategy).value(p)
     },
     Compile / assembly / artifact := {
           val art = (Compile / assembly / artifact).value
@@ -4855,15 +4855,15 @@ lazy val `microsite` = project.in(file("doc/microsite"))
       " --no-link-hygiene"
     ),
     SitePlugin.autoImport.makeSite / mappings := {
-                (mappings in SitePlugin.autoImport.makeSite)
+                (SitePlugin.autoImport.makeSite / mappings)
                   .dependsOn(mdoc.toTask(" "))
                   .value
               },
     Paradox / version := version.value,
     ParadoxMaterialThemePlugin.paradoxMaterialThemeSettings(Paradox),
-    addMappingsToSiteDir(mappings in(ScalaUnidoc, packageDoc), siteSubdirName in ScalaUnidoc),
-    unidocProjectFilter in(ScalaUnidoc, unidoc) := inAggregates(`izumi-jvm`, transitive=true),
-    paradoxMaterialTheme in Paradox ~= {
+    addMappingsToSiteDir(ScalaUnidoc / packageDoc / mappings, ScalaUnidoc / siteSubdirName),
+    ScalaUnidoc / unidoc / unidocProjectFilter := inAggregates(`izumi-jvm`, transitive=true),
+    Paradox / paradoxMaterialTheme ~= {
                 _.withCopyright("7mind.io")
                   .withRepository(uri("https://github.com/7mind/izumi"))
                 //        .withColor("222", "434343")
@@ -4875,7 +4875,7 @@ lazy val `microsite` = project.in(file("doc/microsite"))
                 "scaladoc.base_url" -> s"/${DocKeys.prefix.value}/api/",
                 "izumi.version" -> version.value,
               ),
-    excludeFilter in ghpagesCleanSite :=
+    ghpagesCleanSite / excludeFilter :=
                 new FileFilter {
                   def accept(f: File): Boolean = {
                     (f.toPath.startsWith(ghpagesRepository.value.toPath.resolve("latest")) && !f.toPath.startsWith(ghpagesRepository.value.toPath.resolve(DocKeys.prefix.value))) ||

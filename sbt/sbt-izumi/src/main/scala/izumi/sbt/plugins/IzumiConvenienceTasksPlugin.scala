@@ -44,7 +44,7 @@ object IzumiConvenienceTasksPlugin extends AutoPlugin {
           .copy(qualifier = Some(s"-$suffix-SNAPSHOT"))
           .string
 
-        IO.write(file("version.sbt"), s"""version in ThisBuild := "$newVersion"""")
+        IO.write(file("version.sbt"), s"""ThisBuild / version := "$newVersion"""")
       }
       , preserveTargets := {
         val suffix: String = (token(Space) ~> token(StringBasic, "suffix"))

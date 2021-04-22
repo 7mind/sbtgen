@@ -62,8 +62,8 @@ object Defaults {
          |   })
          |}""".stripMargin.raw
     Seq(
-      "unmanagedSourceDirectories" in SettingScope.Compile ++= addVersionSources("(unmanagedSourceDirectories in Compile)"),
-      "unmanagedSourceDirectories" in SettingScope.Test ++= addVersionSources("(unmanagedSourceDirectories in Test)"),
+      "unmanagedSourceDirectories" in SettingScope.Compile ++= addVersionSources("(Compile / unmanagedSourceDirectories)"),
+      "unmanagedSourceDirectories" in SettingScope.Test ++= addVersionSources("(Test / unmanagedSourceDirectories)"),
     )
   }
 

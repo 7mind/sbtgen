@@ -546,7 +546,7 @@ object Izumi {
               |      case path if path.contains("zio/BuildInfo$.class") =>
               |        MergeStrategy.last
               |      case p =>
-              |        (assemblyMergeStrategy in assembly).value(p)
+              |        (assembly / assemblyMergeStrategy).value(p)
               |}""".stripMargin.raw,
           "artifact" in SettingScope.Raw("Compile / assembly") :=
             """{
@@ -597,18 +597,18 @@ object Izumi {
           "mdocExtraArguments" ++= Seq(" --no-link-hygiene"),
           "mappings" in SettingScope.Raw("SitePlugin.autoImport.makeSite") :=
             """{
-            (mappings in SitePlugin.autoImport.makeSite)
+            (SitePlugin.autoImport.makeSite / mappings)
               .dependsOn(mdoc.toTask(" "))
               .value
           }""".raw,
           "version" in SettingScope.Raw("Paradox") := "version.value".raw,
 
           SettingDef.RawSettingDef("ParadoxMaterialThemePlugin.paradoxMaterialThemeSettings(Paradox)"),
-          SettingDef.RawSettingDef("addMappingsToSiteDir(mappings in(ScalaUnidoc, packageDoc), siteSubdirName in ScalaUnidoc)"),
-          SettingDef.RawSettingDef("unidocProjectFilter in(ScalaUnidoc, unidoc) := inAggregates(`izumi-jvm`, transitive=true)"),
+          SettingDef.RawSettingDef("addMappingsToSiteDir(ScalaUnidoc / packageDoc / mappings, ScalaUnidoc / siteSubdirName)"),
+          SettingDef.RawSettingDef("ScalaUnidoc / unidoc / unidocProjectFilter := inAggregates(`izumi-jvm`, transitive=true)"),
 
           SettingDef.RawSettingDef(
-            """paradoxMaterialTheme in Paradox ~= {
+            """Paradox / paradoxMaterialTheme ~= {
             _.withCopyright("7mind.io")
               .withRepository(uri("https://github.com/7mind/izumi"))
             //        .withColor("222", "434343")
@@ -622,7 +622,7 @@ object Izumi {
             "izumi.version" -> version.value,
           )"""),
           SettingDef.RawSettingDef(
-            """excludeFilter in ghpagesCleanSite :=
+            """ghpagesCleanSite / excludeFilter :=
             new FileFilter {
               def accept(f: File): Boolean = {
                 (f.toPath.startsWith(ghpagesRepository.value.toPath.resolve("latest")) && !f.toPath.startsWith(ghpagesRepository.value.toPath.resolve(DocKeys.prefix.value))) ||
