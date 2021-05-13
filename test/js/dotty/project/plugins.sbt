@@ -9,8 +9,6 @@ addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % "0.18.0")
 
 // https://github.com/scala-js/jsdependencies
 addSbtPlugin("org.scala-js" % "sbt-jsdependencies" % "1.0.2")
-// https://github.com/lampepfl/dotty-example-project#projectpluginssbt
-addSbtPlugin("ch.epfl.lamp" % "sbt-dotty" % "0.4.1")
 
 ////////////////////////////////////////////////////////////////////////////////
 

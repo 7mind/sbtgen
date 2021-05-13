@@ -8,5 +8,4 @@ case class GlobalSettings(
                            crossProjectVersion: Version = Version.VConst("1.0.0"),
                            bundlerVersion: Option[Version] = Some(Version.VConst("0.18.0")),
                            sbtJsDependenciesVersion: Option[Version] = Some(Version.VConst("1.0.2")),
-                           sbtDottyVersion: Version = Version.VConst("0.4.1"),
                          )
