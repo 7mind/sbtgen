@@ -127,6 +127,9 @@ object Defaults {
     "-Wconf:cat=other-match-analysis:error", // make non-exhaustive matches fatal
     "-Wconf:msg=kind-projector:silent", // ignore kind-projector's deprecation of `?` syntax
 
+    "-Vimplicits",  // Enables the tek/splain features to make the compiler print implicit resolution chains when no implicit value can be found
+    "-Vtype-diffs", // Enables the tek/splain features to turn type error messages (found: X, required: Y) into colored diffs between the two types
+
     "-Ybackend-parallelism", CRaw("math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString"),
 
     "-Wdead-code",
