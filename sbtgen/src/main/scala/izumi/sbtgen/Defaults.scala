@@ -68,12 +68,13 @@ object Defaults {
   }
 
   final val Scala212Options = Seq[Const](
-    "-Xsource:2.13",
+    "-Xsource:3", // Compile with maximum dotty compatibility
+    "-P:kind-projector:underscore-placeholders", // Use underscore type-lambda syntax by default
+    "-Wconf:msg=package.object.inheritance:silent", // Ignore package object deprecation
     "-Ypartial-unification", // 2.12 only
     CRaw("""if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning""""), // enable fatal warnings on CI
     "-Wconf:cat=optimizer:warning", // make optimizer (inliner) warnings non-fatal
     "-Wconf:cat=other-match-analysis:error", // make non-exhaustive matches fatal
-    "-Wconf:msg=kind-projector:silent", // ignore kind-projector's deprecation of `?` syntax
 
     "-Ybackend-parallelism", CRaw("math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString"),
 
@@ -118,14 +119,12 @@ object Defaults {
   )
 
   final val Scala213Options = Seq[Const](
-    //        "-Xsource:3.0", // is available
-    //        "-Xsource:2.14", // Delay -Xsource:2.14 due to spurious warnings https://github.com/scala/bug/issues/11639
-    //        "-Xsource:2.13", // Don't use -Xsource: at all since it's not recommended... https://github.com/scala/bug/issues/11661
-    "-Xlint:_,-eta-sam,-multiarg-infix,-byname-implicit", // byname-implicit false positives: https://github.com/scala/bug/issues/12072
+    "-Xsource:3", // Compile with maximum dotty compatibility
+    "-P:kind-projector:underscore-placeholders", // Use underscore type-lambda syntax by default
+    "-Wconf:msg=package.object.inheritance:silent", // Ignore package object deprecation
     CRaw("""if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning""""), // enable fatal warnings on CI
     "-Wconf:cat=optimizer:warning", // make optimizer (inliner) warnings non-fatal
     "-Wconf:cat=other-match-analysis:error", // make non-exhaustive matches fatal
-    "-Wconf:msg=kind-projector:silent", // ignore kind-projector's deprecation of `?` syntax
 
     "-Vimplicits",  // Enables the tek/splain features to make the compiler print implicit resolution chains when no implicit value can be found
     "-Vtype-diffs", // Enables the tek/splain features to turn type error messages (found: X, required: Y) into colored diffs between the two types
