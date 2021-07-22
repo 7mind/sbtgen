@@ -150,6 +150,11 @@ object Defaults {
 
   final val Scala3Options = Seq[Const](
     "-Ykind-projector:underscores", // Use underscore type-lambda syntax by default
+    "-no-indent",
+
+    "-explain",
+    "-deprecation",
+    "-feature",
   )
 
   final val SbtGenPlugins = Seq(
