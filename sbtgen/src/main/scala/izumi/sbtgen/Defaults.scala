@@ -121,6 +121,7 @@ object Defaults {
   final val Scala213Options = Seq[Const](
     "-Xsource:3", // Compile with maximum dotty compatibility
     "-P:kind-projector:underscore-placeholders", // Use underscore type-lambda syntax by default
+
     "-Wconf:msg=package.object.inheritance:silent", // Ignore package object deprecation
     CRaw("""if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning""""), // enable fatal warnings on CI
     "-Wconf:cat=optimizer:warning", // make optimizer (inliner) warnings non-fatal
@@ -145,6 +146,15 @@ object Defaults {
     //   around 20/30%, see https://github.com/scala/scala-dev/issues/458
     "-Ycache-plugin-class-loader:always",
     "-Ycache-macro-class-loader:last-modified",
+  )
+
+  final val Scala3Options = Seq[Const](
+    "-Ykind-projector:underscores", // Use underscore type-lambda syntax by default
+    "-no-indent",
+
+    "-explain",
+    "-deprecation",
+    "-feature",
   )
 
   final val SbtGenPlugins = Seq(
