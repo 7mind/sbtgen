@@ -8,7 +8,7 @@ object IzumiResolverPlugin extends AutoPlugin {
   import IzumiPropertiesPlugin.autoImport._
 
   override lazy val globalSettings = Seq(
-    aggregate in update := sys.props.getBoolean("build.update.aggregate", default = true),
+    update / aggregate := sys.props.getBoolean("build.update.aggregate", default = true),
     updateOptions := updateOptions
       .value
       .withInterProjectFirst(sys.props.getBoolean("build.update.inter-project-first", default = true))

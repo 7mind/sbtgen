@@ -2,7 +2,7 @@ package izumi.sbtgen.sbtmeta
 
 import java.nio.file.{Path, Paths}
 import java.time.LocalDateTime
-
+import scala.annotation.tailrec
 import scala.reflect.macros.blackbox
 
 object ProjectAttributeMacro {
@@ -18,7 +18,7 @@ object ProjectAttributeMacro {
 
   def extractAttrMacro(c: blackbox.Context)(name: c.Expr[String]): c.Expr[Option[String]] = {
     val nameStr = TreeTools.stringLiteral(c)(c.universe)(name.tree)
-    extractAttr(c, nameStr)
+    extractAttr(c, nameStr, force = true)
   }
 
   def extractProjectGroupIdMacro(c: blackbox.Context)(): c.Expr[Option[String]] = {
@@ -45,13 +45,14 @@ object ProjectAttributeMacro {
     extractAttr(c, "product-version")
   }
 
-  private def extractAttr(c: blackbox.Context, name: String): c.Expr[Option[String]] = {
+  private def extractAttr(c: blackbox.Context, name: String, force: Boolean = false): c.Expr[Option[String]] = {
     import c.universe._
 
     val prefix = s"$name="
     val value = c.settings.find(_.startsWith(prefix)).filterNot(_.isEmpty).map(_.stripPrefix(prefix))
     if (value.isEmpty) {
-      c.warning(c.enclosingPosition, s"Undefined macro parameter $name, add `-Xmacro-settings:$prefix<value>` into `scalac` options")
+      val msg = if (force) c.error _ else c.warning _
+      msg(c.enclosingPosition, s"Undefined macro parameter $name, add `-Xmacro-settings:$prefix<value>` into `scalac` options")
     }
     c.Expr[Option[String]](q"$value")
   }
@@ -63,7 +64,7 @@ object ProjectAttributeMacro {
     c.Expr[Option[String]](q"$result")
   }
 
-  @scala.annotation.tailrec
+  @tailrec
   private def projectRoot(cp: Path): Option[Path] = {
     if (cp.resolve("build.sbt").toFile.exists()) {
       Some(cp)

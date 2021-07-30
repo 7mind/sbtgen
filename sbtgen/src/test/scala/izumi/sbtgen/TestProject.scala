@@ -143,7 +143,7 @@ object Izumi {
       targetScala,
       settings = Seq(
         "coverageEnabled" := false,
-        "scalaJSModuleKind" in(SettingScope.Project, Platform.Js) := "ModuleKind.CommonJSModule".raw,
+        "scalaJSModuleKind".in(SettingScope.Project, Platform.Js) := "ModuleKind.CommonJSModule".raw,
       ),
     )
     final val cross = Seq(jvmPlatform, jsPlatform)
@@ -290,7 +290,7 @@ object Izumi {
   }
 
   final val forkTests = Seq(
-    "fork" in(SettingScope.Test, Platform.Jvm) := true,
+    "fork".in(SettingScope.Test, Platform.Jvm) := true,
   )
 
   final lazy val fundamentals = Aggregate(
@@ -308,7 +308,7 @@ object Izumi {
           Projects.fundamentals.fundamentalsCollections in Scope.Compile.all
         ),
         settings = Seq(
-          "npmDependencies" in(SettingScope.Compile, Platform.Js) ++= Seq("hash.js" -> "1.1.7"),
+          "npmDependencies".in(SettingScope.Compile, Platform.Js) ++= Seq("hash.js" -> "1.1.7"),
         ),
         plugins = Plugins(Seq(Plugin("ScalaJSBundlerPlugin", Platform.Js))),
       ),

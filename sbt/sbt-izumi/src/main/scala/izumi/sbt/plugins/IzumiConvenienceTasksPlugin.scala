@@ -25,7 +25,7 @@ object IzumiConvenienceTasksPlugin extends AutoPlugin {
 
   override def globalSettings: Seq[Def.Setting[_]] = {
     Seq(
-      defaultStubPackage := Some((organization in ThisBuild).value)
+      defaultStubPackage := Some((ThisBuild / organization).value)
     )
   } // These settings are only suitable for root project, it's okay to activate this plugin on root level only
 

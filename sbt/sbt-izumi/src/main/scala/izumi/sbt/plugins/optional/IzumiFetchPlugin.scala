@@ -73,10 +73,10 @@ object IzumiFetchPlugin extends AutoPlugin {
           CopyOptions(overwrite = true, preserveLastModified = true, preserveExecutable = true)
         )
       }.value
-      , packageBin in lm.syntax.Compile := Def.taskDyn {
+      , lm.syntax.Compile / packageBin := Def.taskDyn {
         copyArtifacts.value
 
-        val ctask = (packageBin in lm.syntax.Compile).value
+        val ctask = (lm.syntax.Compile / packageBin).value
         Def.task {
           ctask
         }

@@ -39,9 +39,9 @@ object IzumiBuildManifestPlugin extends AutoPlugin {
         Seq(Package.ManifestAttributes(attributes.toSeq: _*))
       }.value,
 
-      packageOptions in packageBin ++= extendedManifestMfAttributes.value,
+      packageBin / packageOptions ++= extendedManifestMfAttributes.value,
 
-      packageOptions in Compile ++= extendedManifestMfAttributes.value,
+      Compile / packageOptions ++= extendedManifestMfAttributes.value,
     )
   }
 }

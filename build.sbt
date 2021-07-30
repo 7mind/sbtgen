@@ -22,6 +22,12 @@ ThisBuild / publishTo :=(if (!isSnapshot.value) {
   Some(Opts.resolver.sonatypeSnapshots)
 })
 
+val scalaJsVersion = "1.6.0"
+val scalaNativeVersion = "0.4.0-M2"
+val crossProjectVersion = "1.1.0"
+val bundlerVersion = "0.20.0"
+val sbtJsDependenciesVersion = "1.0.2"
+
 val scalaOpts = scalacOptions ++= ((isSnapshot.value, scalaVersion.value) match {
   case (_, ScalaVersions.scala_212) => Seq(
     "-Xsource:2.13",
@@ -105,9 +111,15 @@ lazy val sbtgen = (project in file("sbtgen"))
       s"-Xmacro-settings:sbt-version=${sbtVersion.value}",
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}",
+      s"-Xmacro-settings:scala-js-version=$scalaJsVersion",
+      s"-Xmacro-settings:scala-native-version=$scalaNativeVersion",
+      s"-Xmacro-settings:crossproject-version=$crossProjectVersion",
+      s"-Xmacro-settings:bundler-version=$bundlerVersion",
+      s"-Xmacro-settings:sbt-js-dependencies-version=$sbtJsDependenciesVersion",
     ),
     scalaOpts,
   )
+
 
 lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
   .settings(
@@ -142,6 +154,14 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
       // https://github.com/sbt/sbt-duplicates-finder
       ("com.github.sbt" % "sbt-duplicates-finder" % "1.1.0").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
     ),
+    libraryDependencies ++= Seq(
+      "org.scala-js" % "sbt-scalajs" % scalaJsVersion,
+      "org.scala-native" % "sbt-scala-native" % scalaNativeVersion,
+      "org.portable-scala" % "sbt-scalajs-crossproject" % crossProjectVersion,
+      "ch.epfl.scala" % "sbt-scalajs-bundler" % bundlerVersion,
+      "org.scala-js" % "sbt-jsdependencies" % sbtJsDependenciesVersion,
+    ).map(_.extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()))
+     .map(_ % Test),
     scalaOpts,
   )
 
@@ -183,7 +203,7 @@ lazy val `sbtgen-root` = (project in file("."))
     name := "izumi-sbtgen",
     scalaVersion := ScalaVersions.scala_212,
     crossScalaVersions := Nil,
-    publish / skip :=true,
+    publish / skip := true,
     sonatypeProfileName := "io.7mind",
     releaseProcess := Seq[ReleaseStep](
       checkSnapshotDependencies, // : ReleaseStep
