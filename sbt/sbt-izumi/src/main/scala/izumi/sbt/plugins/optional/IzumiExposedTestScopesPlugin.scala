@@ -18,17 +18,17 @@ object IzumiExposedTestScopesPlugin extends AutoPlugin {
   protected val logger: ConsoleLogger = ConsoleLogger()
 
   val testSettings: Seq[Def.Setting[_]] = Seq(
-    compile in Test := Def.task {
+    Test / compile := Def.task {
       extractExposableTestScopeParts(
         streams.value
-        , (classDirectory in Test).value
-        , (compile in Test).value
+        , (Test / classDirectory).value
+        , (Test / compile).value
       )
     }.value
-    , dependencyClasspath in Test := Def.task {
+    , Test / dependencyClasspath := Def.task {
       modifyTestScopeDependency(
         streams.value
-        , (dependencyClasspath in Test).value
+        , (Test / dependencyClasspath).value
         , "test-classes"
         , projectID.value.name
       )
@@ -36,17 +36,17 @@ object IzumiExposedTestScopesPlugin extends AutoPlugin {
   )
 
   val itSettings: Seq[Def.Setting[_]] = Seq(
-    compile in IntegrationTest := Def.task {
+    IntegrationTest / compile := Def.task {
       extractExposableTestScopeParts(
         streams.value
-        , (classDirectory in IntegrationTest).value
-        , (compile in IntegrationTest).value
+        , (IntegrationTest / classDirectory).value
+        , (IntegrationTest / compile).value
       )
     }.value
-    , dependencyClasspath in IntegrationTest := Def.task {
+    , IntegrationTest / dependencyClasspath := Def.task {
       modifyTestScopeDependency(
         streams.value
-        , (dependencyClasspath in IntegrationTest).value
+        , (IntegrationTest / dependencyClasspath).value
         , "it-classes"
         , projectID.value.name
       )

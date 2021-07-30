@@ -115,11 +115,11 @@ object IzumiBuildInfoPlugin extends AutoPlugin {
       val file =
         packageName
           .split('.')
-          .foldLeft((sourceManaged in Compile).value)(_ / _) / s"$objectName.scala"
+          .foldLeft((Compile / sourceManaged).value)(_ / _) / s"$objectName.scala"
 
       val sd = settingsData.in(Global).value
-      val ver = (version in LocalRootProject).value
-      val group = (organization in LocalRootProject).value
+      val ver = (LocalRootProject / version).value
+      val group = (LocalRootProject / organization).value
 
       val allProjectRefs = loadedBuild.value.allProjectRefs
 
@@ -235,7 +235,7 @@ object IzumiBuildInfoPlugin extends AutoPlugin {
     def withBuildInfo(packageName: String, objectName: String): Seq[Setting[_]] = {
       Seq(
         sbtPlugin := true
-        , sourceGenerators in Compile += generateBuildInfo(packageName, objectName).taskValue
+        , Compile / sourceGenerators += generateBuildInfo(packageName, objectName).taskValue
       )
     }
   }

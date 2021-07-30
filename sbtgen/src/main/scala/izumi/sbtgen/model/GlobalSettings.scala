@@ -1,11 +1,13 @@
 package izumi.sbtgen.model
 
-case class GlobalSettings(
-                           groupId: String,
-                           sbtVersion: Option[String] = Some("1.3.12"),
-                           scalaJsVersion: Version = Version.VConst("1.1.0"),
-                           scalaNativeVersion: Version = Version.VConst("0.4.0-M2"),
-                           crossProjectVersion: Version = Version.VConst("1.0.0"),
-                           bundlerVersion: Option[Version] = Some(Version.VConst("0.18.0")),
-                           sbtJsDependenciesVersion: Option[Version] = Some(Version.VConst("1.0.2")),
-                         )
+import izumi.sbtgen.sbtmeta.SbtgenMeta
+
+final case class GlobalSettings(
+  groupId: String,
+  sbtVersion: Option[String] = SbtgenMeta.extractMandatory("sbt-version"),
+  scalaJsVersion: Version = Version.VConst(SbtgenMeta.extractMandatory("scala-js-version").get),
+  scalaNativeVersion: Version = Version.VConst(SbtgenMeta.extractMandatory("scala-native-version").get),
+  crossProjectVersion: Version = Version.VConst(SbtgenMeta.extractMandatory("crossproject-version").get),
+  bundlerVersion: Option[Version] = Some(Version.VConst(SbtgenMeta.extractMandatory("bundler-version").get)),
+  sbtJsDependenciesVersion: Option[Version] = Some(Version.VConst(SbtgenMeta.extractMandatory("sbt-js-dependencies-version").get)),
+)
