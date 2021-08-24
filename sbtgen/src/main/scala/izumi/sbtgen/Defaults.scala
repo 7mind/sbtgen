@@ -70,8 +70,8 @@ object Defaults {
   final val Scala212Options = Seq[Const](
     "-Xsource:3", // Compile with maximum dotty compatibility
     "-P:kind-projector:underscore-placeholders", // Use underscore type-lambda syntax by default
-    "-Wconf:msg=package.object.inheritance:silent", // Ignore package object deprecation
     "-Ypartial-unification", // 2.12 only
+
     CRaw("""if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning""""), // enable fatal warnings on CI
     "-Wconf:cat=optimizer:warning", // make optimizer (inliner) warnings non-fatal
     "-Wconf:cat=other-match-analysis:error", // make non-exhaustive matches fatal
@@ -122,7 +122,6 @@ object Defaults {
     "-Xsource:3", // Compile with maximum dotty compatibility
     "-P:kind-projector:underscore-placeholders", // Use underscore type-lambda syntax by default
 
-    "-Wconf:msg=package.object.inheritance:silent", // Ignore package object deprecation
     CRaw("""if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning""""), // enable fatal warnings on CI
     "-Wconf:cat=optimizer:warning", // make optimizer (inliner) warnings non-fatal
     "-Wconf:cat=other-match-analysis:error", // make non-exhaustive matches fatal
