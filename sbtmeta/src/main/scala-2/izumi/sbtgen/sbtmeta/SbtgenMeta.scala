@@ -23,5 +23,5 @@ object SbtgenMeta {
 
   def extract(name: String): Option[String] = macro ProjectAttributeMacro.extractAttrMacro
 
-  def extractMandatory(name: String): Option[String] = macro ProjectAttributeMacro.extractAttrMacro
+  def extractMandatory(name: String): Option[String] = macro ProjectAttributeMacro.extractAttrMandatoryMacro
 }

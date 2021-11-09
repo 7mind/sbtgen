@@ -22,6 +22,10 @@ ThisBuild / publishTo :=(if (!isSnapshot.value) {
   Some(Opts.resolver.sonatypeSnapshots)
 })
 
+ThisBuild / libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.10" % Test
+
+val defaultScalaVersions = Seq(ScalaVersions.scala_310, ScalaVersions.scala_213, ScalaVersions.scala_212)
+
 val scalaJsVersion = "1.7.0"
 val scalaNativeVersion = "0.4.1"
 val crossProjectVersion = "1.1.0"
@@ -90,21 +94,21 @@ val scalaOpts = scalacOptions ++= ((isSnapshot.value, scalaVersion.value) match 
 
 lazy val sbtmeta = (project in file("sbtmeta"))
   .settings(
-    crossScalaVersions := Seq(ScalaVersions.scala_213, ScalaVersions.scala_212),
+    crossScalaVersions := defaultScalaVersions,
     scalaVersion := crossScalaVersions.value.head,
-    libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided,
+    libraryDependencies ++=
+      Some("org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided)
+        .filterNot(_ => scalaVersion.value == ScalaVersions.scala_310),
     scalaOpts,
   )
 
 lazy val sbtgen = (project in file("sbtgen"))
   .dependsOn(sbtmeta)
   .settings(
-    crossScalaVersions := Seq(ScalaVersions.scala_213, ScalaVersions.scala_212),
+    crossScalaVersions := defaultScalaVersions,
     scalaVersion := crossScalaVersions.value.head,
-    //    libraryDependencies += "com.github.scopt" %% "scopt" % "4.0.0-RC2",
-    libraryDependencies += "com.github.scopt" %% "scopt" % "3.7.1",
+    libraryDependencies += "com.github.scopt" %% "scopt" % "4.0.1",
     libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.5.0",
-    (ThisBuild / libraryDependencies) += "org.scalatest" %% "scalatest" % "3.2.10" % Test,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-version=${version.value}",
       s"-Xmacro-settings:product-group=${organization.value}",

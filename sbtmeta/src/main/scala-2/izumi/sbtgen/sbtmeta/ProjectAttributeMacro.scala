@@ -18,6 +18,11 @@ object ProjectAttributeMacro {
 
   def extractAttrMacro(c: blackbox.Context)(name: c.Expr[String]): c.Expr[Option[String]] = {
     val nameStr = TreeTools.stringLiteral(c)(c.universe)(name.tree)
+    extractAttr(c, nameStr)
+  }
+
+  def extractAttrMandatoryMacro(c: blackbox.Context)(name: c.Expr[String]): c.Expr[Option[String]] = {
+    val nameStr = TreeTools.stringLiteral(c)(c.universe)(name.tree)
     extractAttr(c, nameStr, force = true)
   }
 
