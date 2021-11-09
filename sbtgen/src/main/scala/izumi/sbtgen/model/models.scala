@@ -2,6 +2,7 @@ package izumi.sbtgen.model
 
 import izumi.sbtgen.model.LibSetting.Exclusion
 import izumi.sbtgen.model.Platform.BasePlatform
+import izumi.sbtgen.sbtmeta.SbtgenMeta
 
 import scala.collection.compat._
 import scala.collection.immutable.Queue
@@ -11,7 +12,9 @@ sealed trait Version
 object Version {
   case class VConst(value: String) extends Version
   case class VExpr(value: String) extends Version
-  case object SbtGen extends Version
+  case object SbtGen extends Version {
+    def value: String = SbtgenMeta.extractSbtProjectVersion().getOrElse("UNKNOWN-SBTGEN")
+  }
 }
 
 sealed trait Scope {
@@ -234,4 +237,3 @@ case class Project(
                     pluginConflictRules: Map[String, Boolean] = Map.empty,
                     appendPlugins: Seq[SbtPlugin] = Seq.empty,
                   )
-

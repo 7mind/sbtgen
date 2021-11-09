@@ -755,7 +755,7 @@ trait Renderers
       case Version.VExpr(value) =>
         value
       case Version.SbtGen =>
-        stringLit(SbtgenMeta.extractSbtProjectVersion().getOrElse("UNKNOWN-SBTGEN"))
+        stringLit(Version.SbtGen.value)
     }
   }
 
