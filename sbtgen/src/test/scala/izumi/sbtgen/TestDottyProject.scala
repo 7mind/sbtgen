@@ -11,10 +11,18 @@ object TestDottyProject {
         name = ArtifactId("test"),
         libs = Nil,
         depends = Nil,
-        platforms = Seq(PlatformEnv(
-          platform = Platform.Jvm,
-          language = Seq(ScalaVersion("0.23.0-RC1"))
-        ))
+        platforms = Seq(
+          PlatformEnv(
+            platform = Platform.Jvm,
+            language = Seq(ScalaVersion("0.23.0-RC1")),
+            settings = Defaults.CrossScalaSources
+          ),
+          PlatformEnv(
+            platform = Platform.Js,
+            language = Seq(ScalaVersion("0.23.0-RC1")),
+            settings = Defaults.CrossScalaSources
+          )
+        )
       )),
     )
   )
