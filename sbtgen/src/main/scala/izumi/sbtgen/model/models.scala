@@ -48,11 +48,11 @@ object Platform {
 }
 
 case class PlatformEnv(
-                        platform: BasePlatform,
-                        language: Seq[ScalaVersion],
-                        settings: Seq[SettingDef] = Seq.empty,
-                        plugins: Plugins = Plugins(Seq.empty, Seq.empty),
-                      )
+  platform: BasePlatform,
+  language: Seq[ScalaVersion],
+  settings: Seq[SettingDef] = Seq.empty,
+  plugins: Plugins = Plugins(Seq.empty, Seq.empty)
+)
 
 case class ArtifactId(value: String)
 
@@ -86,41 +86,41 @@ case class Library(group: String, artifact: String, version: Version, kind: Libr
 
 object Library {
   def apply(
-             group: String,
-             artifact: String,
-             version: Version,
-             kind: LibraryType
-           ): Library = {
+    group: String,
+    artifact: String,
+    version: Version,
+    kind: LibraryType
+  ): Library = {
     new Library(
       group,
       artifact,
       version,
       kind,
-      Queue.empty,
+      Queue.empty
     )
   }
 
   def apply(
-             group: String,
-             artifact: String,
-             version: String,
-             kind: LibraryType = LibraryType.Auto
-           ): Library = {
+    group: String,
+    artifact: String,
+    version: String,
+    kind: LibraryType = LibraryType.Auto
+  ): Library = {
     new Library(
       group,
       artifact,
       Version.VConst(version),
       kind,
-      Queue.empty,
+      Queue.empty
     )
   }
 }
 
 case class FullDependencyScope(
-                                scope: Scope,
-                                platform: Platform,
-                                scalaVersionScope: ScalaVersionScope = ScalaVersionScope.AllVersions,
-                              ) {
+  scope: Scope,
+  platform: Platform,
+  scalaVersionScope: ScalaVersionScope = ScalaVersionScope.AllVersions
+) {
   def scalaVersion(scalaVersion: ScalaVersionScope): FullDependencyScope = copy(scalaVersionScope = scalaVersion)
 }
 
@@ -162,36 +162,36 @@ object ScalaVersionScope {
 }
 
 case class Group(
-                  name: String,
-                  deps: Set[Group] = Set.empty,
-                )
+  name: String,
+  deps: Set[Group] = Set.empty
+)
 
 case class Artifact(
-                     name: ArtifactId,
-                     libs: Seq[ScopedLibrary],
-                     depends: Seq[ScopedDependency],
-                     pathPrefix: Seq[String] = Seq.empty,
-                     platforms: Seq[PlatformEnv] = Seq.empty,
-                     groups: Set[Group] = Set.empty,
-                     subGroupId: Option[String] = None,
-                     settings: Seq[SettingDef] = Seq.empty,
-                     plugins: Plugins = Plugins(Seq.empty, Seq.empty),
-                   )
+  name: ArtifactId,
+  libs: Seq[ScopedLibrary],
+  depends: Seq[ScopedDependency],
+  pathPrefix: Seq[String] = Seq.empty,
+  platforms: Seq[PlatformEnv] = Seq.empty,
+  groups: Set[Group] = Set.empty,
+  subGroupId: Option[String] = None,
+  settings: Seq[SettingDef] = Seq.empty,
+  plugins: Plugins = Plugins(Seq.empty, Seq.empty)
+)
 
 case class Aggregate(
-                      name: ArtifactId,
-                      artifacts: Seq[Artifact],
-                      pathPrefix: Seq[String] = Seq.empty,
-                      groups: Set[Group] = Set.empty,
-                      defaultPlatforms: Seq[PlatformEnv] = Seq.empty,
-                      settings: Seq[SettingDef] = Seq.empty,
-                      enableProjectSharedAggSettings: Boolean = true,
-                      dontIncludeInSuperAgg: Boolean = false,
-                      sharedDeps: Seq[ScopedDependency] = Seq.empty,
-                      sharedLibs: Seq[ScopedLibrary] = Seq.empty,
-                      sharedPlugins: Plugins = Plugins(Seq.empty, Seq.empty),
-                      sharedSettings: Seq[SettingDef] = Seq.empty
-                    ) {
+  name: ArtifactId,
+  artifacts: Seq[Artifact],
+  pathPrefix: Seq[String] = Seq.empty,
+  groups: Set[Group] = Set.empty,
+  defaultPlatforms: Seq[PlatformEnv] = Seq.empty,
+  settings: Seq[SettingDef] = Seq.empty,
+  enableProjectSharedAggSettings: Boolean = true,
+  dontIncludeInSuperAgg: Boolean = false,
+  sharedDeps: Seq[ScopedDependency] = Seq.empty,
+  sharedLibs: Seq[ScopedLibrary] = Seq.empty,
+  sharedPlugins: Plugins = Plugins(Seq.empty, Seq.empty),
+  sharedSettings: Seq[SettingDef] = Seq.empty
+) {
   def merge: Aggregate = {
     val newArtifacts = artifacts.map {
       a =>
@@ -215,25 +215,25 @@ final case class Import(value: String, platform: Platform = Platform.All)
 case class Plugin(name: String, platform: Platform = Platform.All)
 
 case class Plugins(
-                    enabled: Seq[Plugin] = Seq.empty,
-                    disabled: Seq[Plugin] = Seq.empty,
-                  ) {
+  enabled: Seq[Plugin] = Seq.empty,
+  disabled: Seq[Plugin] = Seq.empty
+) {
   def ++(o: Plugins): Plugins = {
     Plugins(enabled ++ o.enabled, disabled ++ o.disabled)
   }
 }
 
 case class Project(
-                    name: ArtifactId,
-                    aggregates: Seq[Aggregate],
-                    topLevelSettings: Seq[SettingDef] = Seq.empty,
-                    sharedSettings: Seq[SettingDef] = Seq.empty,
-                    sharedAggSettings: Seq[SettingDef] = Seq.empty,
-                    rootSettings: Seq[SettingDef] = Seq.empty,
-                    imports: Seq[Import] = Seq.empty,
-                    globalLibs: Seq[ScopedLibrary] = Seq.empty,
-                    rootPlugins: Plugins = Plugins(Seq.empty, Seq.empty),
-                    globalPlugins: Plugins = Plugins(Seq.empty, Seq.empty),
-                    pluginConflictRules: Map[String, Boolean] = Map.empty,
-                    appendPlugins: Seq[SbtPlugin] = Seq.empty,
-                  )
+  name: ArtifactId,
+  aggregates: Seq[Aggregate],
+  topLevelSettings: Seq[SettingDef] = Seq.empty,
+  sharedSettings: Seq[SettingDef] = Seq.empty,
+  sharedAggSettings: Seq[SettingDef] = Seq.empty,
+  rootSettings: Seq[SettingDef] = Seq.empty,
+  imports: Seq[Import] = Seq.empty,
+  globalLibs: Seq[ScopedLibrary] = Seq.empty,
+  rootPlugins: Plugins = Plugins(Seq.empty, Seq.empty),
+  globalPlugins: Plugins = Plugins(Seq.empty, Seq.empty),
+  pluginConflictRules: Map[String, Boolean] = Map.empty,
+  appendPlugins: Seq[SbtPlugin] = Seq.empty
+)

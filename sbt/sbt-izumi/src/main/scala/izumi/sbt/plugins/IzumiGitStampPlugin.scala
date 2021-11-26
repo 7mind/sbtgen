@@ -26,30 +26,30 @@ object IzumiGitStampPlugin extends AutoPlugin {
     Seq(
       izGitObject := {
         new Git(izGitRepositoryObject.value)
-      }
-      , izGitRepositoryObject := {
+      },
+      izGitRepositoryObject := {
         val builder = new FileRepositoryBuilder
         builder.readEnvironment.findGitDir.build
-      }
-      , izGitRevision := {
+      },
+      izGitRevision := {
         val repository = izGitRepositoryObject.value
         val head = repository.exactRef(Constants.HEAD)
         ObjectId.toString(head.getObjectId)
-      }
-      , izGitBranch := {
+      },
+      izGitBranch := {
         val repository = izGitRepositoryObject.value
         repository.getBranch
-      }
-      , izGitIsClean := {
+      },
+      izGitIsClean := {
         val git = izGitObject.value
         val status = git.status.call
         status.isClean
-      }
-      , packageOptions += Def.task {
+      },
+      packageOptions += Def.task {
         val gitValues = Map(
-          IzumiManifest.GitBranch -> izGitBranch.value
-          , IzumiManifest.GitRepoIsClean -> izGitIsClean.value.toString
-          , IzumiManifest.GitHeadRev -> izGitRevision.value
+          IzumiManifest.GitBranch -> izGitBranch.value,
+          IzumiManifest.GitRepoIsClean -> izGitIsClean.value.toString,
+          IzumiManifest.GitHeadRev -> izGitRevision.value
         )
 
         gitValues.foreach {

@@ -15,6 +15,5 @@ object IzumiResolverPlugin extends AutoPlugin {
       .withCachedResolution(sys.props.getBoolean("build.update.cached-resolution", default = true))
       .withGigahorse(sys.props.getBoolean("build.update.gigahorse", default = true))
       .withLatestSnapshots(sys.props.getBoolean("build.update.latest-snapshots", default = false))
-    ,
   )
 }

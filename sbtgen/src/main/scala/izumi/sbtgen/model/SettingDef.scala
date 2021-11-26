@@ -86,10 +86,13 @@ object Const {
   implicit val BoolToConst: Conv[Boolean] = CBoolean(_)
 
   implicit def t2ToConst[T1: Conv, T2: Conv]: Conv[(T1, T2)] = {
-    case (a, b) => CTuple(Seq(
-      Conv[T1].to(a),
-      Conv[T2].to(b),
-    ))
+    case (a, b) =>
+      CTuple(
+        Seq(
+          Conv[T1].to(a),
+          Conv[T2].to(b)
+        )
+      )
   }
   implicit def seqToConst[T: Conv]: Conv[Seq[T]] = (a: Seq[T]) => CSeq(a.map(Conv[T].to))
   implicit def mapToConst[T: Conv]: Conv[Map[Scalar, T]] = (a: Map[Scalar, T]) => CMap(a.map { case (k, v) => k -> Conv[T].to(v) })

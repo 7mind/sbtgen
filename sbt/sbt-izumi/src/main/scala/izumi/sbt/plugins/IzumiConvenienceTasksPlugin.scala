@@ -45,10 +45,9 @@ object IzumiConvenienceTasksPlugin extends AutoPlugin {
           .string
 
         IO.write(file("version.sbt"), s"""ThisBuild / version := "$newVersion"""")
-      }
-      , preserveTargets := {
-        val suffix: String = (token(Space) ~> token(StringBasic, "suffix"))
-          .parsed
+      },
+      preserveTargets := {
+        val suffix: String = (token(Space) ~> token(StringBasic, "suffix")).parsed
 
         val name = "target"
         val pairs = (file(".") ** (DirectoryFilter && new ExactFilter(name))).get.map {
@@ -62,15 +61,14 @@ object IzumiConvenienceTasksPlugin extends AutoPlugin {
           case (s, t) =>
             IO.copyDirectory(s, t)
         }
-      }
-      , rmDirs := {
-        val name: String = (token(Space) ~> token(StringBasic, "name"))
-          .parsed
+      },
+      rmDirs := {
+        val name: String = (token(Space) ~> token(StringBasic, "name")).parsed
 
         val dirs = (file(".") ** (DirectoryFilter && new ExactFilter(name))).get
         IO.delete(dirs)
-      }
-      , newModule := {
+      },
+      newModule := {
         val args = spaceDelimited("<args>").parsed
         val moduleName = args.head
         val pkgSuffix = args.tail.headOption
@@ -87,14 +85,14 @@ object IzumiConvenienceTasksPlugin extends AutoPlugin {
         }
 
         mkDefaultModule(moduleName, pkg, mkJavaDirs.value)
-      }
-      , newStub := {
+      },
+      newStub := {
         val args = spaceDelimited("<args>").parsed
         val moduleName = args.head
         val stubId = args.tail.headOption.getOrElse("default")
         mkModule(moduleName, stubId)
-      }
-      , mkJavaDirs := false
+      },
+      mkJavaDirs := false
     )
   }
 
@@ -115,12 +113,12 @@ object IzumiConvenienceTasksPlugin extends AutoPlugin {
 
   private def mkDefaultModule(name: String, pkg: Option[String], mkJava: Boolean): Unit = {
     val scalaDirs = Seq(
-      "src/main/scala"
-      , "src/test/scala"
+      "src/main/scala",
+      "src/test/scala"
     )
     val javaDirs = Seq(
-      "src/main/java"
-      , "src/test/java"
+      "src/main/java",
+      "src/test/java"
     )
 
     val stubBases = if (!mkJava) {

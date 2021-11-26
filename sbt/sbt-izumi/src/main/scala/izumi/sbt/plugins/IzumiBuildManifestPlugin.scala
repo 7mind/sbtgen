@@ -23,12 +23,12 @@ object IzumiBuildManifestPlugin extends AutoPlugin {
     Seq(
       extendedManifestMfAttributes := Def.task {
         val attributes = Map(
-          IzumiManifest.BuiltBy -> System.getProperty("user.name")
-          , IzumiManifest.BuildJdk -> System.getProperty("java.version")
-          , IzumiManifest.Version -> version.value
-          , IzumiManifest.BuildSbt -> sbtVersion.value
-          , IzumiManifest.BuildScala -> scalaVersion.value
-          , IzumiManifest.BuildTimestamp -> IzumiManifest.TsFormat.format(ZonedDateTime.now())
+          IzumiManifest.BuiltBy -> System.getProperty("user.name"),
+          IzumiManifest.BuildJdk -> System.getProperty("java.version"),
+          IzumiManifest.Version -> version.value,
+          IzumiManifest.BuildSbt -> sbtVersion.value,
+          IzumiManifest.BuildScala -> scalaVersion.value,
+          IzumiManifest.BuildTimestamp -> IzumiManifest.TsFormat.format(ZonedDateTime.now())
         )
 
         attributes.foreach {
@@ -38,10 +38,8 @@ object IzumiBuildManifestPlugin extends AutoPlugin {
 
         Seq(Package.ManifestAttributes(attributes.toSeq: _*))
       }.value,
-
       packageBin / packageOptions ++= extendedManifestMfAttributes.value,
-
-      Compile / packageOptions ++= extendedManifestMfAttributes.value,
+      Compile / packageOptions ++= extendedManifestMfAttributes.value
     )
   }
 }

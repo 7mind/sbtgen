@@ -1,4 +1,2 @@
 // @ExposedTestScope
-class ExposedClass {
-
-}
+class ExposedClass {}

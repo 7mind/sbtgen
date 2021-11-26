@@ -7,24 +7,24 @@ import izumi.sbtgen.model.{GenConfig, GlobalSettings, Project}
 import scopt.OptionParser
 
 case class Config(
-                   withJvm: Boolean = true,
-                   withSjs: Boolean = false,
-                   withSnat: Boolean = false,
-                   debug: Boolean = false,
-                   mergeTestScopes: Boolean = true,
-                   output: String = "test-out",
-                   groups: Set[String] = Set.empty,
-                   publishTests: Boolean = true,
-                   compactify: Boolean = false,
-                 )
+  withJvm: Boolean = true,
+  withSjs: Boolean = false,
+  withSnat: Boolean = false,
+  debug: Boolean = false,
+  mergeTestScopes: Boolean = true,
+  output: String = "test-out",
+  groups: Set[String] = Set.empty,
+  publishTests: Boolean = true,
+  compactify: Boolean = false
+)
 
 object Entrypoint {
   def main(
-            project: Project,
-            settings: GlobalSettings,
-            args: Seq[String],
-            renderer: (GenConfig, Project) => Renderer = new Renderer(_, _),
-          ): Unit = {
+    project: Project,
+    settings: GlobalSettings,
+    args: Seq[String],
+    renderer: (GenConfig, Project) => Renderer = new Renderer(_, _)
+  ): Unit = {
 
     val parser1 = new OptionParser[Config]("sbtgen") {
       head("sbtgen")
@@ -70,7 +70,7 @@ object Entrypoint {
           config.output,
           config.groups,
           config.publishTests,
-          config.compactify,
+          config.compactify
         )
 
         try {
@@ -96,10 +96,14 @@ object Entrypoint {
     }
 
     val files = Map(
-      "build.sbt" -> main.mkString("", "\n\n", "\n"),
-    ) ++ config.settings.sbtVersion.fold(Map.empty[String, String])(sbtVersion => Map(
-      "project/build.properties" -> s"sbt.version = $sbtVersion",
-    ))
+      "build.sbt" -> main.mkString("", "\n\n", "\n")
+    ) ++ config
+      .settings.sbtVersion.fold(Map.empty[String, String])(
+        sbtVersion =>
+          Map(
+            "project/build.properties" -> s"sbt.version = $sbtVersion"
+          )
+      )
 
     val moreFiles = makeMoreBoilerplate(config, project, renderer)
 
@@ -134,31 +138,32 @@ object Entrypoint {
            |""".stripMargin
       )
 
-      config.settings.bundlerVersion.foreach { bv =>
-        b.append(
-          s"""|
-             |// https://scalacenter.github.io/scalajs-bundler/
-              |addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % ${renderer renderVersion bv})
-              |""".stripMargin
-        )
+      config.settings.bundlerVersion.foreach {
+        bv =>
+          b.append(
+            s"""|
+                |// https://scalacenter.github.io/scalajs-bundler/
+                |addSbtPlugin("ch.epfl.scala" % "sbt-scalajs-bundler" % ${renderer renderVersion bv})
+                |""".stripMargin
+          )
       }
 
-      config.settings.sbtJsDependenciesVersion.foreach { bv =>
-        b.append(
-          s"""|
-             |// https://github.com/scala-js/jsdependencies
-              |addSbtPlugin("org.scala-js" % "sbt-jsdependencies" % ${renderer renderVersion bv})
-              |""".stripMargin
-        )
+      config.settings.sbtJsDependenciesVersion.foreach {
+        bv =>
+          b.append(
+            s"""|
+                |// https://github.com/scala-js/jsdependencies
+                |addSbtPlugin("org.scala-js" % "sbt-jsdependencies" % ${renderer renderVersion bv})
+                |""".stripMargin
+          )
       }
     }
 
     if (config.native) {
-      b.append(
-        s"""addSbtPlugin("org.portable-scala" % "sbt-scala-native-crossproject" % ${renderer renderVersion config.settings.crossProjectVersion})
-           |
-           |addSbtPlugin("org.scala-native"   % "sbt-scala-native"              % ${renderer renderVersion config.settings.scalaNativeVersion})
-           |""".stripMargin)
+      b.append(s"""addSbtPlugin("org.portable-scala" % "sbt-scala-native-crossproject" % ${renderer renderVersion config.settings.crossProjectVersion})
+                  |
+                  |addSbtPlugin("org.scala-native"   % "sbt-scala-native"              % ${renderer renderVersion config.settings.scalaNativeVersion})
+                  |""".stripMargin)
     }
 
     b.append('\n')

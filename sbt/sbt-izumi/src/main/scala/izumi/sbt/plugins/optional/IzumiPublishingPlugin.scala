@@ -26,25 +26,25 @@ object IzumiPublishingPlugin extends AutoPlugin {
   protected val logger: ConsoleLogger = ConsoleLogger()
 
   override lazy val globalSettings = Seq(
-    pomIncludeRepository := (_ => false)
-    , publishTargets := Seq.empty
-    , releaseResolvers := Seq(Opts.resolver.sonatypeReleases)
-    , snapshotResolvers := Seq(Opts.resolver.sonatypeSnapshots)
+    pomIncludeRepository := (_ => false),
+    publishTargets := Seq.empty,
+    releaseResolvers := Seq(Opts.resolver.sonatypeReleases),
+    snapshotResolvers := Seq(Opts.resolver.sonatypeSnapshots)
   )
 
   override lazy val projectSettings = Seq(
-    publishConfiguration := withOverwrite(publishConfiguration.value, isSnapshot.value)
-    , publishSignedConfiguration := withOverwrite(publishSignedConfigurationTask.value, isSnapshot.value)
-    , publishLocalConfiguration ~= withOverwriteEnabled
-    , publishLocalSignedConfiguration ~= withOverwriteEnabled
-    , sonatypeTarget := {
+    publishConfiguration := withOverwrite(publishConfiguration.value, isSnapshot.value),
+    publishSignedConfiguration := withOverwrite(publishSignedConfigurationTask.value, isSnapshot.value),
+    publishLocalConfiguration ~= withOverwriteEnabled,
+    publishLocalSignedConfiguration ~= withOverwriteEnabled,
+    sonatypeTarget := {
       if (isSnapshot.value)
         Opts.resolver.sonatypeSnapshots
       else
         Opts.resolver.sonatypeStaging
-    }
-    , credentials ++= publishTargets.value.map(_.credentials)
-    , resolvers ++= {
+    },
+    credentials ++= publishTargets.value.map(_.credentials),
+    resolvers ++= {
       val releaseRepositories = releaseResolvers.value
       val snapshotRepositories = snapshotResolvers.value
 
@@ -75,7 +75,7 @@ object IzumiPublishingPlugin extends AutoPlugin {
           env("PUBLISH", url),
           file(realmId, url, syntax.file(s".secrets/credentials.$realmId.properties")),
           file(realmId, url, Path.userHome / s".sbt/secrets/credentials.$realmId.properties"),
-          file(realmId, url, Path.userHome / s".sbt/credentials.$realmId.properties"),
+          file(realmId, url, Path.userHome / s".sbt/credentials.$realmId.properties")
         )
       }
 
@@ -89,10 +89,10 @@ object IzumiPublishingPlugin extends AutoPlugin {
 
       def env(prefix: String, url: String): Option[MavenTarget] = {
         val props = List(
-          Option(System.getProperty(s"${prefix}_USER"))
-          , Option(System.getProperty(s"${prefix}_PASSWORD"))
-          , Option(System.getProperty(s"${prefix}_REALM_NAME"))
-          , Option(System.getProperty(s"${prefix}_REALM"))
+          Option(System.getProperty(s"${prefix}_USER")),
+          Option(System.getProperty(s"${prefix}_PASSWORD")),
+          Option(System.getProperty(s"${prefix}_REALM_NAME")),
+          Option(System.getProperty(s"${prefix}_REALM"))
         )
 
         props match {

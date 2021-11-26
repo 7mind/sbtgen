@@ -10,18 +10,22 @@ object Defaults {
   final val SharedOptions: Seq[SettingDef.UnscopedSettingDef] = Seq(
     "publishMavenStyle" in SettingScope.Build := true,
     "scalacOptions" in SettingScope.Build ++= Seq[Const](
-      "-encoding", "UTF-8",
+      "-encoding",
+      "UTF-8",
       "-target:jvm-1.8",
       "-feature",
       "-unchecked",
       "-deprecation",
       "-language:higherKinds",
-      "-explaintypes", // Explain type errors in more detail.
+      "-explaintypes" // Explain type errors in more detail.
     ),
     "javacOptions" in SettingScope.Build ++= Seq(
-      "-encoding", "UTF-8",
-      "-source", "1.8",
-      "-target", "1.8",
+      "-encoding",
+      "UTF-8",
+      "-source",
+      "1.8",
+      "-target",
+      "1.8",
       "-deprecation",
       "-parameters",
       "-Xlint:all",
@@ -32,7 +36,7 @@ object Defaults {
       """s"-Xmacro-settings:git-repo-clean=${com.typesafe.sbt.SbtGit.GitKeys.gitUncommittedChanges.value}"""".raw,
       """s"-Xmacro-settings:git-branch=${com.typesafe.sbt.SbtGit.GitKeys.gitCurrentBranch.value}"""".raw,
       """s"-Xmacro-settings:git-described-version=${com.typesafe.sbt.SbtGit.GitKeys.gitDescribedVersion.value.getOrElse("")}"""".raw,
-      """s"-Xmacro-settings:git-head-commit=${com.typesafe.sbt.SbtGit.GitKeys.gitHeadCommit.value.getOrElse("")}"""".raw,
+      """s"-Xmacro-settings:git-head-commit=${com.typesafe.sbt.SbtGit.GitKeys.gitHeadCommit.value.getOrElse("")}"""".raw
     )
   )
 
@@ -45,7 +49,7 @@ object Defaults {
       """s"-Xmacro-settings:product-version=${version.value}"""".raw,
       """s"-Xmacro-settings:product-group=${organization.value}"""".raw,
       """s"-Xmacro-settings:scala-version=${scalaVersion.value}"""".raw,
-      """s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"""".raw,
+      """s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"""".raw
     )
   )
 
@@ -63,7 +67,7 @@ object Defaults {
          |}""".stripMargin.raw
     Seq(
       "unmanagedSourceDirectories" in SettingScope.Compile ++= addVersionSources("Compile / unmanagedSourceDirectories"),
-      "unmanagedSourceDirectories" in SettingScope.Test ++= addVersionSources("Test / unmanagedSourceDirectories"),
+      "unmanagedSourceDirectories" in SettingScope.Test ++= addVersionSources("Test / unmanagedSourceDirectories")
     )
   }
 
@@ -76,8 +80,8 @@ object Defaults {
     "-Wconf:cat=optimizer:warning", // make optimizer (inliner) warnings non-fatal
     "-Wconf:cat=other-match-analysis:error", // make non-exhaustive matches fatal
 
-    "-Ybackend-parallelism", CRaw("math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString"),
-
+    "-Ybackend-parallelism",
+    CRaw("math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString"),
     "-Xlint:adapted-args", // Warn if an argument list is modified to match the receiver.
     "-Xlint:by-name-right-associative", // By-name parameter of right associative operator.
     "-Xlint:constant", // Evaluation of a constant arithmetic expression results in an error.
@@ -96,7 +100,7 @@ object Defaults {
     "-Xlint:type-parameter-shadow", // A local type parameter shadows a type already in scope.
     "-Xlint:unsound-match", // Pattern match may not be typesafe.
 
-    "-opt-warnings:_", //2.12 only
+    "-opt-warnings:_", // 2.12 only
     "-Ywarn-extra-implicit", // Warn when more than one implicit parameter section is defined.
     "-Ywarn-unused:_", // Enable or disable specific `unused' warnings: `_' for all, `-Ywarn-unused:help' to list choices.
     "-Ywarn-adapted-args", // Warn if an argument list is modified to match the receiver.
@@ -106,7 +110,7 @@ object Defaults {
     "-Ywarn-nullary-override", // Warn when non-nullary `def f()' overrides nullary `def f'.
     "-Ywarn-nullary-unit", // Warn when nullary methods return Unit.
     "-Ywarn-numeric-widen", // Warn when numerics are widened.
-    //"-Ywarn-self-implicit", // Spurious warnings for any top-level implicit, including scala.language._
+    // "-Ywarn-self-implicit", // Spurious warnings for any top-level implicit, including scala.language._
     "-Ywarn-unused-import", // Warn when imports are unused.
     "-Ywarn-value-discard", // Warn when non-Unit expression results are unused.
 
@@ -115,7 +119,7 @@ object Defaults {
     // > The caching logic for compiler plugins is enabled by default in Bloop and that one does make a difference,
     //   around 20/30%, see https://github.com/scala/scala-dev/issues/458
     "-Ycache-plugin-class-loader:always",
-    "-Ycache-macro-class-loader:last-modified",
+    "-Ycache-macro-class-loader:last-modified"
   )
 
   final val Scala213Options = Seq[Const](
@@ -126,11 +130,11 @@ object Defaults {
     "-Wconf:cat=optimizer:warning", // make optimizer (inliner) warnings non-fatal
     "-Wconf:cat=other-match-analysis:error", // make non-exhaustive matches fatal
 
-    "-Vimplicits",  // Enables the tek/splain features to make the compiler print implicit resolution chains when no implicit value can be found
+    "-Vimplicits", // Enables the tek/splain features to make the compiler print implicit resolution chains when no implicit value can be found
     "-Vtype-diffs", // Enables the tek/splain features to turn type error messages (found: X, required: Y) into colored diffs between the two types
 
-    "-Ybackend-parallelism", CRaw("math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString"),
-
+    "-Ybackend-parallelism",
+    CRaw("math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString"),
     "-Wdead-code",
     "-Wextra-implicit",
     "-Wnumeric-widen",
@@ -144,20 +148,19 @@ object Defaults {
     // > The caching logic for compiler plugins is enabled by default in Bloop and that one does make a difference,
     //   around 20/30%, see https://github.com/scala/scala-dev/issues/458
     "-Ycache-plugin-class-loader:always",
-    "-Ycache-macro-class-loader:last-modified",
+    "-Ycache-macro-class-loader:last-modified"
   )
 
   final val Scala3Options = Seq[Const](
     "-Ykind-projector:underscores", // Use underscore type-lambda syntax by default
     "-no-indent",
-
     "-explain",
     "-deprecation",
-    "-feature",
+    "-feature"
   )
 
   final val SbtGenPlugins = Seq(
-    SbtPlugin("io.7mind.izumi.sbt", "sbt-izumi", Version.SbtGen),
+    SbtPlugin("io.7mind.izumi.sbt", "sbt-izumi", Version.SbtGen)
   )
 
 }

@@ -9,5 +9,5 @@ final case class GlobalSettings(
   scalaNativeVersion: Version = Version.VConst(SbtgenMeta.extractMandatory("scala-native-version").get),
   crossProjectVersion: Version = Version.VConst(SbtgenMeta.extractMandatory("crossproject-version").get),
   bundlerVersion: Option[Version] = Some(Version.VConst(SbtgenMeta.extractMandatory("bundler-version").get)),
-  sbtJsDependenciesVersion: Option[Version] = Some(Version.VConst(SbtgenMeta.extractMandatory("sbt-js-dependencies-version").get)),
+  sbtJsDependenciesVersion: Option[Version] = Some(Version.VConst(SbtgenMeta.extractMandatory("sbt-js-dependencies-version").get))
 )

@@ -4,7 +4,6 @@ import izumi.sbtgen.PreparedPlatform._
 import izumi.sbtgen.impl.{WithArtifactExt, WithBasicRenderers, WithProjectIndex}
 import izumi.sbtgen.model.Platform.BasePlatform
 import izumi.sbtgen.model._
-import izumi.sbtgen.sbtmeta.SbtgenMeta
 import izumi.sbtgen.tools.IzString._
 
 import scala.collection.immutable.SortedMap
@@ -12,40 +11,40 @@ import scala.collection.mutable
 import scala.collection.compat._
 
 final case class PreparedAggregate(
-                                    id: ArtifactId,
-                                    pathPrefix: Seq[String],
-                                    aggregatedNames: Seq[String],
-                                    platform: Platform,
-                                    plugins: Plugins,
-                                    isRoot: Boolean,
-                                    enableProjectSharedAggSettings: Boolean = true,
-                                    dontIncludeInSuperAgg: Boolean = false,
-                                    settings: Seq[SettingDef] = Seq.empty,
-                                  )
+  id: ArtifactId,
+  pathPrefix: Seq[String],
+  aggregatedNames: Seq[String],
+  platform: Platform,
+  plugins: Plugins,
+  isRoot: Boolean,
+  enableProjectSharedAggSettings: Boolean = true,
+  dontIncludeInSuperAgg: Boolean = false,
+  settings: Seq[SettingDef] = Seq.empty
+)
 
 final case class PreparedCrossArtifact(
-                                        header: PreparedArtifactHeader,
-                                        settings: Seq[SettingDef],
-                                        // FIXME: add, remove platform logic from renderer
-                                        //                                        settings: Map[Platform, Seq[PreparedSettingDef]],
-                                        deps: Seq[ScopedDependency],
-                                        libs: Seq[ScopedLibrary],
-                                        sbtPlugins: PreparedPlugins,
-                                        platformArtifacts: Seq[PreparedArtifact],
-                                      ) {
+  header: PreparedArtifactHeader,
+  settings: Seq[SettingDef],
+  // FIXME: add, remove platform logic from renderer
+  //                                        settings: Map[Platform, Seq[PreparedSettingDef]],
+  deps: Seq[ScopedDependency],
+  libs: Seq[ScopedLibrary],
+  sbtPlugins: PreparedPlugins,
+  platformArtifacts: Seq[PreparedArtifact]
+) {
   def platform: PreparedPlatform = header.platform
   def jvmOnly: Boolean = platform.jvmOnly
 }
 
 final case class PreparedArtifact(
-                                   name: ArtifactId,
-                                   platform: BasePlatform,
-                                   parentName: ArtifactId,
-                                   settings: Seq[SettingDef],
-                                   deps: Seq[ScopedDependency],
-                                   libs: Seq[ScopedLibrary],
-                                   sbtPlugins: PreparedPlugins,
-                                 )
+  name: ArtifactId,
+  platform: BasePlatform,
+  parentName: ArtifactId,
+  settings: Seq[SettingDef],
+  deps: Seq[ScopedDependency],
+  libs: Seq[ScopedLibrary],
+  sbtPlugins: PreparedPlugins
+)
 
 sealed trait PreparedPlatform {
   final def fold[A](jvmOnly: Platform.Jvm.type => A)(crossAll: Platform => A): Seq[A] = {
@@ -62,29 +61,28 @@ object PreparedPlatform {
 }
 
 final case class PreparedArtifactHeader(
-                                         name: ArtifactId,
-                                         path: String,
-                                         platform: PreparedPlatform,
-                                       )
+  name: ArtifactId,
+  path: String,
+  platform: PreparedPlatform
+)
 
 final case class PreparedPlugins(
-                                  enabled: Seq[Plugin],
-                                  disabled: Seq[Plugin],
-                                )
+  enabled: Seq[Plugin],
+  disabled: Seq[Plugin]
+)
 
 trait WithSettingsCache {
   protected def cached(s: String): String
 }
 
 class Renderer(
-                protected val config: GenConfig,
-                project: Project,
-              )
-  extends WithProjectIndex
-    with WithBasicRenderers
-    with WithArtifactExt
-    with WithSettingsCache
-    with Renderers {
+  protected val config: GenConfig,
+  project: Project
+) extends WithProjectIndex
+  with WithBasicRenderers
+  with WithArtifactExt
+  with WithSettingsCache
+  with Renderers {
 
   private val aggregates: Seq[Aggregate] = project.aggregates.map(_.merge)
   protected val index: Map[ArtifactId, Artifact] = makeIndex(aggregates)
@@ -143,7 +141,7 @@ class Renderer(
             aggregatedNames = aggregatedIds,
             platform = p,
             plugins = project.globalPlugins,
-            isRoot = p == Platform.All,
+            isRoot = p == Platform.All
           )
       }
 
@@ -170,7 +168,7 @@ class Renderer(
       settings,
       artifacts,
       aggDefs,
-      sc,
+      sc
     ).flatten
   }
 
@@ -195,7 +193,7 @@ class Renderer(
         isRoot = false,
         enableProjectSharedAggSettings = enableSharedSettings,
         dontIncludeInSuperAgg = noSuperAgg,
-        settings = aggregate.settings,
+        settings = aggregate.settings
       )
     }
 
@@ -207,7 +205,7 @@ class Renderer(
       Some(allAggregate),
       jvmOnly,
       jsOnly,
-      nativeOnly,
+      nativeOnly
     ).flatten
   }
 
@@ -226,17 +224,19 @@ class Renderer(
       if (platformAgg.nonEmpty) {
         val artname = Seq(agg.name.value, platformName(platform))
         val id = ArtifactId(artname.mkString("-"))
-        Some(PreparedAggregate(
-          id = id,
-          pathPrefix = Seq(".agg", (agg.pathPrefix ++ artname).mkString("-")),
-          aggregatedNames = platformAgg,
-          platform = platform,
-          plugins = project.globalPlugins,
-          isRoot = false,
-          enableProjectSharedAggSettings = sharedSettings,
-          dontIncludeInSuperAgg = disableSuperAgg,
-          settings = agg.settings,
-        ))
+        Some(
+          PreparedAggregate(
+            id = id,
+            pathPrefix = Seq(".agg", (agg.pathPrefix ++ artname).mkString("-")),
+            aggregatedNames = platformAgg,
+            platform = platform,
+            plugins = project.globalPlugins,
+            isRoot = false,
+            enableProjectSharedAggSettings = sharedSettings,
+            dontIncludeInSuperAgg = disableSuperAgg,
+            settings = agg.settings
+          )
+        )
       } else {
         None
       }
@@ -262,7 +262,7 @@ class Renderer(
             "skip" in SettingScope.Raw("publish") := true
           ) ++ localSettings ++ hack,
           platform = Platform.All,
-          platformPrefix = false,
+          platformPrefix = false
         )
         val pluginsStr = formatPlugins(plugins, platform, dot = true, inclusive = true)
         val aggregateStr = agg.map(_.shift(2)).mkString(".aggregate(\n", ",\n", "\n)").shift(2)
@@ -271,7 +271,7 @@ class Renderer(
           Seq(header),
           Seq(settingsStr),
           pluginsStr,
-          Seq(aggregateStr),
+          Seq(aggregateStr)
         ).flatten.mkString("\n")
     }
   }
@@ -305,7 +305,12 @@ class Renderer(
     )
   }
 
-  protected def prepareCrossArtifactSettings(project: Project, subGroupId: Option[String], artifactSettings: Seq[SettingDef], enabledPlatforms: Seq[PlatformEnv]): Seq[SettingDef] = {
+  protected def prepareCrossArtifactSettings(
+    project: Project,
+    subGroupId: Option[String],
+    artifactSettings: Seq[SettingDef],
+    enabledPlatforms: Seq[PlatformEnv]
+  ): Seq[SettingDef] = {
     val groupId = (config.settings.groupId :: subGroupId.toList).mkString(".")
 
     val jvmOnlyFix = if (config.jvmOnly) {
@@ -313,7 +318,7 @@ class Renderer(
         "unmanagedSourceDirectories" in SettingScope.Compile += """baseDirectory.value / ".jvm/src/main/scala" """.raw,
         "unmanagedResourceDirectories" in SettingScope.Compile += """baseDirectory.value / ".jvm/src/main/resources" """.raw,
         "unmanagedSourceDirectories" in SettingScope.Test += """baseDirectory.value / ".jvm/src/test/scala" """.raw,
-        "unmanagedResourceDirectories" in SettingScope.Test += """baseDirectory.value / ".jvm/src/test/resources" """.raw,
+        "unmanagedResourceDirectories" in SettingScope.Test += """baseDirectory.value / ".jvm/src/test/resources" """.raw
       )
     } else Seq.empty
 
@@ -322,12 +327,12 @@ class Renderer(
         penv =>
           val psettings = Seq(
             "crossScalaVersions" := penv.language.map(_.value),
-            "scalaVersion" := "crossScalaVersions.value.head".raw,
+            "scalaVersion" := "crossScalaVersions.value.head".raw
           ) ++ penv.settings
 
           filterSettings(psettings.map(_.withPlatform(penv.platform)), penv.platform) ++
-            filterSettings(artifactSettings, penv.platform) ++
-            filterSettings(project.sharedSettings, penv.platform)
+          filterSettings(artifactSettings, penv.platform) ++
+          filterSettings(project.sharedSettings, penv.platform)
       }
     }
 
@@ -335,7 +340,7 @@ class Renderer(
       Seq("organization" := groupId),
       jvmOnlyFix,
       project.sharedSettings,
-      artifactSettings,
+      artifactSettings
     ).flatten
 
     platformSettings ++
@@ -355,7 +360,7 @@ class Renderer(
             settings = Nil,
             deps = filterDeps(artifact.depends, jvmOnly, penv.platform),
             libs = filterLibDeps(project, artifact.libs, jvmOnly, penv.platform),
-            sbtPlugins = plugins,
+            sbtPlugins = plugins
           )
       }
     } else {
@@ -369,23 +374,30 @@ class Renderer(
     val enabledPlugins = plugins.enabled.filter(predicate).distinct
     val disabledPlugins = plugins.disabled.filter(predicate).distinct
 
-    val conflictingNames = enabledPlugins.map(_.name).toSet.intersect(disabledPlugins.map(_.name).toSet).map {
-      name =>
-        name -> project.pluginConflictRules(name)
-    }.toMap
+    val conflictingNames = enabledPlugins
+      .map(_.name).toSet.intersect(disabledPlugins.map(_.name).toSet).map {
+        name =>
+          name -> project.pluginConflictRules(name)
+      }.toMap
 
-    val enabledPlugins0 = enabledPlugins.filter(p => conflictingNames.get(p.name) match {
-      case Some(value) =>
-        value
-      case None =>
-        true
-    })
-    val disabledPlugins0 = disabledPlugins.filter(p => conflictingNames.get(p.name) match {
-      case Some(value) =>
-        !value
-      case None =>
-        true
-    })
+    val enabledPlugins0 = enabledPlugins.filter(
+      p =>
+        conflictingNames.get(p.name) match {
+          case Some(value) =>
+            value
+          case None =>
+            true
+        }
+    )
+    val disabledPlugins0 = disabledPlugins.filter(
+      p =>
+        conflictingNames.get(p.name) match {
+          case Some(value) =>
+            !value
+          case None =>
+            true
+        }
+    )
 
     PreparedPlugins(enabledPlugins0, disabledPlugins0)
   }
@@ -414,8 +426,9 @@ class Renderer(
 
   @deprecated(".", ".")
   protected def formatSettings(settings: Seq[SettingDef], platform: Platform, platformPrefix: Boolean): String = {
-    val filteredSettings = settings.filter { s =>
-      s.scope.platform == platform ||
+    val filteredSettings = settings.filter {
+      s =>
+        s.scope.platform == platform ||
         s.scope.platform == Platform.All ||
         (config.jvmOnly && platform == Platform.All && s.scope.platform == Platform.Jvm)
     }
@@ -462,10 +475,7 @@ class Renderer(
 // RENDER
 //
 
-trait Renderers
-  extends WithArtifactExt
-    with WithBasicRenderers
-    with WithProjectIndex {
+trait Renderers extends WithArtifactExt with WithBasicRenderers with WithProjectIndex {
   this: WithSettingsCache =>
 
   protected def renderArtifact(crossArtifact: PreparedCrossArtifact): String = {
@@ -473,11 +483,10 @@ trait Renderers
       case PreparedCrossArtifact(header, settings, deps, libs, sbtPlugins, platformArtifacts) =>
         val headerStr = renderHeader(header)
 
-        val settingsStr = crossArtifact.platform.fold(jvmOnly =>
-          nonEmpty(renderSettings(jvmOnly, platformPrefix = false))(settings)
-        )(p =>
-          nonEmpty(renderSettings(p, platformPrefix = true))(settings.filter(_.scope.platform == p))
-        ).flatten
+        val settingsStr = crossArtifact
+          .platform.fold(jvmOnly => nonEmpty(renderSettings(jvmOnly, platformPrefix = false))(settings))(
+            p => nonEmpty(renderSettings(p, platformPrefix = true))(settings.filter(_.scope.platform == p))
+          ).flatten
 
         val depsStr = renderDeps(crossArtifact.jvmOnly, Platform.All)(deps)
         val libsStr = renderLibDeps(crossArtifact.jvmOnly, Platform.All)(libs)
@@ -491,7 +500,7 @@ trait Renderers
           libsStr.toSeq,
           settingsStr,
           pluginsStr,
-          platformProjects,
+          platformProjects
         ).flatten.mkString("\n")
     }
   }
@@ -511,7 +520,7 @@ trait Renderers
           depsStr.toSeq,
           libsStr.toSeq,
           settingsStr,
-          pluginsStr,
+          pluginsStr
         ).flatten.mkString("\n")
     }
   }
@@ -607,7 +616,6 @@ trait Renderers
 
     val out = settingDef match {
       case u: SettingDef.UnscopedSettingDef =>
-
         if (u.value.isInstanceOf[Const.CRaw]) {
           renderConst(u.value)
         } else {
@@ -615,7 +623,6 @@ trait Renderers
         }
 
       case s: SettingDef.ScopedSettingDef =>
-
         val r = s
           .defs
           .toSeq
@@ -638,7 +645,9 @@ trait Renderers
           }
           .map(_.shift(2))
           .mkString(
-            "{ (isSnapshot.value, scalaVersion.value) match {\n", "\n", "\n} }",
+            "{ (isSnapshot.value, scalaVersion.value) match {\n",
+            "\n",
+            "\n} }"
           )
 
         if (s.defs.exists(_._2.isInstanceOf[Const.CRaw])) {
@@ -666,27 +675,30 @@ trait Renderers
     def libConsts(libs: Seq[ScopedLibrary]): Seq[Const.CRaw] = libs.map(renderLib(isJvmOnly, targetPlatform))
     val _ = IterableOnce // prevent unused import compat warning
 
-    allLibs.groupBy(_.scope.scalaVersionScope).to(SortedMap).flatMap {
-      case (scope, libs) => scope match {
-        case ScalaVersionScope.AllVersions =>
-          setting(libConsts(libs))
+    allLibs
+      .groupBy(_.scope.scalaVersionScope).to(SortedMap).flatMap {
+        case (scope, libs) =>
+          scope match {
+            case ScalaVersionScope.AllVersions =>
+              setting(libConsts(libs))
 
-        case ScalaVersionScope.AllScala2 =>
-          setting(s"""{ if (scalaVersion.value.startsWith("2.")) ${renderConst(libConsts(libs))} else Seq.empty }""".raw)
+            case ScalaVersionScope.AllScala2 =>
+              setting(s"""{ if (scalaVersion.value.startsWith("2.")) ${renderConst(libConsts(libs))} else Seq.empty }""".raw)
 
-        case ScalaVersionScope.AllScala3 =>
-          setting(
-            s"""{
-               |  val version = scalaVersion.value
-               |  if (version.startsWith("0.") || version.startsWith("3.")) {
-               |${renderConst(libConsts(libs)).shift(4)}
-               |  } else Seq.empty
-               |}""".stripMargin.raw)
+            case ScalaVersionScope.AllScala3 =>
+              setting(s"""{
+                         |  val version = scalaVersion.value
+                         |  if (version.startsWith("0.") || version.startsWith("3.")) {
+                         |${renderConst(libConsts(libs)).shift(4)}
+                         |  } else Seq.empty
+                         |}""".stripMargin.raw)
 
-        case ScalaVersionScope.Versions(versions) =>
-          setting(s"""{ if (${renderConst(versions.map(Const.CString apply _.value))} contains scalaVersion.value) ${renderConst(libConsts(libs))} else Seq.empty }""".raw)
-      }
-    }.toSeq
+            case ScalaVersionScope.Versions(versions) =>
+              setting(
+                s"""{ if (${renderConst(versions.map(Const.CString apply _.value))} contains scalaVersion.value) ${renderConst(libConsts(libs))} else Seq.empty }""".raw
+              )
+          }
+      }.toSeq
   }
 
   protected def renderLib(isJvmOnly: Boolean, targetPlatform: Platform)(lib: ScopedLibrary): Const.CRaw = {
@@ -777,9 +789,7 @@ trait Renderers
       case Some(value) =>
         value
       case None =>
-        throw new RuntimeException(s"Unknown dependency: ${
-          d.name
-        } ")
+        throw new RuntimeException(s"Unknown dependency: ${d.name} ")
     }
     val name = targetPlatform match {
       case Platform.All if isJvmOnly =>
@@ -824,11 +834,7 @@ trait Renderers
           .toSeq
           .map {
             case (k, v) =>
-              s"${
-                renderConst(k)
-              } -> ${
-                renderConst(v)
-              } "
+              s"${renderConst(k)} -> ${renderConst(v)} "
           }
           .map(_.shift(2))
           .mkString("Map(\n", ",\n", "\n)")

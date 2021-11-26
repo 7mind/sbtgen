@@ -109,10 +109,12 @@ final class IzString(private val s: String) extends AnyVal {
   }
 
   def camelTo(sep: String): String = {
-    "[A-Z\\d]".r.replaceAllIn(s, {
-      m =>
-        sep + m.group(0).toLowerCase()
-    })
+    "[A-Z\\d]"
+      .r.replaceAllIn(
+        s,
+        m =>
+          sep + m.group(0).toLowerCase()
+      )
   }
 
   def camelToMinus: String = camelTo("-")
@@ -120,10 +122,12 @@ final class IzString(private val s: String) extends AnyVal {
   def camelToUnderscores: String = camelTo("_")
 
   def underscoreToCamel: String = {
-    "_([a-z\\d])".r.replaceAllIn(s, {
-      m =>
-        m.group(1).toUpperCase()
-    })
+    "_([a-z\\d])"
+      .r.replaceAllIn(
+        s,
+        m =>
+          m.group(1).toUpperCase()
+      )
   }
 
   def splitFirst(separator: Char): (String, String) = {
@@ -164,7 +168,8 @@ final class IzString(private val s: String) extends AnyVal {
     }
 
     import IzString._
-    lines.zipWithIndex
+    lines
+      .zipWithIndex
       .map {
         case (l, i) =>
           s"${(i + 1).toString.leftPad(pad)}: $l"

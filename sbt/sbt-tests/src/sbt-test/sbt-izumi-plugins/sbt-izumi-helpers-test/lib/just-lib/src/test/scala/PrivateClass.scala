@@ -1,7 +1,7 @@
 import java.lang.Exception
 
 class PrivateClass {
-  def x() = 2+ 2
+  def x() = 2 + 2
   val a = {
 
     // this throws a warning

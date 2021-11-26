@@ -12,7 +12,7 @@ import sbt.internal.util.ConsoleLogger
 import sbt.io.{CopyOptions, IO}
 import sbt.librarymanagement.ModuleID
 import sbt.librarymanagement.ivy.{DirectCredentials, FileCredentials}
-import sbt.{AutoPlugin, Def, settingKey, taskKey, librarymanagement => lm}
+import sbt.{AutoPlugin, Def, librarymanagement => lm, settingKey, taskKey}
 
 object IzumiFetchPlugin extends AutoPlugin {
 
@@ -38,12 +38,12 @@ object IzumiFetchPlugin extends AutoPlugin {
   }
   override def projectSettings: Seq[Def.Setting[_]] = {
     Seq(
-      fetchArtifacts := Seq.empty
-      , artifactsTargetDir := {
+      fetchArtifacts := Seq.empty,
+      artifactsTargetDir := {
         import sbt.io.syntax._
         target.value / "artifacts"
-      }
-      , fetchResolvers := {
+      },
+      fetchResolvers := {
         val defaultResolvers = Seq(
           sbt.librarymanagement.Resolver.DefaultMavenRepository
         )
@@ -52,8 +52,8 @@ object IzumiFetchPlugin extends AutoPlugin {
           case m: lm.MavenRepository =>
             m.toCoursier(sbt.Keys.credentials.value)
         }
-      }
-      , resolveArtifacts := Def.task {
+      },
+      resolveArtifacts := Def.task {
         val ownRepos = publishTargets.value.map(_.toCoursier)
         val repos = ownRepos ++ fetchResolvers.value
         val scala = scalaBinaryVersion.value
@@ -62,8 +62,8 @@ object IzumiFetchPlugin extends AutoPlugin {
         val resolved = artifactFetcher.value.resolve(repos.distinct, deps)
         logger.info(s"Resolved artifacts: ${resolved.size}")
         resolved
-      }.value
-      , copyArtifacts := Def.task {
+      }.value,
+      copyArtifacts := Def.task {
         val targetDir = artifactsTargetDir.value
         val resolved = resolveArtifacts.value
         IO.delete(targetDir)
@@ -72,8 +72,8 @@ object IzumiFetchPlugin extends AutoPlugin {
           resolved.map(r => (r, targetDir.toPath.resolve(r.getName).toFile)),
           CopyOptions(overwrite = true, preserveLastModified = true, preserveExecutable = true)
         )
-      }.value
-      , lm.syntax.Compile / packageBin := Def.taskDyn {
+      }.value,
+      lm.syntax.Compile / packageBin := Def.taskDyn {
         copyArtifacts.value
 
         val ctask = (lm.syntax.Compile / packageBin).value

@@ -6,7 +6,7 @@ import sbt.AutoPlugin
 object IzumiImportsPlugin extends AutoPlugin {
   override def trigger = allRequirements
 
-  //noinspection TypeAnnotation
+  // noinspection TypeAnnotation
   object autoImport {
     val IzumiEnvironmentPlugin = plugins.presets.IzumiEnvironmentPlugin
     val IzumiGitEnvironmentPlugin = plugins.presets.IzumiGitEnvironmentPlugin
@@ -24,11 +24,3 @@ object IzumiImportsPlugin extends AutoPlugin {
   }
 
 }
-
-
-
-
-
-
-
-

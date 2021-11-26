@@ -6,7 +6,7 @@ import scala.sys.SystemProperties
 import scala.util.Try
 
 object IzumiPropertiesPlugin extends AutoPlugin {
-  //noinspection TypeAnnotation
+  // noinspection TypeAnnotation
   object autoImport {
     implicit class StringExtensions(s: String) {
       def asBoolean(default: Boolean): Boolean = {

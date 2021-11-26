@@ -63,7 +63,8 @@ object IzumiBuildInfoPlugin extends AutoPlugin {
 
         val tt = refs.map(_._1).map {
           ref =>
-            libraryDependencies.all(ScopeFilter(inProjects(ref)))
+            libraryDependencies
+              .all(ScopeFilter(inProjects(ref)))
               .zipWith(Def.setting(ref)) {
                 case (a, b) => b -> a
               }
@@ -81,7 +82,8 @@ object IzumiBuildInfoPlugin extends AutoPlugin {
 
         val tt = refs.map(_._1).map {
           ref =>
-            organization.all(ScopeFilter(inProjects(ref)))
+            organization
+              .all(ScopeFilter(inProjects(ref)))
               .zipWith(Def.setting(ref)) {
                 case (a, b) => b -> a
               }
@@ -99,7 +101,8 @@ object IzumiBuildInfoPlugin extends AutoPlugin {
 
         val tt = refs.map(_._1).map {
           ref =>
-            version.all(ScopeFilter(inProjects(ref)))
+            version
+              .all(ScopeFilter(inProjects(ref)))
               .zipWith(Def.setting(ref)) {
                 case (a, b) => b -> a
               }
@@ -127,50 +130,52 @@ object IzumiBuildInfoPlugin extends AutoPlugin {
       val vermap = buildVersionMap.value.map(_.evaluate(sd)).toMap
       val groupmap = buildGroupIdMap.value.map(_.evaluate(sd)).toMap
 
-      val allProjects = allProjectRefs.map {
-        case (ref, proj) =>
-          val name = proj.id.safe
-          val pgid = choose(group, groupmap(ref).head, "group")
-          val pver = choose(ver, vermap(ref).head, "version")
+      val allProjects = allProjectRefs
+        .map {
+          case (ref, proj) =>
+            val name = proj.id.safe
+            val pgid = choose(group, groupmap(ref).head, "group")
+            val pver = choose(ver, vermap(ref).head, "version")
 
-          ExportedModule(ref, name, pgid, proj.id.quoted, pver)
-      }.sortBy(_.safeId)
+            ExportedModule(ref, name, pgid, proj.id.quoted, pver)
+        }.sortBy(_.safeId)
 
       val allProjectsR = allProjects.map(m => s"""final val ${m.safeId} = ${m.groupId} %% ${m.artifactId} % ${m.version}""")
       val allProjectsT = allProjects.map(m => s"""final val ${m.safeId} = R.${m.safeId} % Test """)
       val allProjectsCTT = allProjects.map(m => s"""final val ${m.safeId} = R.${m.safeId} classifier "tests" """)
       val allProjectsTT = allProjects.map(m => s"""final val ${m.safeId} = TSR.${m.safeId} % Test """)
 
-      val imports = allProjects.map {
-        p =>
-          val deps = depmap(p.ref).flatten.map {
-            d =>
-              val name = (d.organization + "_" + d.name).safe
-              val vname = name + "_version"
-              ImportedDep(name, vname, d.revision.quoted, formatModuleId(d, vname))
-          }
+      val imports = allProjects
+        .map {
+          p =>
+            val deps = depmap(p.ref).flatten.map {
+              d =>
+                val name = (d.organization + "_" + d.name).safe
+                val vname = name + "_version"
+                ImportedDep(name, vname, d.revision.quoted, formatModuleId(d, vname))
+            }
 
-          ImportedDeps(p.safeId, deps)
-      }.map {
-        d =>
-          val uniqEntries = d.deps.groupBy(_.safeId).mapValues(_.head).values.toSeq.sortBy(_.safeId)
+            ImportedDeps(p.safeId, deps)
+        }.map {
+          d =>
+            val uniqEntries = d.deps.groupBy(_.safeId).mapValues(_.head).values.toSeq.sortBy(_.safeId)
 
-          val vals = uniqEntries.map {
-            v =>
-              s""" val ${v.safeId} = ${v.depstr} """
-          }
+            val vals = uniqEntries.map {
+              v =>
+                s""" val ${v.safeId} = ${v.depstr} """
+            }
 
-          val vers = uniqEntries.map {
-            v =>
-              s""" val ${v.vname} = ${v.verstr} """
-          }
+            val vers = uniqEntries.map {
+              v =>
+                s""" val ${v.vname} = ${v.verstr} """
+            }
 
-          s"""object ${d.safeId} {
-             |${vers.mkString("\n").shift(2)}
-             |${vals.mkString("\n").shift(2)}
-             |}
+            s"""object ${d.safeId} {
+               |${vers.mkString("\n").shift(2)}
+               |${vals.mkString("\n").shift(2)}
+               |}
            """.stripMargin
-      }
+        }
 
       IO.write(
         file,
@@ -234,8 +239,8 @@ object IzumiBuildInfoPlugin extends AutoPlugin {
   object autoImport {
     def withBuildInfo(packageName: String, objectName: String): Seq[Setting[_]] = {
       Seq(
-        sbtPlugin := true
-        , Compile / sourceGenerators += generateBuildInfo(packageName, objectName).taskValue
+        sbtPlugin := true,
+        Compile / sourceGenerators += generateBuildInfo(packageName, objectName).taskValue
       )
     }
   }
