@@ -316,8 +316,14 @@ class Renderer(
     val jvmOnlyFix = if (config.jvmOnly) {
       Seq(
         "unmanagedSourceDirectories" in SettingScope.Compile += """baseDirectory.value / ".jvm/src/main/scala" """.raw,
+        "unmanagedSourceDirectories" in SettingScope.Compile ++=
+          """(scalaBinaryVersion.value :: CrossVersion.partialVersion(scalaVersion.value).toList.map(_._1))
+            |  .map(v => baseDirectory.value / s".jvm/src/main/scala-$v").distinct""".raw,
         "unmanagedResourceDirectories" in SettingScope.Compile += """baseDirectory.value / ".jvm/src/main/resources" """.raw,
         "unmanagedSourceDirectories" in SettingScope.Test += """baseDirectory.value / ".jvm/src/test/scala" """.raw,
+        "unmanagedSourceDirectories" in SettingScope.Test ++=
+          """(scalaBinaryVersion.value :: CrossVersion.partialVersion(scalaVersion.value).toList.map(_._1))
+            |  .map(v => baseDirectory.value / s".jvm/src/test/scala-$v").distinct""".raw,
         "unmanagedResourceDirectories" in SettingScope.Test += """baseDirectory.value / ".jvm/src/test/resources" """.raw
       )
     } else Seq.empty
