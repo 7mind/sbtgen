@@ -15,9 +15,9 @@ lazy val `test` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure
       val version = scalaVersion.value
       val crossVersions = crossScalaVersions.value
       import Ordering.Implicits._
-      val olderVersions = crossVersions.map(CrossVersion.partialVersion).filter(_ <= CrossVersion.partialVersion(version)).flatten
+      val ltEqVersions = crossVersions.map(CrossVersion.partialVersion).filter(_ <= CrossVersion.partialVersion(version)).flatten
       (Compile / unmanagedSourceDirectories).value.flatMap {
-        case dir if dir.getPath.endsWith("scala") => olderVersions.map { case (m, n) => file(dir.getPath + s"-$m.$n+") }
+        case dir if dir.getPath.endsWith("scala") => ltEqVersions.map { case (m, n) => file(dir.getPath + s"-$m.$n+") }
         case _ => Seq.empty
       }
     },
@@ -25,9 +25,9 @@ lazy val `test` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure
       val version = scalaVersion.value
       val crossVersions = crossScalaVersions.value
       import Ordering.Implicits._
-      val olderVersions = crossVersions.map(CrossVersion.partialVersion).filter(_ <= CrossVersion.partialVersion(version)).flatten
+      val ltEqVersions = crossVersions.map(CrossVersion.partialVersion).filter(_ <= CrossVersion.partialVersion(version)).flatten
       (Test / unmanagedSourceDirectories).value.flatMap {
-        case dir if dir.getPath.endsWith("scala") => olderVersions.map { case (m, n) => file(dir.getPath + s"-$m.$n+") }
+        case dir if dir.getPath.endsWith("scala") => ltEqVersions.map { case (m, n) => file(dir.getPath + s"-$m.$n+") }
         case _ => Seq.empty
       }
     }
@@ -41,9 +41,9 @@ lazy val `test` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure
       val version = scalaVersion.value
       val crossVersions = crossScalaVersions.value
       import Ordering.Implicits._
-      val olderVersions = crossVersions.map(CrossVersion.partialVersion).filter(_ <= CrossVersion.partialVersion(version)).flatten
+      val ltEqVersions = crossVersions.map(CrossVersion.partialVersion).filter(_ <= CrossVersion.partialVersion(version)).flatten
       (Compile / unmanagedSourceDirectories).value.flatMap {
-        case dir if dir.getPath.endsWith("scala") => olderVersions.map { case (m, n) => file(dir.getPath + s"-$m.$n+") }
+        case dir if dir.getPath.endsWith("scala") => ltEqVersions.map { case (m, n) => file(dir.getPath + s"-$m.$n+") }
         case _ => Seq.empty
       }
     },
@@ -51,9 +51,9 @@ lazy val `test` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure
       val version = scalaVersion.value
       val crossVersions = crossScalaVersions.value
       import Ordering.Implicits._
-      val olderVersions = crossVersions.map(CrossVersion.partialVersion).filter(_ <= CrossVersion.partialVersion(version)).flatten
+      val ltEqVersions = crossVersions.map(CrossVersion.partialVersion).filter(_ <= CrossVersion.partialVersion(version)).flatten
       (Test / unmanagedSourceDirectories).value.flatMap {
-        case dir if dir.getPath.endsWith("scala") => olderVersions.map { case (m, n) => file(dir.getPath + s"-$m.$n+") }
+        case dir if dir.getPath.endsWith("scala") => ltEqVersions.map { case (m, n) => file(dir.getPath + s"-$m.$n+") }
         case _ => Seq.empty
       }
     }

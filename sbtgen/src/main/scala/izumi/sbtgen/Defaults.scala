@@ -53,22 +53,53 @@ object Defaults {
     )
   )
 
-  final val CrossScalaSources = {
-    def addVersionSources(s: String) =
-      s"""{
-         |  val version = scalaVersion.value
-         |  val crossVersions = crossScalaVersions.value
-         |  import Ordering.Implicits._
-         |  val olderVersions = crossVersions.map(CrossVersion.partialVersion).filter(_ <= CrossVersion.partialVersion(version)).flatten
-         |  ($s).value.flatMap {
-         |    case dir if dir.getPath.endsWith("scala") => olderVersions.map { case (m, n) => file(dir.getPath + s"-$$m.$$n+") }
-         |    case _ => Seq.empty
-         |  }
-         |}""".stripMargin.raw
+  final val CrossScalaPlusSources = {
     Seq(
-      "unmanagedSourceDirectories" in SettingScope.Compile ++= addVersionSources("Compile / unmanagedSourceDirectories"),
-      "unmanagedSourceDirectories" in SettingScope.Test ++= addVersionSources("Test / unmanagedSourceDirectories")
+      "unmanagedSourceDirectories" in SettingScope.Compile ++= addScalaVersionPlusSourceDirs("Compile / unmanagedSourceDirectories"),
+      "unmanagedSourceDirectories" in SettingScope.Test ++= addScalaVersionPlusSourceDirs("Test / unmanagedSourceDirectories")
     )
+  }
+
+  final val CrossScalaRangeSources = {
+    Seq(
+      "unmanagedSourceDirectories" in SettingScope.Compile ++= addScalaVersionRangeSourceDirs("Compile / unmanagedSourceDirectories"),
+      "unmanagedSourceDirectories" in SettingScope.Test ++= addScalaVersionRangeSourceDirs("Test / unmanagedSourceDirectories")
+    )
+  }
+
+  def addScalaVersionPlusSourceDirs(key: String): CRaw = {
+    s"""{
+       |  val version = scalaVersion.value
+       |  val crossVersions = crossScalaVersions.value
+       |  import Ordering.Implicits._
+       |  val ltEqVersions = crossVersions.map(CrossVersion.partialVersion).filter(_ <= CrossVersion.partialVersion(version)).flatten
+       |  ($key).value.flatMap {
+       |    case dir if dir.getPath.endsWith("scala") => ltEqVersions.map { case (m, n) => file(dir.getPath + s"-$$m.$$n+") }
+       |    case _ => Seq.empty
+       |  }
+       |}""".stripMargin.raw
+  }
+
+  def addScalaVersionRangeSourceDirs(key: String): CRaw = {
+    s"""{
+       |  val crossVersions = crossScalaVersions.value
+       |  import Ordering.Implicits._
+       |  val ltEqVersions = crossVersions.map(CrossVersion.partialVersion).sorted.flatten
+       |  def joinV = (_: Product).productIterator.mkString(".")
+       |  val allRangeVersions = (2 to math.max(2, ltEqVersions.size - 1))
+       |    .flatMap(i => ltEqVersions.sliding(i).filter(_.size == i))
+       |    .map(l => (l.head, l.last))
+       |  CrossVersion.partialVersion(scalaVersion.value).toList.flatMap {
+       |    version =>
+       |      val rangeVersions = allRangeVersions
+       |        .filter { case (l, r) => l <= version && version <= r }
+       |        .map { case (l, r) => s"-$${joinV(l)}-$${joinV(r)}" }
+       |      ($key).value.flatMap {
+       |        case dir if dir.getPath.endsWith("scala") => rangeVersions.map { vStr => file(dir.getPath + vStr) }
+       |        case _ => Seq.empty
+       |      }
+       |  }
+       |}""".stripMargin.raw
   }
 
   final val Scala212Options = Seq[Const](
