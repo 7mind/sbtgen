@@ -5470,6 +5470,7 @@ lazy val `izumi-jvm` = (project in file(".agg/.agg-jvm"))
 lazy val `izumi` = (project in file("."))
   .settings(
     publish / skip := true,
+    Global / onChangedBuildSource := ReloadOnSourceChanges,
     ThisBuild / publishMavenStyle := true,
     ThisBuild / scalacOptions ++= Seq(
       "-encoding",

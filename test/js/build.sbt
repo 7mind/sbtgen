@@ -5522,6 +5522,7 @@ lazy val `izumi-js` = (project in file(".agg/.agg-js"))
 lazy val `izumi` = (project in file("."))
   .settings(
     publish / skip := true,
+    Global / onChangedBuildSource := ReloadOnSourceChanges,
     ThisBuild / publishMavenStyle := true,
     ThisBuild / scalacOptions ++= Seq(
       "-encoding",

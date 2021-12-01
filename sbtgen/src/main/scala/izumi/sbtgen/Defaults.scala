@@ -8,6 +8,7 @@ object Defaults {
     * For [[Project.rootSettings]]
     */
   final val SharedOptions: Seq[SettingDef.UnscopedSettingDef] = Seq(
+    "onChangedBuildSource" in SettingScope.Raw("Global") := "ReloadOnSourceChanges".raw,
     "publishMavenStyle" in SettingScope.Build := true,
     "scalacOptions" in SettingScope.Build ++= Seq[Const](
       "-encoding",
