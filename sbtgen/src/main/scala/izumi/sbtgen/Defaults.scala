@@ -13,12 +13,10 @@ object Defaults {
     "scalacOptions" in SettingScope.Build ++= Seq[Const](
       "-encoding",
       "UTF-8",
-      "-target:jvm-1.8",
       "-feature",
       "-unchecked",
       "-deprecation",
-      "-language:higherKinds",
-      "-explaintypes" // Explain type errors in more detail.
+      "-language:higherKinds"
     ),
     "javacOptions" in SettingScope.Build ++= Seq(
       "-encoding",
@@ -118,6 +116,8 @@ object Defaults {
   }
 
   final val Scala2Options = Seq[Const](
+    "-target:jvm-1.8",
+    "-explaintypes" // Explain type errors in more detail.
   )
   final val Scala212Options = Scala2Options ++ Seq[Const](
     "-Xsource:3", // Compile with maximum dotty compatibility
