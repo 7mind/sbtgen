@@ -31,27 +31,41 @@ object Defaults {
       "-parameters",
       "-Xlint:all",
       "-XDignore.symbol.file"
-    ),
-    "scalacOptions" in SettingScope.Build ++= Seq(
-      """s"-Xmacro-settings:sbt-version=${sbtVersion.value}"""".raw,
-      """s"-Xmacro-settings:git-repo-clean=${com.typesafe.sbt.SbtGit.GitKeys.gitUncommittedChanges.value}"""".raw,
-      """s"-Xmacro-settings:git-branch=${com.typesafe.sbt.SbtGit.GitKeys.gitCurrentBranch.value}"""".raw,
-      """s"-Xmacro-settings:git-described-version=${com.typesafe.sbt.SbtGit.GitKeys.gitDescribedVersion.value.getOrElse("")}"""".raw,
-      """s"-Xmacro-settings:git-head-commit=${com.typesafe.sbt.SbtGit.GitKeys.gitHeadCommit.value.getOrElse("")}"""".raw
     )
+  )
+
+  final val SbtMetaRootOptions = Seq[Const](
+//    """s"-Dsbtgen-sbt-version=${sbtVersion.value}"""".raw,
+//    """s"-Dsbtgen-sbt-git-repo-clean=${com.typesafe.sbt.SbtGit.GitKeys.gitUncommittedChanges.value}"""".raw,
+//    """s"-Dsbtgen-sbt-git-branch=${com.typesafe.sbt.SbtGit.GitKeys.gitCurrentBranch.value}"""".raw,
+//    """s"-Dsbtgen-sbt-git-described-version=${com.typesafe.sbt.SbtGit.GitKeys.gitDescribedVersion.value.getOrElse("")}"""".raw,
+//    """s"-Dsbtgen-sbt-git-head-commit=${com.typesafe.sbt.SbtGit.GitKeys.gitHeadCommit.value.getOrElse("")}"""".raw
+  )
+  final val SbtMetaRootOptionsScala2 = SbtMetaRootOptions ++ Seq[Const](
+    """s"-Xmacro-settings:sbt-version=${sbtVersion.value}"""".raw,
+    """s"-Xmacro-settings:git-repo-clean=${com.typesafe.sbt.SbtGit.GitKeys.gitUncommittedChanges.value}"""".raw,
+    """s"-Xmacro-settings:git-branch=${com.typesafe.sbt.SbtGit.GitKeys.gitCurrentBranch.value}"""".raw,
+    """s"-Xmacro-settings:git-described-version=${com.typesafe.sbt.SbtGit.GitKeys.gitDescribedVersion.value.getOrElse("")}"""".raw,
+    """s"-Xmacro-settings:git-head-commit=${com.typesafe.sbt.SbtGit.GitKeys.gitHeadCommit.value.getOrElse("")}"""".raw
   )
 
   /**
     * For [[Project.sharedSettings]]
     */
-  final val SbtMetaOptions = Seq(
-    "scalacOptions" ++= Seq(
-      """s"-Xmacro-settings:product-name=${name.value}"""".raw,
-      """s"-Xmacro-settings:product-version=${version.value}"""".raw,
-      """s"-Xmacro-settings:product-group=${organization.value}"""".raw,
-      """s"-Xmacro-settings:scala-version=${scalaVersion.value}"""".raw,
-      """s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"""".raw
-    )
+  final val SbtMetaOptions = Seq[Const](
+//    """s"-Dsbtgen-sbt-product-name=${name.value}"""".raw,
+//    """s"-Dsbtgen-sbt-product-version=${version.value}"""".raw,
+//    """s"-Dsbtgen-sbt-product-group=${organization.value}"""".raw,
+//    """s"-Dsbtgen-sbt-scala-version=${scalaVersion.value}"""".raw,
+//    """s"-Dsbtgen-sbt-scala-versions=${crossScalaVersions.value.mkString(":")}"""".raw
+  )
+
+  final val SbtMetaOptionsScala2 = SbtMetaOptions ++ Seq[Const](
+    """s"-Xmacro-settings:product-name=${name.value}"""".raw,
+    """s"-Xmacro-settings:product-version=${version.value}"""".raw,
+    """s"-Xmacro-settings:product-group=${organization.value}"""".raw,
+    """s"-Xmacro-settings:scala-version=${scalaVersion.value}"""".raw,
+    """s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"""".raw
   )
 
   final val CrossScalaPlusSources = {
@@ -103,7 +117,9 @@ object Defaults {
        |}""".stripMargin.raw
   }
 
-  final val Scala212Options = Seq[Const](
+  final val Scala2Options = Seq[Const](
+  )
+  final val Scala212Options = Scala2Options ++ Seq[Const](
     "-Xsource:3", // Compile with maximum dotty compatibility
     "-P:kind-projector:underscore-placeholders", // Use underscore type-lambda syntax by default
     "-Ypartial-unification", // 2.12 only
@@ -154,7 +170,7 @@ object Defaults {
     "-Ycache-macro-class-loader:last-modified"
   )
 
-  final val Scala213Options = Seq[Const](
+  final val Scala213Options = Scala2Options ++ Seq[Const](
     "-Xsource:3", // Compile with maximum dotty compatibility
     "-P:kind-projector:underscore-placeholders", // Use underscore type-lambda syntax by default
 
