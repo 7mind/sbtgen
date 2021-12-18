@@ -32,10 +32,7 @@ object Defaults {
     )
   )
 
-  // -Xmacro-settings not implemented yet https://github.com/lampepfl/dotty/issues/12038
-  final val Scala3SbtMetaRootOptions = Seq[Const]()
-
-  final val Scala2SbtMetaRootOptions = Seq[Const](
+  final val SbtMetaRootOptionsScala2 = Seq[Const](
     """s"-Xmacro-settings:sbt-version=${sbtVersion.value}"""".raw,
     """s"-Xmacro-settings:git-repo-clean=${com.typesafe.sbt.SbtGit.GitKeys.gitUncommittedChanges.value}"""".raw,
     """s"-Xmacro-settings:git-branch=${com.typesafe.sbt.SbtGit.GitKeys.gitCurrentBranch.value}"""".raw,
@@ -43,8 +40,11 @@ object Defaults {
     """s"-Xmacro-settings:git-head-commit=${com.typesafe.sbt.SbtGit.GitKeys.gitHeadCommit.value.getOrElse("")}"""".raw
   )
 
+  // -Xmacro-settings not implemented yet https://github.com/lampepfl/dotty/issues/12038
+  final val SbtMetaRootOptionsScala3 = Seq[Const]()
+
   final val SbtMetaRootOptions = {
-    "scalacOptions" in SettingScope.Build ++= Scala2SbtMetaRootOptions
+    "scalacOptions" in SettingScope.Build ++= SbtMetaRootOptionsScala2
   }
 
   final val SbtMetaSharedOptionsScala2 = Seq[Const](
@@ -55,13 +55,8 @@ object Defaults {
     """s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"""".raw
   )
 
-  final val SbtMetaSharedOptionsScala3 = Seq[Const](
-    """s"-Xmacro-settings:product-name=${name.value}"""".raw,
-    """s"-Xmacro-settings:product-version=${version.value}"""".raw,
-    """s"-Xmacro-settings:product-group=${organization.value}"""".raw,
-    """s"-Xmacro-settings:scala-version=${scalaVersion.value}"""".raw,
-    """s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"""".raw
-  )
+  // -Xmacro-settings not implemented yet https://github.com/lampepfl/dotty/issues/12038
+  final val SbtMetaSharedOptionsScala3 = Seq[Const]()
 
   /**
     * For [[Project.sharedSettings]]
