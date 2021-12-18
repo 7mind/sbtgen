@@ -181,7 +181,7 @@ object Izumi {
         "scalaVersion" := "crossScalaVersions.value.head".raw
       )
 
-      final val sharedRootSettings = Defaults.SharedOptions ++ Seq(
+      final val sharedRootSettings = Defaults.RootOptions ++ Seq(
         "crossScalaVersions" := "Nil".raw,
         "scalaVersion" := Targets.targetScala.head.value,
         "organization" in SettingScope.Build := "io.7mind.izumi",
@@ -195,13 +195,13 @@ object Izumi {
         "scalacOptions" in SettingScope.Build += s"""${"\"" * 3}-Xmacro-settings:scalatest-version=${V.scalatest}${"\"" * 3}""".raw
       ) ++ Seq(
         "scalacOptions" ++= Seq(
-          SettingKey(Some(scala212), None) := Defaults.sbtMetaRootOptionsScala2,
-          SettingKey(Some(scala213), None) := Defaults.sbtMetaRootOptionsScala2,
+          SettingKey(Some(scala212), None) := Defaults.SbtMetaRootOptionsScala2,
+          SettingKey(Some(scala213), None) := Defaults.SbtMetaRootOptionsScala2,
           SettingKey.Default := Const.EmptySeq
         )
       )
 
-      final val sharedSettings = Defaults.SbtMetaOptions ++ Seq(
+      final val sharedSettings = Defaults.SbtMetaSharedOptions ++ Seq(
         "testOptions" in SettingScope.Test += """Tests.Argument("-oDF")""".raw,
         "scalacOptions" ++= Seq(
           SettingKey(Some(scala212), None) := Defaults.Scala212Options,
