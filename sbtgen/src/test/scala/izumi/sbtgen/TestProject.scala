@@ -193,6 +193,12 @@ object Izumi {
         )""".raw,
         "scmInfo" in SettingScope.Build := """Some(ScmInfo(url("https://github.com/7mind/izumi"), "scm:git:https://github.com/7mind/izumi.git"))""".raw,
         "scalacOptions" in SettingScope.Build += s"""${"\"" * 3}-Xmacro-settings:scalatest-version=${V.scalatest}${"\"" * 3}""".raw
+      ) ++ Seq(
+        "scalacOptions" ++= Seq(
+          SettingKey(Some(scala212), None) := Defaults.sbtMetaRootOptionsScala2,
+          SettingKey(Some(scala213), None) := Defaults.sbtMetaRootOptionsScala2,
+          SettingKey.Default := Const.EmptySeq
+        )
       )
 
       final val sharedSettings = Defaults.SbtMetaOptions ++ Seq(
