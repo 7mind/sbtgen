@@ -328,7 +328,7 @@ class Renderer(
       )
     } else Seq.empty
 
-    val platformSettings = {
+    val platformSettings =
       enabledPlatforms.flatMap {
         penv =>
           val psettings = Seq(
@@ -340,7 +340,6 @@ class Renderer(
           filterSettings(artifactSettings, penv.platform) ++
           filterSettings(project.sharedSettings, penv.platform)
       }
-    }
 
     val settingsAll = Seq(
       Seq("organization" := groupId),
