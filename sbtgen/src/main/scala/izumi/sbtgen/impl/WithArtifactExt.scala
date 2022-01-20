@@ -1,7 +1,7 @@
 package izumi.sbtgen.impl
 
 import izumi.sbtgen.model.Platform.BasePlatform
-import izumi.sbtgen.model.{Aggregate, Artifact, GenConfig, Group, Platform, PlatformEnv}
+import izumi.sbtgen.model.{Aggregate, Artifact, ArtifactReference, GenConfig, Group, Platform, PlatformEnv}
 
 trait WithArtifactExt {
   this: WithBasicRenderers =>
@@ -16,6 +16,47 @@ trait WithArtifactExt {
         .filter(a => config.onlyGroups.isEmpty || (agg.groups ++ a.groups).intersect(configuredGroups).nonEmpty)
         .filter(a => a.platforms.exists(platformEnabled))
     }
+  }
+
+  protected  implicit class  ArtifactReferenceExt(a: ArtifactReference) {
+    def supportsPlatform(p: Platform): Boolean = {
+      val enabled = p match {
+        case platform: BasePlatform =>
+          platformEnabled(platform)
+        case Platform.All =>
+          true
+      }
+      enabled && a.platforms.contains(p)
+    }
+
+    def isJvmOnly: Boolean = {
+      config.jvmOnly || a.platforms.size == 1 && supportsPlatform(Platform.Jvm)
+    }
+
+    def referenceOn(platform: Platform): String = {
+      renderProjectRef(a.path, referenceIdOn(platform))
+    }
+
+    def referenceIdOn(platform: Platform): String = {
+      platform match {
+        case Platform.All =>
+          a.id
+        case x: BasePlatform if isJvmOnly =>
+          if (x == Platform.Jvm) {
+            a.id
+          } else {
+            throw new RuntimeException(s"JVM-only project do not support platform: $a / $platform")
+          }
+        case x: BasePlatform =>
+          if (a.supportsPlatform(x)) {
+            a.id + platformTypeName(x)
+          } else {
+            throw new RuntimeException(s"Project do not support platform `$platform`: $a")
+          }
+
+      }
+    }
+
   }
 
   protected implicit class ArtifactExt(a: Artifact) {
