@@ -43,8 +43,9 @@ object Defaults {
   // -Xmacro-settings not implemented yet https://github.com/lampepfl/dotty/issues/12038
   final val SbtMetaRootOptionsScala3 = Seq[Const]()
 
-  final val SbtMetaRootOptions =
+  final val SbtMetaRootOptions: Seq[SettingDef.UnscopedSettingDef] = Seq(
     "scalacOptions" in SettingScope.Build ++= SbtMetaRootOptionsScala2
+  )
 
   final val SbtMetaSharedOptionsScala2 = Seq[Const](
     """s"-Xmacro-settings:product-name=${name.value}"""".raw,
@@ -60,21 +61,23 @@ object Defaults {
   /**
     * For [[Project.sharedSettings]]
     */
-  final val SbtMetaSharedOptions = Seq(
+  final val SbtMetaSharedOptions: Seq[SettingDef.UnscopedSettingDef] = Seq(
     "scalacOptions" ++= SbtMetaSharedOptionsScala2
   )
 
-  final val CrossScalaPlusSources =
+  final val CrossScalaPlusSources: Seq[SettingDef.UnscopedSettingDef] = {
     Seq(
       "unmanagedSourceDirectories" in SettingScope.Compile ++= addScalaVersionPlusSourceDirs("Compile / unmanagedSourceDirectories"),
       "unmanagedSourceDirectories" in SettingScope.Test ++= addScalaVersionPlusSourceDirs("Test / unmanagedSourceDirectories")
     )
+  }
 
-  final val CrossScalaRangeSources =
+  final val CrossScalaRangeSources: Seq[SettingDef.UnscopedSettingDef] = {
     Seq(
       "unmanagedSourceDirectories" in SettingScope.Compile ++= addScalaVersionRangeSourceDirs("Compile / unmanagedSourceDirectories"),
       "unmanagedSourceDirectories" in SettingScope.Test ++= addScalaVersionRangeSourceDirs("Test / unmanagedSourceDirectories")
     )
+  }
 
   def addScalaVersionPlusSourceDirs(key: String): CRaw = {
     s"""{
