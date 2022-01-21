@@ -41,7 +41,7 @@ trait ModelSyntax {
     def raw: Const.CRaw = Const.CRaw(s)
   }
 
-  implicit class ArtifactIdExt(id: ArtifactId) {
+  implicit class ArtifactDependencyExt(id: ArtifactDependency) {
     def in(scope: FullDependencyScope): ScopedDependency = ScopedDependency(id, scope)
     def tin(scope: FullDependencyScope): ScopedDependency = ScopedDependency(id, scope, mergeTestScopes = true)
   }

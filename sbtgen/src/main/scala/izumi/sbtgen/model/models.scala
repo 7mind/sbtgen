@@ -54,7 +54,9 @@ case class PlatformEnv(
   plugins: Plugins = Plugins(Seq.empty, Seq.empty)
 )
 
-case class ArtifactId(value: String)
+sealed trait ArtifactDependency
+case class ArtifactId(value: String) extends ArtifactDependency
+case class ArtifactReference(path: String, id: String, platforms: Seq[Platform]) extends ArtifactDependency
 
 sealed trait LibraryType
 object LibraryType {
@@ -130,10 +132,10 @@ object ScopedLibrary {
   implicit def fromLibrarySeq(libraries: Seq[Library]): Seq[ScopedLibrary] = libraries.map(fromLibrary)
 }
 
-case class ScopedDependency(name: ArtifactId, scope: FullDependencyScope, mergeTestScopes: Boolean = false)
+case class ScopedDependency(dependency: ArtifactDependency, scope: FullDependencyScope, mergeTestScopes: Boolean = false)
 object ScopedDependency {
-  implicit def fromDep(dep: ArtifactId): ScopedDependency = dep in Scope.Compile.all
-  implicit def fromDepSeq(deps: Seq[ArtifactId]): Seq[ScopedDependency] = deps.map(fromDep)
+  implicit def fromDep(dep: ArtifactDependency): ScopedDependency = dep in Scope.Compile.all
+  implicit def fromDepSeq(deps: Seq[ArtifactDependency]): Seq[ScopedDependency] = deps.map(fromDep)
 }
 
 sealed trait ScalaVersionScope

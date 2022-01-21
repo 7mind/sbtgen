@@ -453,11 +453,14 @@ class Renderer(
   }
 
   protected def filterDeps(deps: Seq[ScopedDependency], isJvmOnly: Boolean, targetPlatform: Platform): Seq[ScopedDependency] = {
-    val predicate = targetPlatform match {
+    val predicate: ScopedDependency => Boolean = targetPlatform match {
       case _: BasePlatform =>
         (d: ScopedDependency) => d.scope.platform == targetPlatform
-      case Platform.All =>
-        (d: ScopedDependency) => isJvmOnly && d.scope.platform.supportsPlatform(Platform.Jvm) || (d.scope.platform == Platform.All && !index(d.name).isJvmOnly)
+      case Platform.All => {
+        case d @ ScopedDependency(a: ArtifactId, _, _) =>
+          isJvmOnly && d.scope.platform.supportsPlatform(Platform.Jvm) || (d.scope.platform == Platform.All && !index(a).isJvmOnly)
+        case d: ScopedDependency => isJvmOnly && d.scope.platform.supportsPlatform(Platform.Jvm) || (d.scope.platform == Platform.All)
+      }
     }
 
     deps.filter(predicate)
@@ -790,17 +793,27 @@ trait Renderers extends WithArtifactExt with WithBasicRenderers with WithProject
   }
 
   protected def renderDep(targetPlatform: Platform, isJvmOnly: Boolean)(d: ScopedDependency): String = {
-    val ad = index.get(d.name) match {
-      case Some(value) =>
-        value
-      case None =>
-        throw new RuntimeException(s"Unknown dependency: ${d.name} ")
-    }
-    val name = targetPlatform match {
-      case Platform.All if isJvmOnly =>
-        ad.nameOn(Platform.Jvm)
-      case _ =>
-        ad.nameOn(targetPlatform)
+    val artifact = d.dependency match {
+      case ai: ArtifactId =>
+        val ad = index.get(ai) match {
+          case Some(value) =>
+            value
+          case None =>
+            throw new RuntimeException(s"Unknown dependency: $ai ")
+        }
+        targetPlatform match {
+          case Platform.All if isJvmOnly =>
+            ad.nameOn(Platform.Jvm)
+          case _ =>
+            ad.nameOn(targetPlatform)
+        }
+      case ar: ArtifactReference =>
+        targetPlatform match {
+          case Platform.All if isJvmOnly =>
+            ar.referenceOn(Platform.Jvm)
+          case _ =>
+            ar.referenceOn(targetPlatform)
+        }
     }
 
     val scope = d.scope.scope match {
@@ -817,7 +830,7 @@ trait Renderers extends WithArtifactExt with WithBasicRenderers with WithProject
           "test->compile;compile->compile"
         }
     }
-    s"$name % ${stringLit(scope)}"
+    s"$artifact % ${stringLit(scope)}"
   }
 
   protected def renderConst(const: Const): String = {
