@@ -455,12 +455,17 @@ class Renderer(
 
   protected def filterDeps(deps: Seq[ScopedDependency], isJvmOnly: Boolean, targetPlatform: Platform): Seq[ScopedDependency] = {
     val predicate: ScopedDependency => Boolean = targetPlatform match {
-      case _: BasePlatform =>
-        (d: ScopedDependency) => d.scope.platform == targetPlatform
+      case b: BasePlatform => {
+        case d @ ScopedDependency(_: ArtifactId, _, _) =>
+          d.scope.platform == targetPlatform
+        case d @ ScopedDependency(r: ArtifactReference, _, _) =>
+          d.scope.platform.supportsPlatform(b) && r.supportsPlatform(targetPlatform)
+      }
       case Platform.All => {
         case d @ ScopedDependency(a: ArtifactId, _, _) =>
           isJvmOnly && d.scope.platform.supportsPlatform(Platform.Jvm) || (d.scope.platform == Platform.All && !index(a).isJvmOnly)
-        case d: ScopedDependency => isJvmOnly && d.scope.platform.supportsPlatform(Platform.Jvm) || (d.scope.platform == Platform.All)
+        case d @ ScopedDependency(r: ArtifactReference, _, _) =>
+          isJvmOnly && d.scope.platform.supportsPlatform(Platform.Jvm) || (d.scope.platform == Platform.All && r.isJvmOnly)
       }
     }
 
