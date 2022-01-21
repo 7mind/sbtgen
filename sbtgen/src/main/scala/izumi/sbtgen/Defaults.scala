@@ -16,7 +16,7 @@ object Defaults {
       "-feature",
       "-unchecked",
       "-deprecation",
-      "-language:higherKinds"
+      "-language:higherKinds",
     ),
     "javacOptions" in SettingScope.Build ++= Seq(
       "-encoding",
@@ -28,35 +28,35 @@ object Defaults {
       "-deprecation",
       "-parameters",
       "-Xlint:all",
-      "-XDignore.symbol.file"
-    )
+      "-XDignore.symbol.file",
+    ),
   )
 
-  final val SbtMetaRootOptionsScala2 = Seq[Const](
+  final val SbtMetaRootOptionsScala2: Seq[Const] = Seq(
     """s"-Xmacro-settings:sbt-version=${sbtVersion.value}"""".raw,
     """s"-Xmacro-settings:git-repo-clean=${com.typesafe.sbt.SbtGit.GitKeys.gitUncommittedChanges.value}"""".raw,
     """s"-Xmacro-settings:git-branch=${com.typesafe.sbt.SbtGit.GitKeys.gitCurrentBranch.value}"""".raw,
     """s"-Xmacro-settings:git-described-version=${com.typesafe.sbt.SbtGit.GitKeys.gitDescribedVersion.value.getOrElse("")}"""".raw,
-    """s"-Xmacro-settings:git-head-commit=${com.typesafe.sbt.SbtGit.GitKeys.gitHeadCommit.value.getOrElse("")}"""".raw
+    """s"-Xmacro-settings:git-head-commit=${com.typesafe.sbt.SbtGit.GitKeys.gitHeadCommit.value.getOrElse("")}"""".raw,
   )
 
   // -Xmacro-settings not implemented yet https://github.com/lampepfl/dotty/issues/12038
-  final val SbtMetaRootOptionsScala3 = Seq[Const]()
+  final val SbtMetaRootOptionsScala3: Seq[Const] = Seq()
 
   final val SbtMetaRootOptions: Seq[SettingDef.UnscopedSettingDef] = Seq(
     "scalacOptions" in SettingScope.Build ++= SbtMetaRootOptionsScala2
   )
 
-  final val SbtMetaSharedOptionsScala2 = Seq[Const](
+  final val SbtMetaSharedOptionsScala2: Seq[Const] = Seq(
     """s"-Xmacro-settings:product-name=${name.value}"""".raw,
     """s"-Xmacro-settings:product-version=${version.value}"""".raw,
     """s"-Xmacro-settings:product-group=${organization.value}"""".raw,
     """s"-Xmacro-settings:scala-version=${scalaVersion.value}"""".raw,
-    """s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"""".raw
+    """s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"""".raw,
   )
 
   // -Xmacro-settings not implemented yet https://github.com/lampepfl/dotty/issues/12038
-  final val SbtMetaSharedOptionsScala3 = Seq[Const]()
+  final val SbtMetaSharedOptionsScala3: Seq[Const] = Seq()
 
   /**
     * For [[Project.sharedSettings]]
@@ -68,14 +68,14 @@ object Defaults {
   final val CrossScalaPlusSources: Seq[SettingDef.UnscopedSettingDef] = {
     Seq(
       "unmanagedSourceDirectories" in SettingScope.Compile ++= addScalaVersionPlusSourceDirs("Compile / unmanagedSourceDirectories"),
-      "unmanagedSourceDirectories" in SettingScope.Test ++= addScalaVersionPlusSourceDirs("Test / unmanagedSourceDirectories")
+      "unmanagedSourceDirectories" in SettingScope.Test ++= addScalaVersionPlusSourceDirs("Test / unmanagedSourceDirectories"),
     )
   }
 
   final val CrossScalaRangeSources: Seq[SettingDef.UnscopedSettingDef] = {
     Seq(
       "unmanagedSourceDirectories" in SettingScope.Compile ++= addScalaVersionRangeSourceDirs("Compile / unmanagedSourceDirectories"),
-      "unmanagedSourceDirectories" in SettingScope.Test ++= addScalaVersionRangeSourceDirs("Test / unmanagedSourceDirectories")
+      "unmanagedSourceDirectories" in SettingScope.Test ++= addScalaVersionRangeSourceDirs("Test / unmanagedSourceDirectories"),
     )
   }
 
@@ -116,7 +116,7 @@ object Defaults {
 
   final val Scala2Options = Seq[Const](
     "-target:jvm-1.8",
-    "-explaintypes" // Explain type errors in more detail.
+    "-explaintypes", // Explain type errors in more detail.
   )
 
   final val Scala212Options = Scala2Options ++ Seq[Const](
@@ -167,7 +167,7 @@ object Defaults {
     // > The caching logic for compiler plugins is enabled by default in Bloop and that one does make a difference,
     //   around 20/30%, see https://github.com/scala/scala-dev/issues/458
     "-Ycache-plugin-class-loader:always",
-    "-Ycache-macro-class-loader:last-modified"
+    "-Ycache-macro-class-loader:last-modified",
   )
 
   final val Scala213Options = Scala2Options ++ Seq[Const](
@@ -196,7 +196,7 @@ object Defaults {
     // > The caching logic for compiler plugins is enabled by default in Bloop and that one does make a difference,
     //   around 20/30%, see https://github.com/scala/scala-dev/issues/458
     "-Ycache-plugin-class-loader:always",
-    "-Ycache-macro-class-loader:last-modified"
+    "-Ycache-macro-class-loader:last-modified",
   )
 
   final val Scala3Options = Seq[Const](
@@ -205,7 +205,7 @@ object Defaults {
     "-explain",
     "-deprecation",
     "-feature",
-    "-Wconf:any:warning"
+    "-Wconf:any:warning",
   )
 
   final val SbtGenPlugins = Seq(

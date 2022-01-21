@@ -49,7 +49,7 @@ object IzumiGitStampPlugin extends AutoPlugin {
         val gitValues = Map(
           IzumiManifest.GitBranch -> izGitBranch.value,
           IzumiManifest.GitRepoIsClean -> izGitIsClean.value.toString,
-          IzumiManifest.GitHeadRev -> izGitRevision.value
+          IzumiManifest.GitHeadRev -> izGitRevision.value,
         )
 
         gitValues.foreach {
@@ -58,7 +58,7 @@ object IzumiGitStampPlugin extends AutoPlugin {
         }
 
         Package.ManifestAttributes(gitValues.toSeq: _*)
-      }.value
+      }.value,
     )
   }
 }

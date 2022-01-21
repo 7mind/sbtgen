@@ -16,21 +16,21 @@ object TestDottyProject {
             PlatformEnv(
               platform = Platform.Jvm,
               language = Seq(ScalaVersion("0.23.0-RC1")),
-              settings = Defaults.CrossScalaPlusSources
+              settings = Defaults.CrossScalaPlusSources,
             ),
             PlatformEnv(
               platform = Platform.Js,
               language = Seq(ScalaVersion("0.23.0-RC1")),
-              settings = Defaults.CrossScalaPlusSources
-            )
-          )
+              settings = Defaults.CrossScalaPlusSources,
+            ),
+          ),
         )
-      )
+      ),
     )
   )
 
   val project: Project = Project(
     name = ArtifactId("test-dotty"),
-    aggregates = aggregates
+    aggregates = aggregates,
   )
 }

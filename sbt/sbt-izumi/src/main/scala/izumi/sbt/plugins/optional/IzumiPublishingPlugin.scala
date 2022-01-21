@@ -29,7 +29,7 @@ object IzumiPublishingPlugin extends AutoPlugin {
     pomIncludeRepository := (_ => false),
     publishTargets := Seq.empty,
     releaseResolvers := Seq(Opts.resolver.sonatypeReleases),
-    snapshotResolvers := Seq(Opts.resolver.sonatypeSnapshots)
+    snapshotResolvers := Seq(Opts.resolver.sonatypeSnapshots),
   )
 
   override lazy val projectSettings = Seq(
@@ -53,7 +53,7 @@ object IzumiPublishingPlugin extends AutoPlugin {
       } else {
         releaseRepositories
       }
-    }
+    },
   )
 
   private def withOverwriteEnabled(config: PublishConfiguration) = {
@@ -75,7 +75,7 @@ object IzumiPublishingPlugin extends AutoPlugin {
           env("PUBLISH", url),
           file(realmId, url, syntax.file(s".secrets/credentials.$realmId.properties")),
           file(realmId, url, Path.userHome / s".sbt/secrets/credentials.$realmId.properties"),
-          file(realmId, url, Path.userHome / s".sbt/credentials.$realmId.properties")
+          file(realmId, url, Path.userHome / s".sbt/credentials.$realmId.properties"),
         )
       }
 
@@ -92,7 +92,7 @@ object IzumiPublishingPlugin extends AutoPlugin {
           Option(System.getProperty(s"${prefix}_USER")),
           Option(System.getProperty(s"${prefix}_PASSWORD")),
           Option(System.getProperty(s"${prefix}_REALM_NAME")),
-          Option(System.getProperty(s"${prefix}_REALM"))
+          Option(System.getProperty(s"${prefix}_REALM")),
         )
 
         props match {

@@ -70,7 +70,7 @@ object IzumiFetchPlugin extends AutoPlugin {
         IO.createDirectory(targetDir)
         IO.copy(
           resolved.map(r => (r, targetDir.toPath.resolve(r.getName).toFile)),
-          CopyOptions(overwrite = true, preserveLastModified = true, preserveExecutable = true)
+          CopyOptions(overwrite = true, preserveLastModified = true, preserveExecutable = true),
         )
       }.value,
       lm.syntax.Compile / packageBin := Def.taskDyn {
@@ -80,7 +80,7 @@ object IzumiFetchPlugin extends AutoPlugin {
         Def.task {
           ctask
         }
-      }.value
+      }.value,
     )
   }
 }
@@ -143,7 +143,7 @@ object CoursierCompat {
 
       Dependency(
         module = Module(Organization(module.organization), ModuleName(name), module.extraAttributes),
-        version = module.revision
+        version = module.revision,
       ).withAttributes(
         attributes = Attributes(`type` = core.Type("jar"))
       )

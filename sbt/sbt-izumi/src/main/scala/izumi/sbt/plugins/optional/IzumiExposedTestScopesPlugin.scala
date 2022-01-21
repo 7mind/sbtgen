@@ -22,7 +22,7 @@ object IzumiExposedTestScopesPlugin extends AutoPlugin {
       extractExposableTestScopeParts(
         streams.value,
         (Test / classDirectory).value,
-        (Test / compile).value
+        (Test / compile).value,
       )
     }.value,
     Test / dependencyClasspath := Def.task {
@@ -30,9 +30,9 @@ object IzumiExposedTestScopesPlugin extends AutoPlugin {
         streams.value,
         (Test / dependencyClasspath).value,
         "test-classes",
-        projectID.value.name
+        projectID.value.name,
       )
-    }.value
+    }.value,
   )
 
   val itSettings: Seq[Def.Setting[_]] = Seq(
@@ -40,7 +40,7 @@ object IzumiExposedTestScopesPlugin extends AutoPlugin {
       extractExposableTestScopeParts(
         streams.value,
         (IntegrationTest / classDirectory).value,
-        (IntegrationTest / compile).value
+        (IntegrationTest / compile).value,
       )
     }.value,
     IntegrationTest / dependencyClasspath := Def.task {
@@ -48,9 +48,9 @@ object IzumiExposedTestScopesPlugin extends AutoPlugin {
         streams.value,
         (IntegrationTest / dependencyClasspath).value,
         "it-classes",
-        projectID.value.name
+        projectID.value.name,
       )
-    }.value
+    }.value,
   )
 
   override def projectSettings: Seq[sbt.Setting[_]] = testSettings
@@ -59,7 +59,7 @@ object IzumiExposedTestScopesPlugin extends AutoPlugin {
     streams: TaskStreams,
     classpath: Classpath,
     directoryNameToModify: String,
-    project: String
+    project: String,
   ): Seq[Attributed[File]] = {
     val logger = streams.log
     classpath.flatMap {
@@ -76,7 +76,7 @@ object IzumiExposedTestScopesPlugin extends AutoPlugin {
   private def extractExposableTestScopeParts(
     streams: TaskStreams,
     classDirectory: File,
-    compileAnalysis: CompileAnalysis
+    compileAnalysis: CompileAnalysis,
   ): CompileAnalysis = {
     val logger = streams.log
     Option(compileAnalysis)

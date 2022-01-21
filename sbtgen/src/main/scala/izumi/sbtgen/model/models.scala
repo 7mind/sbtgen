@@ -51,7 +51,7 @@ case class PlatformEnv(
   platform: BasePlatform,
   language: Seq[ScalaVersion],
   settings: Seq[SettingDef] = Seq.empty,
-  plugins: Plugins = Plugins(Seq.empty, Seq.empty)
+  plugins: Plugins = Plugins(Seq.empty, Seq.empty),
 )
 
 sealed trait ArtifactDependency
@@ -91,14 +91,14 @@ object Library {
     group: String,
     artifact: String,
     version: Version,
-    kind: LibraryType
+    kind: LibraryType,
   ): Library = {
     new Library(
       group,
       artifact,
       version,
       kind,
-      Queue.empty
+      Queue.empty,
     )
   }
 
@@ -106,14 +106,14 @@ object Library {
     group: String,
     artifact: String,
     version: String,
-    kind: LibraryType = LibraryType.Auto
+    kind: LibraryType = LibraryType.Auto,
   ): Library = {
     new Library(
       group,
       artifact,
       Version.VConst(version),
       kind,
-      Queue.empty
+      Queue.empty,
     )
   }
 }
@@ -121,7 +121,7 @@ object Library {
 case class FullDependencyScope(
   scope: Scope,
   platform: Platform,
-  scalaVersionScope: ScalaVersionScope = ScalaVersionScope.AllVersions
+  scalaVersionScope: ScalaVersionScope = ScalaVersionScope.AllVersions,
 ) {
   def scalaVersion(scalaVersion: ScalaVersionScope): FullDependencyScope = copy(scalaVersionScope = scalaVersion)
 }
@@ -165,7 +165,7 @@ object ScalaVersionScope {
 
 case class Group(
   name: String,
-  deps: Set[Group] = Set.empty
+  deps: Set[Group] = Set.empty,
 )
 
 case class Artifact(
@@ -177,7 +177,7 @@ case class Artifact(
   groups: Set[Group] = Set.empty,
   subGroupId: Option[String] = None,
   settings: Seq[SettingDef] = Seq.empty,
-  plugins: Plugins = Plugins(Seq.empty, Seq.empty)
+  plugins: Plugins = Plugins(Seq.empty, Seq.empty),
 )
 
 case class Aggregate(
@@ -192,7 +192,7 @@ case class Aggregate(
   sharedDeps: Seq[ScopedDependency] = Seq.empty,
   sharedLibs: Seq[ScopedLibrary] = Seq.empty,
   sharedPlugins: Plugins = Plugins(Seq.empty, Seq.empty),
-  sharedSettings: Seq[SettingDef] = Seq.empty
+  sharedSettings: Seq[SettingDef] = Seq.empty,
 ) {
   def merge: Aggregate = {
     val newArtifacts = artifacts.map {
@@ -205,7 +205,7 @@ case class Aggregate(
           depends = this.sharedDeps ++ a.depends,
           libs = this.sharedLibs ++ a.libs,
           plugins = Plugins(this.sharedPlugins.enabled ++ a.plugins.enabled, this.sharedPlugins.disabled ++ a.plugins.disabled),
-          settings = this.sharedSettings ++ a.settings
+          settings = this.sharedSettings ++ a.settings,
         )
     }
     this.copy(artifacts = newArtifacts)
@@ -218,7 +218,7 @@ case class Plugin(name: String, platform: Platform = Platform.All)
 
 case class Plugins(
   enabled: Seq[Plugin] = Seq.empty,
-  disabled: Seq[Plugin] = Seq.empty
+  disabled: Seq[Plugin] = Seq.empty,
 ) {
   def ++(o: Plugins): Plugins = {
     Plugins(enabled ++ o.enabled, disabled ++ o.disabled)
@@ -237,5 +237,5 @@ case class Project(
   rootPlugins: Plugins = Plugins(Seq.empty, Seq.empty),
   globalPlugins: Plugins = Plugins(Seq.empty, Seq.empty),
   pluginConflictRules: Map[String, Boolean] = Map.empty,
-  appendPlugins: Seq[SbtPlugin] = Seq.empty
+  appendPlugins: Seq[SbtPlugin] = Seq.empty,
 )

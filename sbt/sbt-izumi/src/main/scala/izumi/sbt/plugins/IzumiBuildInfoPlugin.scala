@@ -57,7 +57,7 @@ object IzumiBuildInfoPlugin extends AutoPlugin {
   }
 
   def generateBuildInfo(packageName: String, objectName: String): Def.Initialize[Task[Seq[File]]] = {
-    val buildDepMap =
+    val buildDepMap = {
       Def.taskDyn {
         val refs = loadedBuild.value.allProjectRefs
 
@@ -74,8 +74,9 @@ object IzumiBuildInfoPlugin extends AutoPlugin {
           tt
         }
       }
+    }
 
-    val buildGroupIdMap =
+    val buildGroupIdMap = {
       Def.taskDyn {
         val refs = loadedBuild.value.allProjectRefs
 
@@ -92,8 +93,9 @@ object IzumiBuildInfoPlugin extends AutoPlugin {
           tt
         }
       }
+    }
 
-    val buildVersionMap =
+    val buildVersionMap = {
       Def.taskDyn {
         val refs = loadedBuild.value.allProjectRefs
 
@@ -110,6 +112,7 @@ object IzumiBuildInfoPlugin extends AutoPlugin {
           tt
         }
       }
+    }
 
     Def.task {
       val file =
@@ -226,7 +229,7 @@ object IzumiBuildInfoPlugin extends AutoPlugin {
            |  }
            |}
            |
-         """.stripMargin
+         """.stripMargin,
       )
 
       Seq(file)
@@ -237,7 +240,7 @@ object IzumiBuildInfoPlugin extends AutoPlugin {
     def withBuildInfo(packageName: String, objectName: String): Seq[Setting[_]] = {
       Seq(
         sbtPlugin := true,
-        Compile / sourceGenerators += generateBuildInfo(packageName, objectName).taskValue
+        Compile / sourceGenerators += generateBuildInfo(packageName, objectName).taskValue,
       )
     }
   }

@@ -28,7 +28,7 @@ object IzumiBuildManifestPlugin extends AutoPlugin {
           IzumiManifest.Version -> version.value,
           IzumiManifest.BuildSbt -> sbtVersion.value,
           IzumiManifest.BuildScala -> scalaVersion.value,
-          IzumiManifest.BuildTimestamp -> IzumiManifest.TsFormat.format(ZonedDateTime.now())
+          IzumiManifest.BuildTimestamp -> IzumiManifest.TsFormat.format(ZonedDateTime.now()),
         )
 
         attributes.foreach {
@@ -39,7 +39,7 @@ object IzumiBuildManifestPlugin extends AutoPlugin {
         Seq(Package.ManifestAttributes(attributes.toSeq: _*))
       }.value,
       packageBin / packageOptions ++= extendedManifestMfAttributes.value,
-      Compile / packageOptions ++= extendedManifestMfAttributes.value
+      Compile / packageOptions ++= extendedManifestMfAttributes.value,
     )
   }
 }

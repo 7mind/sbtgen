@@ -19,7 +19,7 @@ final case class PreparedAggregate(
   isRoot: Boolean,
   enableProjectSharedAggSettings: Boolean = true,
   dontIncludeInSuperAgg: Boolean = false,
-  settings: Seq[SettingDef] = Seq.empty
+  settings: Seq[SettingDef] = Seq.empty,
 )
 
 final case class PreparedCrossArtifact(
@@ -30,7 +30,7 @@ final case class PreparedCrossArtifact(
   deps: Seq[ScopedDependency],
   libs: Seq[ScopedLibrary],
   sbtPlugins: PreparedPlugins,
-  platformArtifacts: Seq[PreparedArtifact]
+  platformArtifacts: Seq[PreparedArtifact],
 ) {
   def platform: PreparedPlatform = header.platform
   def jvmOnly: Boolean = platform.jvmOnly
@@ -43,7 +43,7 @@ final case class PreparedArtifact(
   settings: Seq[SettingDef],
   deps: Seq[ScopedDependency],
   libs: Seq[ScopedLibrary],
-  sbtPlugins: PreparedPlugins
+  sbtPlugins: PreparedPlugins,
 )
 
 sealed trait PreparedPlatform {
@@ -63,12 +63,12 @@ object PreparedPlatform {
 final case class PreparedArtifactHeader(
   name: ArtifactId,
   path: String,
-  platform: PreparedPlatform
+  platform: PreparedPlatform,
 )
 
 final case class PreparedPlugins(
   enabled: Seq[Plugin],
-  disabled: Seq[Plugin]
+  disabled: Seq[Plugin],
 )
 
 trait WithSettingsCache {
@@ -77,7 +77,7 @@ trait WithSettingsCache {
 
 class Renderer(
   protected val config: GenConfig,
-  project: Project
+  project: Project,
 ) extends WithProjectIndex
   with WithBasicRenderers
   with WithArtifactExt
@@ -141,7 +141,7 @@ class Renderer(
             aggregatedNames = aggregatedIds,
             platform = p,
             plugins = project.globalPlugins,
-            isRoot = p == Platform.All
+            isRoot = p == Platform.All,
           )
       }
 
@@ -168,7 +168,7 @@ class Renderer(
       settings,
       artifacts,
       aggDefs,
-      sc
+      sc,
     ).flatten
   }
 
@@ -193,7 +193,7 @@ class Renderer(
         isRoot = false,
         enableProjectSharedAggSettings = enableSharedSettings,
         dontIncludeInSuperAgg = noSuperAgg,
-        settings = aggregate.settings
+        settings = aggregate.settings,
       )
     }
 
@@ -205,7 +205,7 @@ class Renderer(
       Some(allAggregate),
       jvmOnly,
       jsOnly,
-      nativeOnly
+      nativeOnly,
     ).flatten
   }
 
@@ -234,7 +234,7 @@ class Renderer(
             isRoot = false,
             enableProjectSharedAggSettings = sharedSettings,
             dontIncludeInSuperAgg = disableSuperAgg,
-            settings = agg.settings
+            settings = agg.settings,
           )
         )
       } else {
@@ -262,7 +262,7 @@ class Renderer(
             "skip" in SettingScope.Raw("publish") := true
           ) ++ localSettings ++ hack,
           platform = Platform.All,
-          platformPrefix = false
+          platformPrefix = false,
         )
         val pluginsStr = formatPlugins(plugins, platform, dot = true, inclusive = true)
         val aggregateStr = agg.map(_.shift(2)).mkString(".aggregate(\n", ",\n", "\n)").shift(2)
@@ -271,7 +271,7 @@ class Renderer(
           Seq(header),
           Seq(settingsStr),
           pluginsStr,
-          Seq(aggregateStr)
+          Seq(aggregateStr),
         ).flatten.mkString("\n")
     }
   }
@@ -301,7 +301,7 @@ class Renderer(
       deps = deps,
       libs = libs,
       sbtPlugins = plugins,
-      platformArtifacts = platformArtifacts
+      platformArtifacts = platformArtifacts,
     )
   }
 
@@ -309,7 +309,7 @@ class Renderer(
     project: Project,
     subGroupId: Option[String],
     artifactSettings: Seq[SettingDef],
-    enabledPlatforms: Seq[PlatformEnv]
+    enabledPlatforms: Seq[PlatformEnv],
   ): Seq[SettingDef] = {
     val groupId = (config.settings.groupId :: subGroupId.toList).mkString(".")
 
@@ -324,28 +324,29 @@ class Renderer(
         "unmanagedSourceDirectories" in SettingScope.Test ++=
           """(scalaBinaryVersion.value :: CrossVersion.partialVersion(scalaVersion.value).toList.map(_._1))
             |  .map(v => baseDirectory.value / s".jvm/src/test/scala-$v").distinct""".stripMargin.raw,
-        "unmanagedResourceDirectories" in SettingScope.Test += """baseDirectory.value / ".jvm/src/test/resources" """.raw
+        "unmanagedResourceDirectories" in SettingScope.Test += """baseDirectory.value / ".jvm/src/test/resources" """.raw,
       )
     } else Seq.empty
 
-    val platformSettings =
+    val platformSettings = {
       enabledPlatforms.flatMap {
         penv =>
           val psettings = Seq(
             "crossScalaVersions" := penv.language.map(_.value),
-            "scalaVersion" := "crossScalaVersions.value.head".raw
+            "scalaVersion" := "crossScalaVersions.value.head".raw,
           ) ++ penv.settings
 
           filterSettings(psettings.map(_.withPlatform(penv.platform)), penv.platform) ++
           filterSettings(artifactSettings, penv.platform) ++
           filterSettings(project.sharedSettings, penv.platform)
       }
+    }
 
     val settingsAll = Seq(
       Seq("organization" := groupId),
       jvmOnlyFix,
       project.sharedSettings,
-      artifactSettings
+      artifactSettings,
     ).flatten
 
     platformSettings ++
@@ -365,7 +366,7 @@ class Renderer(
             settings = Nil,
             deps = filterDeps(artifact.depends, jvmOnly, penv.platform),
             libs = filterLibDeps(project, artifact.libs, jvmOnly, penv.platform),
-            sbtPlugins = plugins
+            sbtPlugins = plugins,
           )
       }
     } else {
@@ -483,8 +484,7 @@ class Renderer(
 // RENDER
 //
 
-trait Renderers extends WithArtifactExt with WithBasicRenderers with WithProjectIndex {
-  this: WithSettingsCache =>
+trait Renderers extends WithArtifactExt with WithBasicRenderers with WithProjectIndex { this: WithSettingsCache =>
 
   protected def renderArtifact(crossArtifact: PreparedCrossArtifact): String = {
     crossArtifact match {
@@ -492,7 +492,8 @@ trait Renderers extends WithArtifactExt with WithBasicRenderers with WithProject
         val headerStr = renderHeader(header)
 
         val settingsStr = crossArtifact
-          .platform.fold(jvmOnly => nonEmpty(renderSettings(jvmOnly, platformPrefix = false))(settings))(
+          .platform
+          .fold(jvmOnly => nonEmpty(renderSettings(jvmOnly, platformPrefix = false))(settings))(
             p => nonEmpty(renderSettings(p, platformPrefix = true))(settings.filter(_.scope.platform == p))
           ).flatten
 
@@ -508,7 +509,7 @@ trait Renderers extends WithArtifactExt with WithBasicRenderers with WithProject
           libsStr.toSeq,
           settingsStr,
           pluginsStr,
-          platformProjects
+          platformProjects,
         ).flatten.mkString("\n")
     }
   }
@@ -528,7 +529,7 @@ trait Renderers extends WithArtifactExt with WithBasicRenderers with WithProject
           depsStr.toSeq,
           libsStr.toSeq,
           settingsStr,
-          pluginsStr
+          pluginsStr,
         ).flatten.mkString("\n")
     }
   }
@@ -632,8 +633,7 @@ trait Renderers extends WithArtifactExt with WithBasicRenderers with WithProject
 
       case s: SettingDef.ScopedSettingDef =>
         val r = s
-          .defs
-          .toSeq
+          .defs.toSeq
           .map {
             case (key, v) =>
               val language = key.language match {
@@ -655,7 +655,7 @@ trait Renderers extends WithArtifactExt with WithBasicRenderers with WithProject
           .mkString(
             "{ (isSnapshot.value, scalaVersion.value) match {\n",
             "\n",
-            "\n} }"
+            "\n} }",
           )
 
         if (s.defs.exists(_._2.isInstanceOf[Const.CRaw])) {

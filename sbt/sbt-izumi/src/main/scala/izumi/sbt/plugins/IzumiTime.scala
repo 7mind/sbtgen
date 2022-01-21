@@ -7,18 +7,20 @@ import java.time.temporal.ChronoField._
 object IzumiTime {
 
   // formatters with 3 decimal positions for nanos
-  final lazy val ISO_LOCAL_DATE_TIME_3NANO: DateTimeFormatter =
+  final lazy val ISO_LOCAL_DATE_TIME_3NANO: DateTimeFormatter = {
     new DateTimeFormatterBuilder()
       .parseCaseInsensitive
       .append(ISO_LOCAL_DATE)
       .appendLiteral('T')
       .append(ISO_LOCAL_TIME_3NANO)
       .toFormatter()
+  }
 
-  final lazy val ISO_LOCAL_DATE: DateTimeFormatter =
+  final lazy val ISO_LOCAL_DATE: DateTimeFormatter = {
     DateTimeFormatter.ISO_LOCAL_DATE
+  }
 
-  final lazy val ISO_LOCAL_TIME_3NANO: DateTimeFormatter =
+  final lazy val ISO_LOCAL_TIME_3NANO: DateTimeFormatter = {
     new DateTimeFormatterBuilder()
       .appendValue(HOUR_OF_DAY, 2)
       .appendLiteral(':')
@@ -29,10 +31,12 @@ object IzumiTime {
       .optionalStart
       .appendFraction(NANO_OF_SECOND, 3, 3, true)
       .toFormatter()
+  }
 
-  final val ISO_DATE_TIME_3NANO: DateTimeFormatter =
+  final val ISO_DATE_TIME_3NANO: DateTimeFormatter = {
     new DateTimeFormatterBuilder()
-      .parseCaseInsensitive.append(ISO_LOCAL_DATE_TIME_3NANO)
+      .parseCaseInsensitive
+      .append(ISO_LOCAL_DATE_TIME_3NANO)
       .appendOffsetId
       .optionalStart
       .appendLiteral('[')
@@ -40,4 +44,5 @@ object IzumiTime {
       .appendZoneRegionId()
       .appendLiteral(']')
       .toFormatter()
+  }
 }

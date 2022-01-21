@@ -10,7 +10,7 @@ case class GenConfig(
   output: String,
   onlyGroups: Set[String],
   publishTests: Boolean,
-  compactify: Boolean
+  compactify: Boolean,
 ) {
   def jvmOnly: Boolean = jvm && !js && !native
 }

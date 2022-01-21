@@ -15,7 +15,7 @@ case class Config(
   output: String = "test-out",
   groups: Set[String] = Set.empty,
   publishTests: Boolean = true,
-  compactify: Boolean = false
+  compactify: Boolean = false,
 )
 
 object Entrypoint {
@@ -23,7 +23,7 @@ object Entrypoint {
     project: Project,
     settings: GlobalSettings,
     args: Seq[String],
-    renderer: (GenConfig, Project) => Renderer = new Renderer(_, _)
+    renderer: (GenConfig, Project) => Renderer = new Renderer(_, _),
   ): Unit = {
 
     val parser1 = new OptionParser[Config]("sbtgen") {
@@ -70,7 +70,7 @@ object Entrypoint {
           config.output,
           config.groups,
           config.publishTests,
-          config.compactify
+          config.compactify,
         )
 
         try {

@@ -92,7 +92,7 @@ object IzumiConvenienceTasksPlugin extends AutoPlugin {
         val stubId = args.tail.headOption.getOrElse("default")
         mkModule(moduleName, stubId)
       },
-      mkJavaDirs := false
+      mkJavaDirs := false,
     )
   }
 
@@ -114,11 +114,11 @@ object IzumiConvenienceTasksPlugin extends AutoPlugin {
   private def mkDefaultModule(name: String, pkg: Option[String], mkJava: Boolean): Unit = {
     val scalaDirs = Seq(
       "src/main/scala",
-      "src/test/scala"
+      "src/test/scala",
     )
     val javaDirs = Seq(
       "src/main/java",
-      "src/test/java"
+      "src/test/java",
     )
 
     val stubBases = if (!mkJava) {

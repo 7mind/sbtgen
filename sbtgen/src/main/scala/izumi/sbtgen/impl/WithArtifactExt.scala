@@ -18,7 +18,7 @@ trait WithArtifactExt {
     }
   }
 
-  protected  implicit class  ArtifactReferenceExt(a: ArtifactReference) {
+  protected implicit class ArtifactReferenceExt(a: ArtifactReference) {
     def supportsPlatform(p: Platform): Boolean = {
       val enabled = p match {
         case platform: BasePlatform =>

@@ -112,7 +112,7 @@ final class IzString(private val s: String) extends AnyVal {
     "[A-Z\\d]"
       .r.replaceAllIn(
         s,
-        m => sep + m.group(0).toLowerCase()
+        m => sep + m.group(0).toLowerCase(),
       )
   }
 
@@ -124,7 +124,7 @@ final class IzString(private val s: String) extends AnyVal {
     "_([a-z\\d])"
       .r.replaceAllIn(
         s,
-        m => m.group(1).toUpperCase()
+        m => m.group(1).toUpperCase(),
       )
   }
 

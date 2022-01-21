@@ -90,7 +90,7 @@ object Const {
       CTuple(
         Seq(
           Conv[T1].to(a),
-          Conv[T2].to(b)
+          Conv[T2].to(b),
         )
       )
   }
