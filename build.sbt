@@ -137,7 +137,7 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
       ("com.github.sbt" % "sbt-pgp" % "2.1.2").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
 
       // https://github.com/sbt/sbt-git
-      ("com.typesafe.sbt" % "sbt-git" % "1.0.2").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
+      ("com.github.sbt" % "sbt-git" % "2.0.0").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
 
       // https://github.com/orrsella/sbt-stats
       ("com.orrsella" % "sbt-stats" % "1.0.7").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
