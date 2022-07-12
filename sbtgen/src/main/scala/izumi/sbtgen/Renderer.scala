@@ -617,7 +617,7 @@ trait Renderers extends WithArtifactExt with WithBasicRenderers with WithProject
       case SettingOp.Assign =>
         ":="
       case SettingOp.Modify =>
-        "%="
+        "~="
       case SettingOp.Append =>
         "+="
       case SettingOp.Extend =>
