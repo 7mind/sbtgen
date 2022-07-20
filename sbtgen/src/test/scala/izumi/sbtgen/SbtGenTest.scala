@@ -20,6 +20,7 @@ class SbtGenTest extends AnyWordSpec {
       genProjects(dir, Seq.empty)
 
       assert(Process("sbt --batch clean", new File(dir)).! == 0)
+      assert(Process("sbt --batch clean", new File(s"$dir/dotty")).! == 0)
     }
 
     "produce working output in JS" in {
@@ -27,6 +28,7 @@ class SbtGenTest extends AnyWordSpec {
       genProjects(dir, Seq("--js"))
 
       assert(Process("sbt --batch clean", new File(dir)).! == 0)
+      assert(Process("sbt --batch clean", new File(s"$dir/dotty")).! == 0)
     }
   }
 
