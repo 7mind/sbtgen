@@ -45,6 +45,17 @@ object V {
   val scala_java_time = "2.0.0-RC3"
 }
 
+object PV {
+  val sbt_mdoc = "2.3.2"
+  val sbt_paradox_material_theme = "0.6.0"
+  val sbt_ghpages = "0.6.3"
+  val sbt_site = "1.3.3"
+  val sbt_unidoc = "0.4.3"
+  val sbt_scoverage = "2.0.0"
+  val sbt_pgp = "2.1.1"
+  val sbt_assembly = "0.14.9"
+}
+
 object Izumi {
 
   object Deps {
@@ -146,7 +157,7 @@ object Izumi {
       targetScala,
       settings = Seq(
         "coverageEnabled" := false,
-        "scalaJSModuleKind".in(SettingScope.Project, Platform.Js) := "ModuleKind.CommonJSModule".raw,
+        "scalaJSLinkerConfig" in (SettingScope.Project, Platform.Js) := "{ scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }".raw,
       ),
     )
     final val cross = Seq(jvmPlatform, jsPlatform)
@@ -596,14 +607,14 @@ object Izumi {
         settings = Projects.root.docSettings ++ Seq(
           "coverageEnabled" := false,
           "skip" in SettingScope.Raw("publish") := true,
-          "DocKeys.prefix" :=
+          """SettingKey[String]("doc-keys-prefix")""" :=
             """{if (isSnapshot.value) {
             "latest/snapshot"
           } else {
             "latest/release"
           }}""".raw,
           "previewFixedPort" := "Some(9999)".raw,
-          "git.remoteRepo" := "git@github.com:7mind/izumi-microsite.git",
+          "gitRemoteRepo" := "git@github.com:7mind/izumi-microsite.git",
           "classLoaderLayeringStrategy" in SettingScope.Raw("Compile") := "ClassLoaderLayeringStrategy.Flat".raw,
           "mdocIn" := """baseDirectory.value / "src/main/tut"""".raw,
           "sourceDirectory" in SettingScope.Raw("Paradox") := "mdocOut.value".raw,
@@ -623,17 +634,17 @@ object Izumi {
               .withRepository(uri("https://github.com/7mind/izumi"))
             //        .withColor("222", "434343")
           }"""),
-          "siteSubdirName" in SettingScope.Raw("ScalaUnidoc") := """s"${DocKeys.prefix.value}/api"""".raw,
-          "siteSubdirName" in SettingScope.Raw("Paradox") := """s"${DocKeys.prefix.value}/doc"""".raw,
+          "siteSubdirName" in SettingScope.Raw("ScalaUnidoc") := """s"${SettingKey[String]("doc-keys-prefix").value}/api"""".raw,
+          "siteSubdirName" in SettingScope.Raw("Paradox") := """s"${SettingKey[String]("doc-keys-prefix").value}/doc"""".raw,
           SettingDef.RawSettingDef("""paradoxProperties ++= Map(
-            "scaladoc.izumi.base_url" -> s"/${DocKeys.prefix.value}/api/com/github/pshirshov/",
-            "scaladoc.base_url" -> s"/${DocKeys.prefix.value}/api/",
+            "scaladoc.izumi.base_url" -> s"/${SettingKey[String]("doc-keys-prefix").value}/api/com/github/pshirshov/",
+            "scaladoc.base_url" -> s"/${SettingKey[String]("doc-keys-prefix").value}/api/",
             "izumi.version" -> version.value,
           )"""),
           SettingDef.RawSettingDef("""ghpagesCleanSite / excludeFilter :=
             new FileFilter {
               def accept(f: File): Boolean = {
-                (f.toPath.startsWith(ghpagesRepository.value.toPath.resolve("latest")) && !f.toPath.startsWith(ghpagesRepository.value.toPath.resolve(DocKeys.prefix.value))) ||
+                (f.toPath.startsWith(ghpagesRepository.value.toPath.resolve("latest")) && !f.toPath.startsWith(ghpagesRepository.value.toPath.resolve(SettingKey[String]("doc-keys-prefix").value))) ||
                   (ghpagesRepository.value / "CNAME").getCanonicalPath == f.getCanonicalPath ||
                   (ghpagesRepository.value / ".nojekyll").getCanonicalPath == f.getCanonicalPath ||
                   (ghpagesRepository.value / "index.html").getCanonicalPath == f.getCanonicalPath ||
@@ -686,7 +697,9 @@ object Izumi {
     sharedSettings = Projects.root.sharedSettings,
     sharedAggSettings = Projects.root.sharedAggSettings,
     rootSettings = Projects.root.sharedRootSettings,
-    imports = Seq.empty,
+    imports = Seq(
+      Import("com.github.sbt.git.SbtGit.GitKeys._")
+    ),
     globalLibs = Seq(
       ScopedLibrary(projector, FullDependencyScope(Scope.Compile, Platform.All), compilerPlugin = true),
       collection_compat in Scope.Compile.all,
@@ -697,9 +710,16 @@ object Izumi {
     pluginConflictRules = Map(assemblyPluginJvm.name -> true),
     appendPlugins = Defaults
       .SbtGenPlugins.map(
-        _.copy(version = Version.VConst("0.0.41"))
+        _.copy(version = Version.VConst("0.0.94"))
       ) ++ Seq(
-      SbtPlugin("com.eed3si9n", "sbt-assembly", "0.14.9")
+      SbtPlugin("com.eed3si9n", "sbt-assembly", PV.sbt_assembly),
+      SbtPlugin("com.jsuereth", "sbt-pgp", PV.sbt_pgp),
+      SbtPlugin("org.scoverage", "sbt-scoverage", PV.sbt_scoverage),
+      SbtPlugin("com.eed3si9n", "sbt-unidoc", PV.sbt_unidoc),
+      SbtPlugin("com.typesafe.sbt", "sbt-site", PV.sbt_site),
+      SbtPlugin("com.typesafe.sbt", "sbt-ghpages", PV.sbt_ghpages),
+      SbtPlugin("io.github.jonas", "sbt-paradox-material-theme", PV.sbt_paradox_material_theme),
+      SbtPlugin("org.scalameta", "sbt-mdoc", PV.sbt_mdoc),
     ),
   )
 }

@@ -5715,17 +5715,17 @@ lazy val `izumi` = (project in file("."))
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         s"-Xmacro-settings:sbt-version=${sbtVersion.value}",
-        s"-Xmacro-settings:git-repo-clean=${com.github.sbt.SbtGit.GitKeys.gitUncommittedChanges.value}",
-        s"-Xmacro-settings:git-branch=${com.github.sbt.SbtGit.GitKeys.gitCurrentBranch.value}",
-        s"-Xmacro-settings:git-described-version=${com.github.sbt.SbtGit.GitKeys.gitDescribedVersion.value.getOrElse("")}",
-        s"-Xmacro-settings:git-head-commit=${com.github.sbt.SbtGit.GitKeys.gitHeadCommit.value.getOrElse("")}"
+        s"-Xmacro-settings:git-repo-clean=${com.github.sbt.git.SbtGit.GitKeys.gitUncommittedChanges.value}",
+        s"-Xmacro-settings:git-branch=${com.github.sbt.git.SbtGit.GitKeys.gitCurrentBranch.value}",
+        s"-Xmacro-settings:git-described-version=${com.github.sbt.git.SbtGit.GitKeys.gitDescribedVersion.value.getOrElse("")}",
+        s"-Xmacro-settings:git-head-commit=${com.github.sbt.git.SbtGit.GitKeys.gitHeadCommit.value.getOrElse("")}"
       )
       case (_, "2.13.0") => Seq(
         s"-Xmacro-settings:sbt-version=${sbtVersion.value}",
-        s"-Xmacro-settings:git-repo-clean=${com.github.sbt.SbtGit.GitKeys.gitUncommittedChanges.value}",
-        s"-Xmacro-settings:git-branch=${com.github.sbt.SbtGit.GitKeys.gitCurrentBranch.value}",
-        s"-Xmacro-settings:git-described-version=${com.github.sbt.SbtGit.GitKeys.gitDescribedVersion.value.getOrElse("")}",
-        s"-Xmacro-settings:git-head-commit=${com.github.sbt.SbtGit.GitKeys.gitHeadCommit.value.getOrElse("")}"
+        s"-Xmacro-settings:git-repo-clean=${com.github.sbt.git.SbtGit.GitKeys.gitUncommittedChanges.value}",
+        s"-Xmacro-settings:git-branch=${com.github.sbt.git.SbtGit.GitKeys.gitCurrentBranch.value}",
+        s"-Xmacro-settings:git-described-version=${com.github.sbt.git.SbtGit.GitKeys.gitDescribedVersion.value.getOrElse("")}",
+        s"-Xmacro-settings:git-head-commit=${com.github.sbt.git.SbtGit.GitKeys.gitHeadCommit.value.getOrElse("")}"
       )
       case (_, _) => Seq.empty
     } }
