@@ -14,31 +14,35 @@ class SbtGenTest extends AnyWordSpec {
     Entrypoint.main(TestDottyProject.project, settings, out(s"$dir/dotty"))
   }
 
-  val jvmDir = "target/test-out-jvm/"
-  lazy val genJvmProjects = genProjects(jvmDir, Seq.empty)
-
-  val jsDir = "target/test-out-js/"
-  lazy val genJsProjects = genProjects(jsDir, Seq("--js"))
-
-  "sbtgen" should {
+  "sbtgen/sbt" should {
     "produce working output in JVM-only" in {
-      genJvmProjects
-      assert(Process("sbt --batch clean", new File(jvmDir)).! == 0)
+      val dir = "target/test-out-jvm-build/"
+      genProjects(dir, Seq.empty)
+
+      assert(Process("sbt --batch clean", new File(dir)).! == 0)
     }
 
     "produce working output in JS" in {
-      genJsProjects
-      assert(Process("sbt --batch clean", new File(jsDir)).! == 0)
-    }
+      val dir = "target/test-out-js-build/"
+      genProjects(dir, Seq("--js"))
 
+      assert(Process("sbt --batch clean", new File(dir)).! == 0)
+    }
+  }
+
+  "sbtgen" should {
     "produce the same output in JVM-only" in {
-      genJvmProjects
-      assert(s"diff -r $jvmDir/ test/jvm/".!!.isEmpty)
+      val dir = "target/test-out-jvm/"
+      genProjects(dir, Seq.empty)
+
+      assert(s"diff -r $dir/ test/jvm/".!!.isEmpty)
     }
 
     "produce the same output in JS" in {
-      genJsProjects
-      assert(s"diff -r $jsDir/ test/js/".!!.isEmpty)
+      val dir = "target/test-out-js/"
+      genProjects(dir, Seq("--js"))
+
+      assert(s"diff -r $dir/ test/js/".!!.isEmpty)
     }
 
     "extract build meta" in {
