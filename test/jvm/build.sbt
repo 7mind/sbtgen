@@ -5249,7 +5249,7 @@ lazy val `microsite` = project.in(file("doc/microsite"))
     scalaVersion := crossScalaVersions.value.head,
     coverageEnabled := false,
     publish / skip := true,
-    DocKeys.prefix := {if (isSnapshot.value) {
+    SettingKey[String]("doc-keys-prefix") := {if (isSnapshot.value) {
                 "latest/snapshot"
               } else {
                 "latest/release"
@@ -5276,17 +5276,17 @@ lazy val `microsite` = project.in(file("doc/microsite"))
                   .withRepository(uri("https://github.com/7mind/izumi"))
                 //        .withColor("222", "434343")
               },
-    ScalaUnidoc / siteSubdirName := s"${DocKeys.prefix.value}/api",
-    Paradox / siteSubdirName := s"${DocKeys.prefix.value}/doc",
+    ScalaUnidoc / siteSubdirName := s"${SettingKey[String]("doc-keys-prefix").value}/api",
+    Paradox / siteSubdirName := s"${SettingKey[String]("doc-keys-prefix").value}/doc",
     paradoxProperties ++= Map(
-                "scaladoc.izumi.base_url" -> s"/${DocKeys.prefix.value}/api/com/github/pshirshov/",
-                "scaladoc.base_url" -> s"/${DocKeys.prefix.value}/api/",
+                "scaladoc.izumi.base_url" -> s"/${SettingKey[String]("doc-keys-prefix").value}/api/com/github/pshirshov/",
+                "scaladoc.base_url" -> s"/${SettingKey[String]("doc-keys-prefix").value}/api/",
                 "izumi.version" -> version.value,
               ),
     ghpagesCleanSite / excludeFilter :=
                 new FileFilter {
                   def accept(f: File): Boolean = {
-                    (f.toPath.startsWith(ghpagesRepository.value.toPath.resolve("latest")) && !f.toPath.startsWith(ghpagesRepository.value.toPath.resolve(DocKeys.prefix.value))) ||
+                    (f.toPath.startsWith(ghpagesRepository.value.toPath.resolve("latest")) && !f.toPath.startsWith(ghpagesRepository.value.toPath.resolve(SettingKey[String]("doc-keys-prefix").value))) ||
                       (ghpagesRepository.value / "CNAME").getCanonicalPath == f.getCanonicalPath ||
                       (ghpagesRepository.value / ".nojekyll").getCanonicalPath == f.getCanonicalPath ||
                       (ghpagesRepository.value / "index.html").getCanonicalPath == f.getCanonicalPath ||
@@ -5715,17 +5715,17 @@ lazy val `izumi` = (project in file("."))
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
         s"-Xmacro-settings:sbt-version=${sbtVersion.value}",
-        s"-Xmacro-settings:git-repo-clean=${com.github.sbt.git.SbtGit.GitKeys.gitUncommittedChanges.value}",
-        s"-Xmacro-settings:git-branch=${com.github.sbt.git.SbtGit.GitKeys.gitCurrentBranch.value}",
-        s"-Xmacro-settings:git-described-version=${com.github.sbt.git.SbtGit.GitKeys.gitDescribedVersion.value.getOrElse("")}",
-        s"-Xmacro-settings:git-head-commit=${com.github.sbt.git.SbtGit.GitKeys.gitHeadCommit.value.getOrElse("")}"
+        s"-Xmacro-settings:git-repo-clean=${com.typesafe.sbt.SbtGit.GitKeys.gitUncommittedChanges.value}",
+        s"-Xmacro-settings:git-branch=${com.typesafe.sbt.SbtGit.GitKeys.gitCurrentBranch.value}",
+        s"-Xmacro-settings:git-described-version=${com.typesafe.sbt.SbtGit.GitKeys.gitDescribedVersion.value.getOrElse("")}",
+        s"-Xmacro-settings:git-head-commit=${com.typesafe.sbt.SbtGit.GitKeys.gitHeadCommit.value.getOrElse("")}"
       )
       case (_, "2.13.0") => Seq(
         s"-Xmacro-settings:sbt-version=${sbtVersion.value}",
-        s"-Xmacro-settings:git-repo-clean=${com.github.sbt.git.SbtGit.GitKeys.gitUncommittedChanges.value}",
-        s"-Xmacro-settings:git-branch=${com.github.sbt.git.SbtGit.GitKeys.gitCurrentBranch.value}",
-        s"-Xmacro-settings:git-described-version=${com.github.sbt.git.SbtGit.GitKeys.gitDescribedVersion.value.getOrElse("")}",
-        s"-Xmacro-settings:git-head-commit=${com.github.sbt.git.SbtGit.GitKeys.gitHeadCommit.value.getOrElse("")}"
+        s"-Xmacro-settings:git-repo-clean=${com.typesafe.sbt.SbtGit.GitKeys.gitUncommittedChanges.value}",
+        s"-Xmacro-settings:git-branch=${com.typesafe.sbt.SbtGit.GitKeys.gitCurrentBranch.value}",
+        s"-Xmacro-settings:git-described-version=${com.typesafe.sbt.SbtGit.GitKeys.gitDescribedVersion.value.getOrElse("")}",
+        s"-Xmacro-settings:git-head-commit=${com.typesafe.sbt.SbtGit.GitKeys.gitHeadCommit.value.getOrElse("")}"
       )
       case (_, _) => Seq.empty
     } }

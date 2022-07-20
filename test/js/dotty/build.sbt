@@ -1,7 +1,12 @@
+import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 
-lazy val `test` = project.in(file("test"))
+
+lazy val `test` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("test"))
   .settings(
+    organization := "io.7mind"
+  )
+  .jvmSettings(
     crossScalaVersions := Seq(
       "0.23.0-RC1"
     ),
@@ -25,24 +30,44 @@ lazy val `test` = project.in(file("test"))
         case dir if dir.getPath.endsWith("scala") => ltEqVersions.map { case (m, n) => file(dir.getPath + s"-$m.$n+") }
         case _ => Seq.empty
       }
-    },
-    organization := "io.7mind",
-    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
-    Compile / unmanagedSourceDirectories ++= (scalaBinaryVersion.value :: CrossVersion.partialVersion(scalaVersion.value).toList.map(_._1))
-      .map(v => baseDirectory.value / s".jvm/src/main/scala-$v").distinct,
-    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
-    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
-    Test / unmanagedSourceDirectories ++= (scalaBinaryVersion.value :: CrossVersion.partialVersion(scalaVersion.value).toList.map(_._1))
-      .map(v => baseDirectory.value / s".jvm/src/test/scala-$v").distinct,
-    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" 
+    }
   )
+  .jsSettings(
+    crossScalaVersions := Seq(
+      "0.23.0-RC1"
+    ),
+    scalaVersion := crossScalaVersions.value.head,
+    Compile / unmanagedSourceDirectories ++= {
+      val version = scalaVersion.value
+      val crossVersions = crossScalaVersions.value
+      import Ordering.Implicits._
+      val ltEqVersions = crossVersions.map(CrossVersion.partialVersion).filter(_ <= CrossVersion.partialVersion(version)).flatten
+      (Compile / unmanagedSourceDirectories).value.flatMap {
+        case dir if dir.getPath.endsWith("scala") => ltEqVersions.map { case (m, n) => file(dir.getPath + s"-$m.$n+") }
+        case _ => Seq.empty
+      }
+    },
+    Test / unmanagedSourceDirectories ++= {
+      val version = scalaVersion.value
+      val crossVersions = crossScalaVersions.value
+      import Ordering.Implicits._
+      val ltEqVersions = crossVersions.map(CrossVersion.partialVersion).filter(_ <= CrossVersion.partialVersion(version)).flatten
+      (Test / unmanagedSourceDirectories).value.flatMap {
+        case dir if dir.getPath.endsWith("scala") => ltEqVersions.map { case (m, n) => file(dir.getPath + s"-$m.$n+") }
+        case _ => Seq.empty
+      }
+    }
+  )
+lazy val `testJVM` = `test`.jvm
+lazy val `testJS` = `test`.js
 
 lazy val `test-agg` = (project in file(".agg/test-agg"))
   .settings(
     publish / skip := true
   )
   .aggregate(
-    `test`
+    `testJVM`,
+    `testJS`
   )
 
 lazy val `test-agg-jvm` = (project in file(".agg/test-agg-jvm"))
@@ -50,7 +75,15 @@ lazy val `test-agg-jvm` = (project in file(".agg/test-agg-jvm"))
     publish / skip := true
   )
   .aggregate(
-    `test`
+    `testJVM`
+  )
+
+lazy val `test-agg-js` = (project in file(".agg/test-agg-js"))
+  .settings(
+    publish / skip := true
+  )
+  .aggregate(
+    `testJS`
   )
 
 lazy val `test-dotty-jvm` = (project in file(".agg/.agg-jvm"))
@@ -59,6 +92,14 @@ lazy val `test-dotty-jvm` = (project in file(".agg/.agg-jvm"))
   )
   .aggregate(
     `test-agg-jvm`
+  )
+
+lazy val `test-dotty-js` = (project in file(".agg/.agg-js"))
+  .settings(
+    publish / skip := true
+  )
+  .aggregate(
+    `test-agg-js`
   )
 
 lazy val `test-dotty` = (project in file("."))

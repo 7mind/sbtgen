@@ -614,7 +614,7 @@ object Izumi {
             "latest/release"
           }}""".raw,
           "previewFixedPort" := "Some(9999)".raw,
-          "gitRemoteRepo" := "git@github.com:7mind/izumi-microsite.git",
+          "git.remoteRepo" := "git@github.com:7mind/izumi-microsite.git",
           "classLoaderLayeringStrategy" in SettingScope.Raw("Compile") := "ClassLoaderLayeringStrategy.Flat".raw,
           "mdocIn" := """baseDirectory.value / "src/main/tut"""".raw,
           "sourceDirectory" in SettingScope.Raw("Paradox") := "mdocOut.value".raw,
@@ -697,9 +697,7 @@ object Izumi {
     sharedSettings = Projects.root.sharedSettings,
     sharedAggSettings = Projects.root.sharedAggSettings,
     rootSettings = Projects.root.sharedRootSettings,
-    imports = Seq(
-      Import("com.github.sbt.git.SbtGit.GitKeys._")
-    ),
+    imports = Seq.empty,
     globalLibs = Seq(
       ScopedLibrary(projector, FullDependencyScope(Scope.Compile, Platform.All), compilerPlugin = true),
       collection_compat in Scope.Compile.all,
@@ -710,7 +708,7 @@ object Izumi {
     pluginConflictRules = Map(assemblyPluginJvm.name -> true),
     appendPlugins = Defaults
       .SbtGenPlugins.map(
-        _.copy(version = Version.VConst("0.0.94"))
+        _.copy(version = Version.VConst("0.0.92"))
       ) ++ Seq(
       SbtPlugin("com.eed3si9n", "sbt-assembly", PV.sbt_assembly),
       SbtPlugin("com.jsuereth", "sbt-pgp", PV.sbt_pgp),
