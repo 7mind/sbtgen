@@ -203,9 +203,7 @@ object Defaults {
     "-Ykind-projector:underscores", // Use underscore type-lambda syntax by default
     "-no-indent",
     "-explain",
-    "-deprecation",
-    "-feature",
-    "-Wconf:any:warning",
+//    CRaw("""if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning""""), // enable fatal warnings on CI
   )
 
   final val SbtGenPlugins = Seq(
