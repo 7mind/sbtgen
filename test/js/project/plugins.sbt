@@ -18,7 +18,7 @@ addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.9")
 
 addSbtPlugin("com.jsuereth" % "sbt-pgp" % "2.1.1")
 
-addSbtPlugin("org.scoverage" % "sbt-scoverage" % "2.0.0")
+addSbtPlugin("org.scoverage" % "sbt-scoverage" % "2.0.6")
 
 addSbtPlugin("com.eed3si9n" % "sbt-unidoc" % "0.4.3")
 
