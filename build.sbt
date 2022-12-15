@@ -23,7 +23,7 @@ ThisBuild / publishTo :=(if (!isSnapshot.value) {
 })
 
 val scalaJsVersion = "1.10.1"
-val scalaNativeVersion = "0.4.5"
+val scalaNativeVersion = "0.4.9"
 val crossProjectVersion = "1.2.0"
 val bundlerVersion = "0.20.0"
 val sbtJsDependenciesVersion = "1.0.2"
@@ -103,7 +103,7 @@ lazy val sbtgen = (project in file("sbtgen"))
     scalaVersion := crossScalaVersions.value.head,
     //    libraryDependencies += "com.github.scopt" %% "scopt" % "4.0.0-RC2",
     libraryDependencies += "com.github.scopt" %% "scopt" % "3.7.1",
-    libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.8.0",
+    libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.8.1",
     (ThisBuild / libraryDependencies) += "org.scalatest" %% "scalatest" % "3.2.14" % Test,
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-version=${version.value}",
@@ -134,16 +134,16 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
       ("org.scoverage" % "sbt-scoverage" % "2.0.0").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
 
       // http://www.scala-sbt.org/sbt-pgp/
-      ("com.github.sbt" % "sbt-pgp" % "2.1.2").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
+      ("com.github.sbt" % "sbt-pgp" % "2.2.1").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
 
       // https://github.com/sbt/sbt-git
-      ("com.typesafe.sbt" % "sbt-git" % "1.0.2").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
+      ("com.github.sbt" % "sbt-git" % "2.0.1").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
 
       // https://github.com/orrsella/sbt-stats
       ("com.orrsella" % "sbt-stats" % "1.0.7").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
 
       // https://github.com/xerial/sbt-sonatype
-      ("org.xerial.sbt" % "sbt-sonatype" % "3.9.13").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
+      ("org.xerial.sbt" % "sbt-sonatype" % "3.9.15").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
 
       // https://github.com/sbt/sbt-release
       ("com.github.sbt" % "sbt-release" % "1.1.0").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
