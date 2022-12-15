@@ -25,8 +25,11 @@ trait ModelSyntax {
     def --=[T: Const.Conv](const: Map[Const.Scalar, T]): UnscopedSettingDef = UnscopedSettingDef(s, SettingOp.Subtract, const, scope)
 
     def :=(const: Seq[(SettingKey, Const)]): ScopedSettingDef = ScopedSettingDef(s, SettingOp.Assign, const, scope)
+    def ~=(const: Seq[(SettingKey, Const)]): ScopedSettingDef = ScopedSettingDef(s, SettingOp.Modify, const, scope)
     def +=(const: Seq[(SettingKey, Const)]): ScopedSettingDef = ScopedSettingDef(s, SettingOp.Append, const, scope)
     def ++=(const: Seq[(SettingKey, Const)]): ScopedSettingDef = ScopedSettingDef(s, SettingOp.Extend, const, scope)
+    def -=(const: Seq[(SettingKey, Const)]): ScopedSettingDef = ScopedSettingDef(s, SettingOp.Remove, const, scope)
+    def --=(const: Seq[(SettingKey, Const)]): ScopedSettingDef = ScopedSettingDef(s, SettingOp.Subtract, const, scope)
   }
 
   class ScopedSettingBuilder(protected val s: String, protected val scope: FullSettingScope) extends WithSettingsDsl
