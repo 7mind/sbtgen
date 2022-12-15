@@ -115,7 +115,7 @@ object Defaults {
   }
 
   final val Scala2Options = Seq[Const](
-    "-target:jvm-1.8",
+    "-release:8", // Target JDK8
     "-explaintypes", // Explain type errors in more detail.
   )
 
@@ -200,6 +200,8 @@ object Defaults {
   )
 
   final val Scala3Options = Seq[Const](
+    "-release:8", // Target JDK8
+
     "-Ykind-projector:underscores", // Use underscore type-lambda syntax by default
     "-no-indent",
     "-explain",

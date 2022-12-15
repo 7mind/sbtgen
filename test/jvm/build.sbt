@@ -35,7 +35,7 @@ lazy val `fundamentals-collections` = project.in(file("fundamentals/fundamentals
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -78,7 +78,7 @@ lazy val `fundamentals-collections` = project.in(file("fundamentals/fundamentals
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -121,7 +121,7 @@ lazy val `fundamentals-collections` = project.in(file("fundamentals/fundamentals
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -183,7 +183,7 @@ lazy val `fundamentals-platform` = project.in(file("fundamentals/fundamentals-pl
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -226,7 +226,7 @@ lazy val `fundamentals-platform` = project.in(file("fundamentals/fundamentals-pl
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -269,7 +269,7 @@ lazy val `fundamentals-platform` = project.in(file("fundamentals/fundamentals-pl
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -328,7 +328,7 @@ lazy val `fundamentals-functional` = project.in(file("fundamentals/fundamentals-
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -371,7 +371,7 @@ lazy val `fundamentals-functional` = project.in(file("fundamentals/fundamentals-
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -414,7 +414,7 @@ lazy val `fundamentals-functional` = project.in(file("fundamentals/fundamentals-
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -479,7 +479,7 @@ lazy val `fundamentals-bio` = project.in(file("fundamentals/fundamentals-bio"))
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -522,7 +522,7 @@ lazy val `fundamentals-bio` = project.in(file("fundamentals/fundamentals-bio"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -565,7 +565,7 @@ lazy val `fundamentals-bio` = project.in(file("fundamentals/fundamentals-bio"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -642,7 +642,7 @@ lazy val `fundamentals-typesafe-config` = project.in(file("fundamentals/fundamen
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -685,7 +685,7 @@ lazy val `fundamentals-typesafe-config` = project.in(file("fundamentals/fundamen
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -728,7 +728,7 @@ lazy val `fundamentals-typesafe-config` = project.in(file("fundamentals/fundamen
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -804,7 +804,7 @@ lazy val `fundamentals-reflection` = project.in(file("fundamentals/fundamentals-
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -847,7 +847,7 @@ lazy val `fundamentals-reflection` = project.in(file("fundamentals/fundamentals-
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -890,7 +890,7 @@ lazy val `fundamentals-reflection` = project.in(file("fundamentals/fundamentals-
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -959,7 +959,7 @@ lazy val `fundamentals-json-circe` = project.in(file("fundamentals/fundamentals-
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -1002,7 +1002,7 @@ lazy val `fundamentals-json-circe` = project.in(file("fundamentals/fundamentals-
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -1045,7 +1045,7 @@ lazy val `fundamentals-json-circe` = project.in(file("fundamentals/fundamentals-
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -1124,7 +1124,7 @@ lazy val `distage-model` = project.in(file("distage/distage-model"))
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -1167,7 +1167,7 @@ lazy val `distage-model` = project.in(file("distage/distage-model"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -1210,7 +1210,7 @@ lazy val `distage-model` = project.in(file("distage/distage-model"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -1276,7 +1276,7 @@ lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -1319,7 +1319,7 @@ lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -1362,7 +1362,7 @@ lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -1426,7 +1426,7 @@ lazy val `distage-core` = project.in(file("distage/distage-core"))
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -1469,7 +1469,7 @@ lazy val `distage-core` = project.in(file("distage/distage-core"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -1512,7 +1512,7 @@ lazy val `distage-core` = project.in(file("distage/distage-core"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -1578,7 +1578,7 @@ lazy val `distage-config` = project.in(file("distage/distage-config"))
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -1621,7 +1621,7 @@ lazy val `distage-config` = project.in(file("distage/distage-config"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -1664,7 +1664,7 @@ lazy val `distage-config` = project.in(file("distage/distage-config"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -1726,7 +1726,7 @@ lazy val `distage-roles-api` = project.in(file("distage/distage-roles-api"))
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -1769,7 +1769,7 @@ lazy val `distage-roles-api` = project.in(file("distage/distage-roles-api"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -1812,7 +1812,7 @@ lazy val `distage-roles-api` = project.in(file("distage/distage-roles-api"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -1879,7 +1879,7 @@ lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -1922,7 +1922,7 @@ lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -1965,7 +1965,7 @@ lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -2036,7 +2036,7 @@ lazy val `distage-roles` = project.in(file("distage/distage-roles"))
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -2079,7 +2079,7 @@ lazy val `distage-roles` = project.in(file("distage/distage-roles"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -2122,7 +2122,7 @@ lazy val `distage-roles` = project.in(file("distage/distage-roles"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -2186,7 +2186,7 @@ lazy val `distage-static` = project.in(file("distage/distage-static"))
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -2229,7 +2229,7 @@ lazy val `distage-static` = project.in(file("distage/distage-static"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -2272,7 +2272,7 @@ lazy val `distage-static` = project.in(file("distage/distage-static"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -2342,7 +2342,7 @@ lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -2385,7 +2385,7 @@ lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -2428,7 +2428,7 @@ lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -2503,7 +2503,7 @@ lazy val `logstage-api` = project.in(file("logstage/logstage-api"))
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -2546,7 +2546,7 @@ lazy val `logstage-api` = project.in(file("logstage/logstage-api"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -2589,7 +2589,7 @@ lazy val `logstage-api` = project.in(file("logstage/logstage-api"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -2668,7 +2668,7 @@ lazy val `logstage-core` = project.in(file("logstage/logstage-core"))
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -2711,7 +2711,7 @@ lazy val `logstage-core` = project.in(file("logstage/logstage-core"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -2754,7 +2754,7 @@ lazy val `logstage-core` = project.in(file("logstage/logstage-core"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -2817,7 +2817,7 @@ lazy val `logstage-rendering-circe` = project.in(file("logstage/logstage-renderi
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -2860,7 +2860,7 @@ lazy val `logstage-rendering-circe` = project.in(file("logstage/logstage-renderi
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -2903,7 +2903,7 @@ lazy val `logstage-rendering-circe` = project.in(file("logstage/logstage-renderi
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -2969,7 +2969,7 @@ lazy val `logstage-di` = project.in(file("logstage/logstage-di"))
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -3012,7 +3012,7 @@ lazy val `logstage-di` = project.in(file("logstage/logstage-di"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -3055,7 +3055,7 @@ lazy val `logstage-di` = project.in(file("logstage/logstage-di"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -3118,7 +3118,7 @@ lazy val `logstage-config` = project.in(file("logstage/logstage-config"))
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -3161,7 +3161,7 @@ lazy val `logstage-config` = project.in(file("logstage/logstage-config"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -3204,7 +3204,7 @@ lazy val `logstage-config` = project.in(file("logstage/logstage-config"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -3267,7 +3267,7 @@ lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-s
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -3310,7 +3310,7 @@ lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-s
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -3353,7 +3353,7 @@ lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-s
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -3421,7 +3421,7 @@ lazy val `logstage-sink-slf4j` = project.in(file("logstage/logstage-sink-slf4j")
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -3464,7 +3464,7 @@ lazy val `logstage-sink-slf4j` = project.in(file("logstage/logstage-sink-slf4j")
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -3507,7 +3507,7 @@ lazy val `logstage-sink-slf4j` = project.in(file("logstage/logstage-sink-slf4j")
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -3571,7 +3571,7 @@ lazy val `idealingua-v1-model` = project.in(file("idealingua-v1/idealingua-v1-mo
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -3614,7 +3614,7 @@ lazy val `idealingua-v1-model` = project.in(file("idealingua-v1/idealingua-v1-mo
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -3657,7 +3657,7 @@ lazy val `idealingua-v1-model` = project.in(file("idealingua-v1/idealingua-v1-mo
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -3724,7 +3724,7 @@ lazy val `idealingua-v1-core` = project.in(file("idealingua-v1/idealingua-v1-cor
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -3767,7 +3767,7 @@ lazy val `idealingua-v1-core` = project.in(file("idealingua-v1/idealingua-v1-cor
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -3810,7 +3810,7 @@ lazy val `idealingua-v1-core` = project.in(file("idealingua-v1/idealingua-v1-cor
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -3891,7 +3891,7 @@ lazy val `idealingua-v1-runtime-rpc-scala` = project.in(file("idealingua-v1/idea
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -3934,7 +3934,7 @@ lazy val `idealingua-v1-runtime-rpc-scala` = project.in(file("idealingua-v1/idea
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -3977,7 +3977,7 @@ lazy val `idealingua-v1-runtime-rpc-scala` = project.in(file("idealingua-v1/idea
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -4047,7 +4047,7 @@ lazy val `idealingua-v1-runtime-rpc-http4s` = project.in(file("idealingua-v1/ide
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -4090,7 +4090,7 @@ lazy val `idealingua-v1-runtime-rpc-http4s` = project.in(file("idealingua-v1/ide
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -4133,7 +4133,7 @@ lazy val `idealingua-v1-runtime-rpc-http4s` = project.in(file("idealingua-v1/ide
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -4207,7 +4207,7 @@ lazy val `idealingua-v1-transpilers` = project.in(file("idealingua-v1/idealingua
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -4250,7 +4250,7 @@ lazy val `idealingua-v1-transpilers` = project.in(file("idealingua-v1/idealingua
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -4293,7 +4293,7 @@ lazy val `idealingua-v1-transpilers` = project.in(file("idealingua-v1/idealingua
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -4355,7 +4355,7 @@ lazy val `idealingua-v1-test-defs` = project.in(file("idealingua-v1/idealingua-v
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -4398,7 +4398,7 @@ lazy val `idealingua-v1-test-defs` = project.in(file("idealingua-v1/idealingua-v
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -4441,7 +4441,7 @@ lazy val `idealingua-v1-test-defs` = project.in(file("idealingua-v1/idealingua-v
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -4500,7 +4500,7 @@ lazy val `idealingua-v1-runtime-rpc-typescript` = project.in(file("idealingua-v1
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -4543,7 +4543,7 @@ lazy val `idealingua-v1-runtime-rpc-typescript` = project.in(file("idealingua-v1
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -4586,7 +4586,7 @@ lazy val `idealingua-v1-runtime-rpc-typescript` = project.in(file("idealingua-v1
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -4645,7 +4645,7 @@ lazy val `idealingua-v1-runtime-rpc-go` = project.in(file("idealingua-v1/idealin
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -4688,7 +4688,7 @@ lazy val `idealingua-v1-runtime-rpc-go` = project.in(file("idealingua-v1/idealin
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -4731,7 +4731,7 @@ lazy val `idealingua-v1-runtime-rpc-go` = project.in(file("idealingua-v1/idealin
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -4790,7 +4790,7 @@ lazy val `idealingua-v1-runtime-rpc-csharp` = project.in(file("idealingua-v1/ide
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -4833,7 +4833,7 @@ lazy val `idealingua-v1-runtime-rpc-csharp` = project.in(file("idealingua-v1/ide
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -4876,7 +4876,7 @@ lazy val `idealingua-v1-runtime-rpc-csharp` = project.in(file("idealingua-v1/ide
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -4944,7 +4944,7 @@ lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -4987,7 +4987,7 @@ lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -5030,7 +5030,7 @@ lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -5134,7 +5134,7 @@ lazy val `microsite` = project.in(file("doc/microsite"))
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -5177,7 +5177,7 @@ lazy val `microsite` = project.in(file("doc/microsite"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -5220,7 +5220,7 @@ lazy val `microsite` = project.in(file("doc/microsite"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -5332,7 +5332,7 @@ lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
     Test / testOptions += Tests.Argument("-oDF"),
     scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
       case (_, "2.12.9") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -5375,7 +5375,7 @@ lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.12.8") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
@@ -5418,7 +5418,7 @@ lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
         "-Ycache-macro-class-loader:last-modified"
       )
       case (_, "2.13.0") => Seq(
-        "-target:jvm-1.8",
+        "-release:8",
         "-explaintypes",
         "-Xsource:3",
         "-P:kind-projector:underscore-placeholders",
