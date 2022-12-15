@@ -22,10 +22,10 @@ ThisBuild / publishTo :=(if (!isSnapshot.value) {
   Some(Opts.resolver.sonatypeSnapshots)
 })
 
-val scalaJsVersion = "1.10.1"
+val scalaJsVersion = "1.12.0"
 val scalaNativeVersion = "0.4.9"
 val crossProjectVersion = "1.2.0"
-val bundlerVersion = "0.20.0"
+val bundlerVersion = "0.21.1"
 val sbtJsDependenciesVersion = "1.0.2"
 
 val scalaOpts = scalacOptions ++= ((isSnapshot.value, scalaVersion.value) match {
@@ -127,11 +127,12 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
     scalaVersion := crossScalaVersions.value.head,
     crossSbtVersions := Seq(sbtVersion.value),
     sbtPlugin := true,
+    libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always,
     libraryDependencies ++= Seq(
-      "io.get-coursier" %% "coursier" % "2.0.16",
+      "io.get-coursier" %% "coursier" % "2.1.0-RC3",
 
       // https://github.com/scoverage/sbt-scoverage
-      ("org.scoverage" % "sbt-scoverage" % "2.0.0").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
+      ("org.scoverage" % "sbt-scoverage" % "2.0.6").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
 
       // http://www.scala-sbt.org/sbt-pgp/
       ("com.github.sbt" % "sbt-pgp" % "2.2.1").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),

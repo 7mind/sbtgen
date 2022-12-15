@@ -14,24 +14,6 @@ class SbtGenTest extends AnyWordSpec {
     Entrypoint.main(TestDottyProject.project, settings, out(s"$dir/dotty"))
   }
 
-  "sbtgen/sbt" should {
-    "produce working output in JVM-only" in {
-      val dir = "target/test-out-jvm-build/"
-      genProjects(dir, Seq.empty)
-
-      assert(Process("sbt clean", new File(dir)).! == 0)
-      assert(Process("sbt clean", new File(s"$dir/dotty")).! == 0)
-    }
-
-    "produce working output in JS" in {
-      val dir = "target/test-out-js-build/"
-      genProjects(dir, Seq("--js"))
-
-      assert(Process("sbt clean", new File(dir)).! == 0)
-      assert(Process("sbt clean", new File(s"$dir/dotty")).! == 0)
-    }
-  }
-
   "sbtgen" should {
     "produce the same output in JVM-only" in {
       val dir = "target/test-out-jvm/"
@@ -49,6 +31,24 @@ class SbtGenTest extends AnyWordSpec {
 
     "extract build meta" in {
       assert(SbtgenMeta.extractScalaVersions().nonEmpty)
+    }
+  }
+
+  "sbtgen/sbt" should {
+    "produce working output in JVM-only" in {
+      val dir = "target/test-out-jvm-build/"
+      genProjects(dir, Seq.empty)
+
+      assert(Process("sbt clean", new File(dir)).! == 0)
+      assert(Process("sbt clean", new File(s"$dir/dotty")).! == 0)
+    }
+
+    "produce working output in JS" in {
+      val dir = "target/test-out-js-build/"
+      genProjects(dir, Seq("--js"))
+
+      assert(Process("sbt clean", new File(dir)).! == 0)
+      assert(Process("sbt clean", new File(s"$dir/dotty")).! == 0)
     }
   }
 }
