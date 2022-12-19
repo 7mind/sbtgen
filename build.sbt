@@ -214,11 +214,12 @@ lazy val `izumi-sbtgen` = (project in file("."))
       inquireVersions, // : ReleaseStep
       runClean, // : ReleaseStep
       runTest, // : ReleaseStep
+      runClean, // : ReleaseStep
       ReleaseStep(
         action = { st: State =>
           val extracted = Project.extract(st)
-          val ref = extracted.get(`sbt-tests`/thisProjectRef)
-          extracted.runAggregated(ref / (Global / scriptedRun), st)
+          val ref = extracted.get(`sbt-tests` / thisProjectRef)
+          extracted.runInputTask((ref / (Global / scripted)), "", st)._1
         }
       ),
       setReleaseVersion, // : ReleaseStep
