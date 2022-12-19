@@ -191,9 +191,13 @@ lazy val `sbt-tests` = (project in file("sbt/sbt-tests"))
     },
     scriptedBufferLog := false,
     scalaOpts,
+    // Ignore scala-xml version conflict between scoverage where `coursier` requires scala-xml v2
+    // and scoverage requires scala-xml v1 on Scala 2.12,
+    // introduced when updating scoverage from 1.9.3 to 2.0.5
+    libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
   )
 
-lazy val `sbtgen-root` = (project in file("."))
+lazy val `izumi-sbtgen` = (project in file("."))
   .aggregate(
     sbtgen,
     sbtmeta,
@@ -210,6 +214,13 @@ lazy val `sbtgen-root` = (project in file("."))
       inquireVersions, // : ReleaseStep
       runClean, // : ReleaseStep
       runTest, // : ReleaseStep
+      ReleaseStep(
+        action = { st: State =>
+          val extracted = Project.extract(st)
+          val ref = extracted.get(`sbt-tests`/thisProjectRef)
+          extracted.runAggregated(ref / (Global / scriptedRun), st)
+        }
+      ),
       setReleaseVersion, // : ReleaseStep
       commitReleaseVersion, // : ReleaseStep, performs the initial git checks
       tagRelease, // : ReleaseStep
