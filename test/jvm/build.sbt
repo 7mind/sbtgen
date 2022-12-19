@@ -5260,7 +5260,7 @@ lazy val `microsite` = project.in(file("doc/microsite"))
                 "latest/release"
               }},
     previewFixedPort := Some(9999),
-    git.remoteRepo := "git@github.com:7mind/izumi-microsite.git",
+    com.github.sbt.git.SbtGit.GitKeys.gitRemoteRepo := "git@github.com:7mind/izumi-microsite.git",
     Compile / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
     mdocIn := baseDirectory.value / "src/main/tut",
     (Compile / paradox) / sourceDirectory := mdocOut.value,
@@ -5446,8 +5446,7 @@ lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
       )
       case (_, _) => Seq.empty
     } },
-    sbtPlugin := true,
-    withBuildInfo("izumi.sbt.deps", "Izumi")
+    sbtPlugin := true
   )
   .disablePlugins(AssemblyPlugin)
 
