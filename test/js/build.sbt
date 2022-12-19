@@ -3,7 +3,6 @@
 // ALL CHANGES WILL BE LOST
 
 
-
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 
@@ -5187,7 +5186,7 @@ lazy val `microsite` = project.in(file("doc/microsite"))
     git.remoteRepo := "git@github.com:7mind/izumi-microsite.git",
     Compile / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Flat,
     mdocIn := baseDirectory.value / "src/main/tut",
-    Paradox / sourceDirectory := mdocOut.value,
+    (Compile / paradox) / sourceDirectory := mdocOut.value,
     mdocExtraArguments ++= Seq(
       " --no-link-hygiene"
     ),
@@ -5196,11 +5195,11 @@ lazy val `microsite` = project.in(file("doc/microsite"))
                   .dependsOn(mdoc.toTask(" "))
                   .value
               },
-    Paradox / version := version.value,
-    ParadoxMaterialThemePlugin.paradoxMaterialThemeSettings(Paradox),
+    (Compile / paradox) / version := version.value,
+    ParadoxMaterialThemePlugin.paradoxMaterialThemeSettings(Compile),
     addMappingsToSiteDir(ScalaUnidoc / packageDoc / mappings, ScalaUnidoc / siteSubdirName),
     ScalaUnidoc / unidoc / unidocProjectFilter := inAggregates(`izumi-jvm`, transitive=true),
-    Paradox / paradoxMaterialTheme ~= {
+    Compile / paradoxMaterialTheme ~= {
                 _.withCopyright("7mind.io")
                   .withRepository(uri("https://github.com/7mind/izumi"))
                 //        .withColor("222", "434343")
@@ -5760,6 +5759,13 @@ lazy val `izumi` = (project in file("."))
       "-Xlint:all",
       "-XDignore.symbol.file"
     ),
+    ThisBuild / scalacOptions ++= Seq(
+      s"-Xmacro-settings:sbt-version=${sbtVersion.value}",
+      s"-Xmacro-settings:git-repo-clean=${com.github.sbt.git.SbtGit.GitKeys.gitUncommittedChanges.value}",
+      s"-Xmacro-settings:git-branch=${com.github.sbt.git.SbtGit.GitKeys.gitCurrentBranch.value}",
+      s"-Xmacro-settings:git-described-version=${com.github.sbt.git.SbtGit.GitKeys.gitDescribedVersion.value.getOrElse("")}",
+      s"-Xmacro-settings:git-head-commit=${com.github.sbt.git.SbtGit.GitKeys.gitHeadCommit.value.getOrElse("")}"
+    ),
     crossScalaVersions := Nil,
     scalaVersion := "2.12.9",
     ThisBuild / organization := "io.7mind.izumi",
@@ -5769,24 +5775,7 @@ lazy val `izumi` = (project in file("."))
               Developer(id = "7mind", name = "Septimal Mind", url = url("https://github.com/7mind"), email = "team@7mind.io"),
             ),
     ThisBuild / scmInfo := Some(ScmInfo(url("https://github.com/7mind/izumi"), "scm:git:https://github.com/7mind/izumi.git")),
-    ThisBuild / scalacOptions += """-Xmacro-settings:scalatest-version=3.1.2""",
-    scalacOptions ++= { (isSnapshot.value, scalaVersion.value) match {
-      case (_, "2.12.9") => Seq(
-        s"-Xmacro-settings:sbt-version=${sbtVersion.value}",
-        s"-Xmacro-settings:git-repo-clean=${com.typesafe.sbt.SbtGit.GitKeys.gitUncommittedChanges.value}",
-        s"-Xmacro-settings:git-branch=${com.typesafe.sbt.SbtGit.GitKeys.gitCurrentBranch.value}",
-        s"-Xmacro-settings:git-described-version=${com.typesafe.sbt.SbtGit.GitKeys.gitDescribedVersion.value.getOrElse("")}",
-        s"-Xmacro-settings:git-head-commit=${com.typesafe.sbt.SbtGit.GitKeys.gitHeadCommit.value.getOrElse("")}"
-      )
-      case (_, "2.13.0") => Seq(
-        s"-Xmacro-settings:sbt-version=${sbtVersion.value}",
-        s"-Xmacro-settings:git-repo-clean=${com.typesafe.sbt.SbtGit.GitKeys.gitUncommittedChanges.value}",
-        s"-Xmacro-settings:git-branch=${com.typesafe.sbt.SbtGit.GitKeys.gitCurrentBranch.value}",
-        s"-Xmacro-settings:git-described-version=${com.typesafe.sbt.SbtGit.GitKeys.gitDescribedVersion.value.getOrElse("")}",
-        s"-Xmacro-settings:git-head-commit=${com.typesafe.sbt.SbtGit.GitKeys.gitHeadCommit.value.getOrElse("")}"
-      )
-      case (_, _) => Seq.empty
-    } }
+    ThisBuild / scalacOptions += """-Xmacro-settings:scalatest-version=3.1.2"""
   )
   .disablePlugins(AssemblyPlugin)
   .aggregate(

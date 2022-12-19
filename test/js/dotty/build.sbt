@@ -3,7 +3,6 @@
 // ALL CHANGES WILL BE LOST
 
 
-
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 

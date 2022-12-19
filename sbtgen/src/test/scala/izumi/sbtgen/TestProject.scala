@@ -48,8 +48,8 @@ object V {
 object PV {
   val sbt_mdoc = "2.3.2"
   val sbt_paradox_material_theme = "0.6.0"
-  val sbt_ghpages = "0.6.3"
-  val sbt_site = "1.3.3"
+  val sbt_ghpages = "0.7.0"
+  val sbt_site = "1.4.1"
   val sbt_unidoc = "0.4.3"
   val sbt_scoverage = "2.0.0"
   val sbt_pgp = "2.1.1"
@@ -157,7 +157,7 @@ object Izumi {
       targetScala,
       settings = Seq(
         "coverageEnabled" := false,
-        "scalaJSLinkerConfig" in (SettingScope.Project, Platform.Js) := "{ scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }".raw,
+        "scalaJSLinkerConfig".in(SettingScope.Project, Platform.Js) := "{ scalaJSLinkerConfig.value.withModuleKind(ModuleKind.CommonJSModule) }".raw,
       ),
     )
     final val cross = Seq(jvmPlatform, jsPlatform)
@@ -193,7 +193,7 @@ object Izumi {
         "scalaVersion" := "crossScalaVersions.value.head".raw,
       )
 
-      final val sharedRootSettings = Defaults.RootOptions ++ Seq(
+      final val sharedRootSettings = Defaults.RootOptions ++ Defaults.SbtMetaRootOptions ++ Seq(
         "crossScalaVersions" := "Nil".raw,
         "scalaVersion" := Targets.targetScala.head.value,
         "organization" in SettingScope.Build := "io.7mind.izumi",
@@ -205,12 +205,6 @@ object Izumi {
         )""".raw,
         "scmInfo" in SettingScope.Build := """Some(ScmInfo(url("https://github.com/7mind/izumi"), "scm:git:https://github.com/7mind/izumi.git"))""".raw,
         "scalacOptions" in SettingScope.Build += s"""${"\"" * 3}-Xmacro-settings:scalatest-version=${V.scalatest}${"\"" * 3}""".raw,
-      ) ++ Seq(
-        "scalacOptions" ++= Seq(
-          SettingKey(Some(scala212), None) := Defaults.SbtMetaRootOptionsScala2,
-          SettingKey(Some(scala213), None) := Defaults.SbtMetaRootOptionsScala2,
-          SettingKey.Default := Const.EmptySeq,
-        )
       )
 
       final val sharedSettings = Defaults.SbtMetaSharedOptions ++ Seq(
@@ -617,7 +611,7 @@ object Izumi {
           "git.remoteRepo" := "git@github.com:7mind/izumi-microsite.git",
           "classLoaderLayeringStrategy" in SettingScope.Raw("Compile") := "ClassLoaderLayeringStrategy.Flat".raw,
           "mdocIn" := """baseDirectory.value / "src/main/tut"""".raw,
-          "sourceDirectory" in SettingScope.Raw("Paradox") := "mdocOut.value".raw,
+          "sourceDirectory" in SettingScope.Raw("(Compile / paradox)") := "mdocOut.value".raw,
           "mdocExtraArguments" ++= Seq(" --no-link-hygiene"),
           "mappings" in SettingScope.Raw("SitePlugin.autoImport.makeSite") :=
             """{
@@ -625,11 +619,11 @@ object Izumi {
               .dependsOn(mdoc.toTask(" "))
               .value
           }""".raw,
-          "version" in SettingScope.Raw("Paradox") := "version.value".raw,
-          SettingDef.RawSettingDef("ParadoxMaterialThemePlugin.paradoxMaterialThemeSettings(Paradox)"),
+          "version" in SettingScope.Raw("(Compile / paradox)") := "version.value".raw,
+          SettingDef.RawSettingDef("ParadoxMaterialThemePlugin.paradoxMaterialThemeSettings(Compile)"),
           SettingDef.RawSettingDef("addMappingsToSiteDir(ScalaUnidoc / packageDoc / mappings, ScalaUnidoc / siteSubdirName)"),
           SettingDef.RawSettingDef("ScalaUnidoc / unidoc / unidocProjectFilter := inAggregates(`izumi-jvm`, transitive=true)"),
-          SettingDef.RawSettingDef("""Paradox / paradoxMaterialTheme ~= {
+          SettingDef.RawSettingDef("""Compile / paradoxMaterialTheme ~= {
             _.withCopyright("7mind.io")
               .withRepository(uri("https://github.com/7mind/izumi"))
             //        .withColor("222", "434343")
@@ -708,14 +702,13 @@ object Izumi {
     pluginConflictRules = Map(assemblyPluginJvm.name -> true),
     appendPlugins = Defaults
       .SbtGenPlugins.map(
-        _.copy(version = Version.VConst("0.0.92"))
+        _.copy(version = Version.VConst("0.0.97"))
       ) ++ Seq(
       SbtPlugin("com.eed3si9n", "sbt-assembly", PV.sbt_assembly),
       SbtPlugin("com.jsuereth", "sbt-pgp", PV.sbt_pgp),
       SbtPlugin("org.scoverage", "sbt-scoverage", PV.sbt_scoverage),
       SbtPlugin("com.eed3si9n", "sbt-unidoc", PV.sbt_unidoc),
-      SbtPlugin("com.typesafe.sbt", "sbt-site", PV.sbt_site),
-      SbtPlugin("com.typesafe.sbt", "sbt-ghpages", PV.sbt_ghpages),
+      SbtPlugin("com.github.sbt", "sbt-ghpages", PV.sbt_ghpages),
       SbtPlugin("io.github.jonas", "sbt-paradox-material-theme", PV.sbt_paradox_material_theme),
       SbtPlugin("org.scalameta", "sbt-mdoc", PV.sbt_mdoc),
     ),
