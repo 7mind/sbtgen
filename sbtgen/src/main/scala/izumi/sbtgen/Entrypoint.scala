@@ -89,14 +89,13 @@ object Entrypoint {
 
   final def run(config: GenConfig, project: Project, renderer: Renderer): Unit = {
     val artifacts = renderer.render()
-    val buildSbtStr = if (!config.jvmOnly) {
+    val buildSbtStr = Seq(doNotEditHeader) ++ (if (!config.jvmOnly) {
       Seq(
-        doNotEditHeader,
         "import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}",
       ) ++ artifacts
     } else {
       artifacts
-    }
+    })
 
     val files = Map(
       "build.sbt" -> buildSbtStr.mkString("", "\n\n", "\n")
