@@ -665,9 +665,9 @@ object Izumi {
         Projects.sbtplugins.izumi_deps,
         Seq.empty,
         Seq.empty,
-        settings = Projects.sbtplugins.settings/* ++ Seq(
+        settings = Projects.sbtplugins.settings ++ Seq(
           SettingDef.RawSettingDef("""withBuildInfo("izumi.sbt.deps", "Izumi")""")
-        )*/,
+        ),
       )
     ),
     pathPrefix = Projects.sbtplugins.basePath,
@@ -700,10 +700,10 @@ object Izumi {
     globalPlugins = Projects.plugins,
     rootPlugins = Projects.root.plugins,
     pluginConflictRules = Map(assemblyPluginJvm.name -> true),
-    appendPlugins = /*Defaults
+    appendPlugins = Defaults
       .SbtGenPlugins.map(
-        _.copy(version = Version.VConst("0.0.92"))
-      ) ++ */Seq(
+        _.copy(version = Version.VConst("0.0.97"))
+      ) ++ Seq(
       SbtPlugin("com.eed3si9n", "sbt-assembly", PV.sbt_assembly),
       SbtPlugin("com.jsuereth", "sbt-pgp", PV.sbt_pgp),
       SbtPlugin("org.scoverage", "sbt-scoverage", PV.sbt_scoverage),

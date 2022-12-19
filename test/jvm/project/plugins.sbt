@@ -4,6 +4,8 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
+addSbtPlugin("io.7mind.izumi.sbt" % "sbt-izumi" % "0.0.97")
+
 addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.9")
 
 addSbtPlugin("com.jsuereth" % "sbt-pgp" % "2.1.1")
