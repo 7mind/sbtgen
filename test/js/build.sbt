@@ -5361,8 +5361,7 @@ lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
       )
       case (_, _) => Seq.empty
     } },
-    sbtPlugin := true,
-    withBuildInfo("izumi.sbt.deps", "Izumi")
+    sbtPlugin := true
   )
   .disablePlugins(AssemblyPlugin)
 
