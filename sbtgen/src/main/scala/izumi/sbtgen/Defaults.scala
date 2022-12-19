@@ -32,22 +32,19 @@ object Defaults {
     ),
   )
 
-  final val SbtMetaRootOptionsScala2: Seq[Const] = Seq(
+  final val SbtMetaRootScalacOptions: Seq[Const] = Seq(
     """s"-Xmacro-settings:sbt-version=${sbtVersion.value}"""".raw,
-    """s"-Xmacro-settings:git-repo-clean=${com.typesafe.sbt.SbtGit.GitKeys.gitUncommittedChanges.value}"""".raw,
-    """s"-Xmacro-settings:git-branch=${com.typesafe.sbt.SbtGit.GitKeys.gitCurrentBranch.value}"""".raw,
-    """s"-Xmacro-settings:git-described-version=${com.typesafe.sbt.SbtGit.GitKeys.gitDescribedVersion.value.getOrElse("")}"""".raw,
-    """s"-Xmacro-settings:git-head-commit=${com.typesafe.sbt.SbtGit.GitKeys.gitHeadCommit.value.getOrElse("")}"""".raw,
+    """s"-Xmacro-settings:git-repo-clean=${com.github.sbt.git.SbtGit.GitKeys.gitUncommittedChanges.value}"""".raw,
+    """s"-Xmacro-settings:git-branch=${com.github.sbt.git.SbtGit.GitKeys.gitCurrentBranch.value}"""".raw,
+    """s"-Xmacro-settings:git-described-version=${com.github.sbt.git.SbtGit.GitKeys.gitDescribedVersion.value.getOrElse("")}"""".raw,
+    """s"-Xmacro-settings:git-head-commit=${com.github.sbt.git.SbtGit.GitKeys.gitHeadCommit.value.getOrElse("")}"""".raw,
   )
-
-  // -Xmacro-settings not implemented yet https://github.com/lampepfl/dotty/issues/12038
-  final val SbtMetaRootOptionsScala3: Seq[Const] = Seq()
 
   final val SbtMetaRootOptions: Seq[SettingDef.UnscopedSettingDef] = Seq(
-    "scalacOptions" in SettingScope.Build ++= SbtMetaRootOptionsScala2
+    "scalacOptions" in SettingScope.Build ++= SbtMetaRootScalacOptions
   )
 
-  final val SbtMetaSharedOptionsScala2: Seq[Const] = Seq(
+  final val SbtMetaSharedScalacOptions: Seq[Const] = Seq(
     """s"-Xmacro-settings:product-name=${name.value}"""".raw,
     """s"-Xmacro-settings:product-version=${version.value}"""".raw,
     """s"-Xmacro-settings:product-group=${organization.value}"""".raw,
@@ -55,14 +52,11 @@ object Defaults {
     """s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}"""".raw,
   )
 
-  // -Xmacro-settings not implemented yet https://github.com/lampepfl/dotty/issues/12038
-  final val SbtMetaSharedOptionsScala3: Seq[Const] = Seq()
-
   /**
     * For [[Project.sharedSettings]]
     */
   final val SbtMetaSharedOptions: Seq[SettingDef.UnscopedSettingDef] = Seq(
-    "scalacOptions" ++= SbtMetaSharedOptionsScala2
+    "scalacOptions" ++= SbtMetaSharedScalacOptions
   )
 
   final val CrossScalaPlusSources: Seq[SettingDef.UnscopedSettingDef] = {
