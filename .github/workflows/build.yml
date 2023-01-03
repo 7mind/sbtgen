@@ -50,6 +50,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     needs: [ 'build', 'test-scripted' ]
+    if: secrets.OPENSSL_IV && secrets.OPENSSL_KEY
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 11
