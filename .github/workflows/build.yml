@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ 'build', 'test-scripted' ]
     env:
-      HAVE_SECRETS: ${{ secrets.OPENSSL_IV != '' && secrets.OPENSSL_KEY != ''= }}
+      HAVE_SECRETS: ${{ secrets.OPENSSL_IV != '' && secrets.OPENSSL_KEY != '' }}
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 11
