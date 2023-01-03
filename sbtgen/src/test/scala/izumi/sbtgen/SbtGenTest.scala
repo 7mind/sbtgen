@@ -9,7 +9,7 @@ import scala.sys.process._
 
 class SbtGenTest extends AnyWordSpec {
   def genProjects(dir: String, args: Seq[String], settings: GlobalSettings = GlobalSettings(groupId = "io.7mind")): Unit = {
-    val out = args ++ Seq("-d", "-o", _: String)
+    val out = args ++ Seq("-o", _: String)
     Entrypoint.main(Izumi.izumi, settings, out(dir))
     Entrypoint.main(TestDottyProject.project, settings, out(s"$dir/dotty"))
   }

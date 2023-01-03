@@ -14,7 +14,10 @@ ThisBuild / developers :=List(
   Developer(id = "7mind", name = "Septimal Mind", url = url("https://github.com/7mind"), email = "team@7mind.io"),
 )
 ThisBuild / scmInfo :=Some(ScmInfo(url("https://github.com/7mind/sbtgen"), "scm:git:https://github.com/7mind/sbtgen.git"))
-(ThisBuild / credentials) += Credentials(file(".secrets/credentials.sonatype-nexus.properties"))
+(ThisBuild / credentials) ++= {
+  val f = file(".secrets/credentials.sonatype-nexus.properties")
+  if (f.exists()) {Seq(Credentials(f))} else {Seq.empty}
+}
 
 ThisBuild / publishTo :=(if (!isSnapshot.value) {
   sonatypePublishToBundle.value
