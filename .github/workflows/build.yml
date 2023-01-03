@@ -61,7 +61,7 @@ jobs:
           echo "HAVE_SECRETS: $HAVE_SECRETS"
   publish:
     runs-on: ubuntu-latest
-    needs: [ 'build', 'test-scripted' 'checksecret']
+    needs: [ 'build', 'test-scripted', 'checksecret']
     if: needs.checksecret.outputs.HAVE_SECRETS == 'true'
     steps:
       - uses: actions/checkout@v3
