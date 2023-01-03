@@ -47,14 +47,13 @@ function init {
         export CI_PULL_REQUEST=true
     fi
 
-    export CI_BRANCH=${BUILD_SOURCEBRANCHNAME}
+    export CI=true
+    export CI_BRANCH=${GITHUB_REF_NAME}
     export CI_TAG=`git describe --contains | grep v | grep -v '~' | head -n 1 || true`
-    export CI_BUILD_NUMBER=${BUILD_BUILDID}
-    export CI_COMMIT=${BUILD_SOURCEVERSION}
+    export CI_BUILD_NUMBER=${GITHUB_RUN_ATTEMPT}
+    export CI_COMMIT=${GITHUB_SHA}
 
-    export NPM_TOKEN=${TOKEN_NPM}
-    export NUGET_TOKEN=${TOKEN_NUGET}
-    export CODECOV_TOKEN=${TOKEN_CODECOV}
+
     export USERNAME=${USER:-`whoami`}
     export COURSIER_CACHE=${COURSIER_CACHE:-`~/.coursier`}
     export IVY_CACHE_FOLDER=${IVY_CACHE_FOLDER:-`~/.ivy2`}
@@ -82,7 +81,6 @@ function secrets {
     if [[ "$CI_PULL_REQUEST" == "false"  ]] ; then
         openssl aes-256-cbc -K ${OPENSSL_KEY} -iv ${OPENSSL_IV} -in secrets.tar.enc -out secrets.tar -d
         tar xvf secrets.tar
-        ln -s .secrets/local.sbt local.sbt
     fi
 }
 
