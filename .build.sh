@@ -40,15 +40,8 @@ function publish {
 }
 
 function init {
-    export COURSIER_CACHE=${COURSIER_CACHE:-`~/.coursier`}
-    export IVY_CACHE_FOLDER=${IVY_CACHE_FOLDER:-`~/.ivy2`}
-
     export SCALA212=$(cat projects/ScalaVersions.scala | grep 'scala_212' |  sed -r 's/.*\"(.*)\".**/\1/')
     export SCALA213=$(cat projects/ScalaVersions.scala | grep 'scala_213' |  sed -r 's/.*\"(.*)\".**/\1/')
-
-    git config --global user.name "$USERNAME"
-    git config --global user.email "$CI_BUILD_UNIQ_SUFFIX@$CI_COMMIT"
-    git config --global core.sshCommand "ssh -t -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
 
     printenv
 }
