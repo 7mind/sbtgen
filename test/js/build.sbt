@@ -5427,7 +5427,6 @@ lazy val `fundamentals-js` = (project in file(".agg/fundamentals-fundamentals-js
     `fundamentals-platformJS`,
     `fundamentals-functionalJS`,
     `fundamentals-bioJS`,
-    `fundamentals-typesafe-config`,
     `fundamentals-reflectionJS`,
     `fundamentals-json-circeJS`
   )
@@ -5455,28 +5454,6 @@ lazy val `distage` = (project in file(".agg/distage-distage"))
   )
 
 lazy val `distage-jvm` = (project in file(".agg/distage-distage-jvm"))
-  .settings(
-    publish / skip := true,
-    crossScalaVersions := Seq(
-      "2.12.9",
-      "2.13.0"
-    ),
-    scalaVersion := crossScalaVersions.value.head
-  )
-  .disablePlugins(AssemblyPlugin)
-  .aggregate(
-    `distage-model`,
-    `distage-proxy-cglib`,
-    `distage-core`,
-    `distage-config`,
-    `distage-roles-api`,
-    `distage-plugins`,
-    `distage-roles`,
-    `distage-static`,
-    `distage-testkit`
-  )
-
-lazy val `distage-js` = (project in file(".agg/distage-distage-js"))
   .settings(
     publish / skip := true,
     crossScalaVersions := Seq(
@@ -5554,11 +5531,7 @@ lazy val `logstage-js` = (project in file(".agg/logstage-logstage-js"))
   .aggregate(
     `logstage-apiJS`,
     `logstage-coreJS`,
-    `logstage-rendering-circeJS`,
-    `logstage-di`,
-    `logstage-config`,
-    `logstage-adapter-slf4j`,
-    `logstage-sink-slf4j`
+    `logstage-rendering-circeJS`
   )
 
 lazy val `idealingua` = (project in file(".agg/idealingua-v1-idealingua"))
@@ -5625,13 +5598,7 @@ lazy val `idealingua-js` = (project in file(".agg/idealingua-v1-idealingua-js"))
     `idealingua-v1-modelJS`,
     `idealingua-v1-coreJS`,
     `idealingua-v1-runtime-rpc-scalaJS`,
-    `idealingua-v1-runtime-rpc-http4s`,
-    `idealingua-v1-transpilersJS`,
-    `idealingua-v1-test-defs`,
-    `idealingua-v1-runtime-rpc-typescript`,
-    `idealingua-v1-runtime-rpc-go`,
-    `idealingua-v1-runtime-rpc-csharp`,
-    `idealingua-v1-compiler`
+    `idealingua-v1-transpilersJS`
   )
 
 lazy val `doc` = (project in file(".agg/doc-doc"))
@@ -5660,19 +5627,6 @@ lazy val `doc-jvm` = (project in file(".agg/doc-doc-jvm"))
     `microsite`
   )
 
-lazy val `doc-js` = (project in file(".agg/doc-doc-js"))
-  .settings(
-    publish / skip := true,
-    crossScalaVersions := Seq(
-      "2.12.8"
-    ),
-    scalaVersion := crossScalaVersions.value.head
-  )
-  .disablePlugins(AssemblyPlugin)
-  .aggregate(
-    `microsite`
-  )
-
 lazy val `sbt-plugins` = (project in file(".agg/sbt-plugins-sbt-plugins"))
   .settings(
     publish / skip := true
@@ -5683,15 +5637,6 @@ lazy val `sbt-plugins` = (project in file(".agg/sbt-plugins-sbt-plugins"))
   )
 
 lazy val `sbt-plugins-jvm` = (project in file(".agg/sbt-plugins-sbt-plugins-jvm"))
-  .settings(
-    publish / skip := true
-  )
-  .disablePlugins(AssemblyPlugin)
-  .aggregate(
-    `sbt-izumi-deps`
-  )
-
-lazy val `sbt-plugins-js` = (project in file(".agg/sbt-plugins-sbt-plugins-js"))
   .settings(
     publish / skip := true
   )
@@ -5729,7 +5674,6 @@ lazy val `izumi-js` = (project in file(".agg/.agg-js"))
   .disablePlugins(AssemblyPlugin)
   .aggregate(
     `fundamentals-js`,
-    `distage-js`,
     `logstage-js`,
     `idealingua-js`
   )
