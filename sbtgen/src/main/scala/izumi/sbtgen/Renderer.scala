@@ -215,7 +215,7 @@ class Renderer(
     } else {
       val platformAgg = agg.filteredArtifacts.flatMap {
         a =>
-          if (a.isJvmOnly) {
+          if (a.isJvmOnly && platform == Platform.Jvm) {
             Seq(renderName(a.name))
           } else {
             a.platforms.filter(_.platform == platform).map(a nameOn _.platform)
