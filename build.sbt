@@ -26,7 +26,7 @@ ThisBuild / publishTo :=(if (!isSnapshot.value) {
 })
 
 val scalaJsVersion = "1.12.0"
-val scalaNativeVersion = "0.4.9"
+val scalaNativeVersion = "0.4.14"
 val crossProjectVersion = "1.2.0"
 val bundlerVersion = "0.21.1"
 val sbtJsDependenciesVersion = "1.0.2"
