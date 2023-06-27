@@ -25,9 +25,9 @@ ThisBuild / publishTo :=(if (!isSnapshot.value) {
   Some(Opts.resolver.sonatypeSnapshots)
 })
 
-val scalaJsVersion = "1.12.0"
+val scalaJsVersion = "1.13.2"
 val scalaNativeVersion = "0.4.14"
-val crossProjectVersion = "1.2.0"
+val crossProjectVersion = "1.3.1"
 val bundlerVersion = "0.21.1"
 val sbtJsDependenciesVersion = "1.0.2"
 
