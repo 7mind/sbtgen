@@ -82,24 +82,31 @@ val scalaOpts = scalacOptions ++= ((isSnapshot.value, scalaVersion.value) match 
     "-Wvalue-discard",
     "-Wunused:_",
   )
+  case (_, ScalaVersions.scala_3) => Seq(
+    "-no-indent",
+    "-explain",
+  )
   case (_, _) => Seq.empty
 })
 
 lazy val sbtmeta = (project in file("sbtmeta"))
   .settings(
-    crossScalaVersions := Seq(ScalaVersions.scala_213, ScalaVersions.scala_212),
+    crossScalaVersions := Seq(ScalaVersions.scala_3, ScalaVersions.scala_213, ScalaVersions.scala_212),
     scalaVersion := crossScalaVersions.value.head,
-    libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided,
+    libraryDependencies ++= {
+      if (scalaVersion.value.startsWith("2"))
+        Seq("org.scala-lang" % "scala-reflect" % scalaVersion.value % Provided)
+      else Seq.empty
+    },
     scalaOpts,
   )
 
 lazy val sbtgen = (project in file("sbtgen"))
   .dependsOn(sbtmeta)
   .settings(
-    crossScalaVersions := Seq(ScalaVersions.scala_213, ScalaVersions.scala_212),
+    crossScalaVersions := Seq(ScalaVersions.scala_3, ScalaVersions.scala_213, ScalaVersions.scala_212),
     scalaVersion := crossScalaVersions.value.head,
-    //    libraryDependencies += "com.github.scopt" %% "scopt" % "4.0.0-RC2",
-    libraryDependencies += "com.github.scopt" %% "scopt" % "3.7.1",
+    libraryDependencies += "com.github.scopt" %% "scopt" % "4.1.0",
     libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.11.0",
     (ThisBuild / libraryDependencies) += "org.scalatest" %% "scalatest" % "3.2.18" % Test,
     scalacOptions ++= Seq(
@@ -216,7 +223,7 @@ lazy val `izumi-sbtgen` = (project in file("."))
         action = { st: State =>
           val extracted = Project.extract(st)
           val ref = extracted.get(`sbt-tests` / thisProjectRef)
-          extracted.runInputTask((ref / (Global / scripted)), "", st)._1
+          extracted.runInputTask(ref / (Global / scripted), "", st)._1
         }
       ),
       setReleaseVersion, // : ReleaseStep
