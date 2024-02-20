@@ -25,12 +25,6 @@ ThisBuild / publishTo :=(if (!isSnapshot.value) {
   Some(Opts.resolver.sonatypeSnapshots)
 })
 
-val scalaJsVersion = "1.13.2"
-val scalaNativeVersion = "0.4.17"
-val crossProjectVersion = "1.3.1"
-val bundlerVersion = "0.21.1"
-val sbtJsDependenciesVersion = "1.0.2"
-
 val scalaOpts = scalacOptions ++= ((isSnapshot.value, scalaVersion.value) match {
   case (_, ScalaVersions.scala_212) => Seq(
     "-Xsource:2.13",
@@ -114,11 +108,11 @@ lazy val sbtgen = (project in file("sbtgen"))
       s"-Xmacro-settings:sbt-version=${sbtVersion.value}",
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}",
-      s"-Xmacro-settings:scala-js-version=$scalaJsVersion",
-      s"-Xmacro-settings:scala-native-version=$scalaNativeVersion",
-      s"-Xmacro-settings:crossproject-version=$crossProjectVersion",
-      s"-Xmacro-settings:bundler-version=$bundlerVersion",
-      s"-Xmacro-settings:sbt-js-dependencies-version=$sbtJsDependenciesVersion",
+      s"-Xmacro-settings:scala-js-version=${ScalaVersions.scalaJsVersion}",
+      s"-Xmacro-settings:scala-native-version=${ScalaVersions.scalaNativeVersion}",
+      s"-Xmacro-settings:crossproject-version=${Deps.crossProjectVersion}",
+      s"-Xmacro-settings:bundler-version=${Deps.bundlerVersion}",
+      s"-Xmacro-settings:sbt-js-dependencies-version=${Deps.sbtJsDependenciesVersion}",
     ),
     scalaOpts,
   )
@@ -159,11 +153,11 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
       ("com.github.sbt" % "sbt-duplicates-finder" % "1.1.0").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
     ),
     libraryDependencies ++= Seq(
-      ("org.scala-js" % "sbt-scalajs" % scalaJsVersion % Test).extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
-      ("org.scala-native" % "sbt-scala-native" % scalaNativeVersion % Test).extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
-      ("org.portable-scala" % "sbt-scalajs-crossproject" % crossProjectVersion % Test).extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
-      ("ch.epfl.scala" % "sbt-scalajs-bundler" % bundlerVersion % Test).extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
-      ("org.scala-js" % "sbt-jsdependencies" % sbtJsDependenciesVersion % Test).extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
+      ("org.scala-js" % "sbt-scalajs" % ScalaVersions.scalaJsVersion % Test).extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
+      ("org.scala-native" % "sbt-scala-native" % ScalaVersions.scalaNativeVersion % Test).extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
+      ("org.portable-scala" % "sbt-scalajs-crossproject" % Deps.crossProjectVersion % Test).extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
+      ("ch.epfl.scala" % "sbt-scalajs-bundler" % Deps.bundlerVersion % Test).extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
+      ("org.scala-js" % "sbt-jsdependencies" % Deps.sbtJsDependenciesVersion % Test).extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
     ),
     scalaOpts,
   )
