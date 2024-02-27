@@ -165,7 +165,7 @@ object Defaults {
   )
 
   final val Scala213Options = Scala2Options ++ Seq[Const](
-    "-Xsource:3", // Compile with maximum dotty compatibility
+    "-Xsource:3-cross", // Compile with maximum dotty compatibility
     "-P:kind-projector:underscore-placeholders", // Use underscore type-lambda syntax by default
 
     CRaw("""if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning""""), // enable fatal warnings on CI
