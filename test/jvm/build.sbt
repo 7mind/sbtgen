@@ -128,7 +128,7 @@ lazy val `fundamentals-collections` = project.in(file("fundamentals/fundamentals
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -276,7 +276,7 @@ lazy val `fundamentals-platform` = project.in(file("fundamentals/fundamentals-pl
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -421,7 +421,7 @@ lazy val `fundamentals-functional` = project.in(file("fundamentals/fundamentals-
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -572,7 +572,7 @@ lazy val `fundamentals-bio` = project.in(file("fundamentals/fundamentals-bio"))
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -735,7 +735,7 @@ lazy val `fundamentals-typesafe-config` = project.in(file("fundamentals/fundamen
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -897,7 +897,7 @@ lazy val `fundamentals-reflection` = project.in(file("fundamentals/fundamentals-
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -1052,7 +1052,7 @@ lazy val `fundamentals-json-circe` = project.in(file("fundamentals/fundamentals-
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -1217,7 +1217,7 @@ lazy val `distage-model` = project.in(file("distage/distage-model"))
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -1369,7 +1369,7 @@ lazy val `distage-proxy-cglib` = project.in(file("distage/distage-proxy-cglib"))
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -1519,7 +1519,7 @@ lazy val `distage-core` = project.in(file("distage/distage-core"))
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -1671,7 +1671,7 @@ lazy val `distage-config` = project.in(file("distage/distage-config"))
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -1819,7 +1819,7 @@ lazy val `distage-roles-api` = project.in(file("distage/distage-roles-api"))
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -1972,7 +1972,7 @@ lazy val `distage-plugins` = project.in(file("distage/distage-plugins"))
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -2129,7 +2129,7 @@ lazy val `distage-roles` = project.in(file("distage/distage-roles"))
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -2279,7 +2279,7 @@ lazy val `distage-static` = project.in(file("distage/distage-static"))
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -2435,7 +2435,7 @@ lazy val `distage-testkit` = project.in(file("distage/distage-testkit"))
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -2596,7 +2596,7 @@ lazy val `logstage-api` = project.in(file("logstage/logstage-api"))
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -2761,7 +2761,7 @@ lazy val `logstage-core` = project.in(file("logstage/logstage-core"))
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -2910,7 +2910,7 @@ lazy val `logstage-rendering-circe` = project.in(file("logstage/logstage-renderi
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -3062,7 +3062,7 @@ lazy val `logstage-di` = project.in(file("logstage/logstage-di"))
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -3211,7 +3211,7 @@ lazy val `logstage-config` = project.in(file("logstage/logstage-config"))
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -3360,7 +3360,7 @@ lazy val `logstage-adapter-slf4j` = project.in(file("logstage/logstage-adapter-s
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -3514,7 +3514,7 @@ lazy val `logstage-sink-slf4j` = project.in(file("logstage/logstage-sink-slf4j")
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -3664,7 +3664,7 @@ lazy val `idealingua-v1-model` = project.in(file("idealingua-v1/idealingua-v1-mo
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -3817,7 +3817,7 @@ lazy val `idealingua-v1-core` = project.in(file("idealingua-v1/idealingua-v1-cor
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -3984,7 +3984,7 @@ lazy val `idealingua-v1-runtime-rpc-scala` = project.in(file("idealingua-v1/idea
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -4140,7 +4140,7 @@ lazy val `idealingua-v1-runtime-rpc-http4s` = project.in(file("idealingua-v1/ide
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -4300,7 +4300,7 @@ lazy val `idealingua-v1-transpilers` = project.in(file("idealingua-v1/idealingua
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -4448,7 +4448,7 @@ lazy val `idealingua-v1-test-defs` = project.in(file("idealingua-v1/idealingua-v
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -4593,7 +4593,7 @@ lazy val `idealingua-v1-runtime-rpc-typescript` = project.in(file("idealingua-v1
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -4738,7 +4738,7 @@ lazy val `idealingua-v1-runtime-rpc-go` = project.in(file("idealingua-v1/idealin
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -4883,7 +4883,7 @@ lazy val `idealingua-v1-runtime-rpc-csharp` = project.in(file("idealingua-v1/ide
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -5037,7 +5037,7 @@ lazy val `idealingua-v1-compiler` = project.in(file("idealingua-v1/idealingua-v1
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -5227,7 +5227,7 @@ lazy val `microsite` = project.in(file("doc/microsite"))
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
@@ -5425,7 +5425,7 @@ lazy val `sbt-izumi-deps` = project.in(file("sbt-plugins/sbt-izumi-deps"))
       case (_, "2.13.0") => Seq(
         "-release:8",
         "-explaintypes",
-        "-Xsource:3",
+        "-Xsource:3-cross",
         "-P:kind-projector:underscore-placeholders",
         if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning",
         "-Wconf:cat=optimizer:warning",
