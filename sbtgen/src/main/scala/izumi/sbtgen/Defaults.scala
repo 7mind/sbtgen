@@ -197,8 +197,17 @@ object Defaults {
     "-release:8", // Target JDK8
 
     "-Ykind-projector:underscores", // Use underscore type-lambda syntax by default
-    "-no-indent",
+
+    "-Yretain-trees", // retain trees for macros
+
+    "-no-indent", // disable indentation syntax
     "-explain",
+    "-explain-types", // Explain type errors in more detail.
+
+    "-Xmax-inlines:64", // increase inline limit
+
+    "-Wconf:msg=eta-expanded even though:silent", // disable harmful anti-SAM warning
+
 //    CRaw("""if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning""""), // enable fatal warnings on CI
   )
 
