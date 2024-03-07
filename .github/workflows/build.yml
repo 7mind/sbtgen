@@ -59,6 +59,7 @@ jobs:
         run: |
           bash .build.sh secrets publish
   all-good:
+    if: always()
     runs-on: ubuntu-latest
     needs: [ 'build', 'test-scripted', 'publish' ]
     steps:
