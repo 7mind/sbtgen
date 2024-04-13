@@ -4,5 +4,5 @@ object ScalaVersions {
   val scala_3 = "3.2.2"
 
   val scalaJsVersion = "1.15.0"
-  val scalaNativeVersion = "0.4.17"
+  val scalaNativeVersion = "0.5.0"
 }
