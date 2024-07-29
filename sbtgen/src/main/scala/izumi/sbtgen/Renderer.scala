@@ -650,7 +650,7 @@ trait Renderers extends WithArtifactExt with WithBasicRenderers with WithProject
 
               val snapshot = key.release match {
                 case Some(value) =>
-                  (!value).toString
+                  !value.toString
                 case None =>
                   "_"
               }
