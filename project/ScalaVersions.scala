@@ -3,6 +3,6 @@ object ScalaVersions {
   val scala_213 = "2.13.14"
   val scala_3 = "3.4.1"
 
-  val scalaJsVersion = "1.16.0"
+  val scalaJsVersion = "1.18.1"
   val scalaNativeVersion = "0.5.1"
 }
