@@ -210,9 +210,9 @@ object Defaults {
   )
 
   final val Scala3Options = Seq[Const](
-    "-release:8", // Target JDK8
+    "-release:17", // Target JDK17 (minimum for Scala 3.8+)
 
-    "-Ykind-projector:underscores", // Use underscore type-lambda syntax by default
+    "-Xkind-projector:underscores", // Use underscore type-lambda syntax by default
 
     "-Yretain-trees", // retain trees for macros
 
@@ -222,23 +222,35 @@ object Defaults {
     "-explain-cyclic",
     "-Xmax-inlines:64", // increase inline limit
 
-    // enable all warnings except -Wtostring-interpolated, -Wshadow and -Wsafe-init which slows down compilation to a crawl
+    "-Ybackend-parallelism",
+    CRaw("math.min(16, math.max(1, sys.runtime.availableProcessors() - 1)).toString"),
+
+    // enable all warnings except:
+    // -Winfer-union — not a problem or a mistake
+    // -Wsafe-init — slows down compilation to a crawl
+    // -Wshadow:all — too noisy, many legitimate shadowing patterns
+    // -Wtostring-interpolated — not a problem or a mistake
     "-Wenum-comment-discard",
     "-Wimplausible-patterns",
+    // "-Winfer-union",
     "-Wnonunit-statement",
+    "-Wopt:all",
+    "-Wrecurse-with-default",
     // "-Wsafe-init",
+    "-Wshadow:private-shadow",
     // "-Wshadow:all",
     // "-Wtostring-interpolated",
     "-WunstableInlineAccessors",
     "-Wunused:all",
     "-Wvalue-discard",
+    "-Wwrong-arrow",
     //
     "-Wconf:any:verbose",
     "-Wconf:name=UnusedNonUnitValue:silent",
     "-Wconf:name=ValueDiscarding:silent",
     "-Wconf:msg=eta-expanded even though:silent", // disable harmful anti-SAM warning
 
-//    CRaw("""if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning""""), // enable fatal warnings on CI
+    CRaw("""if (insideCI.value) "-Wconf:any:error" else "-Wconf:any:warning""""), // enable fatal warnings on CI
   )
 
   final val SbtGenPlugins = Seq(
