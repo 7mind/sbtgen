@@ -103,7 +103,7 @@ class Renderer(
   override protected def cached(s: String): String = {
     if (config.compactify) {
       val idx = settingsCache.getOrElseUpdate(s, settingsCache.size)
-      cacheIdxName(idx) + ".value"
+      cacheIdxName(idx)
     } else {
       s
     }
@@ -159,7 +159,7 @@ class Renderer(
 
     val sc = settingsCache.toSeq.sortBy(_._2).map {
       case (s, idx) =>
-        s"lazy val ${cacheIdxName(idx)} = Def.setting { $s }"
+        s"lazy val ${cacheIdxName(idx)} = $s"
     }
 
     Seq(
@@ -673,17 +673,12 @@ trait Renderers extends WithArtifactExt with WithBasicRenderers with WithProject
         "--="
     }
 
-    val out = settingDef match {
+    val rhs = settingDef match {
       case u: SettingDef.UnscopedSettingDef =>
-        if (u.value.isInstanceOf[Const.CRaw]) {
-          renderConst(u.value)
-        } else {
-          cached(renderConst(u.value))
-        }
+        renderConst(u.value)
 
       case s: SettingDef.ScopedSettingDef =>
-        val r = s
-          .defs.toSeq
+        s.defs.toSeq
           .map {
             case (key, v) =>
               val language = key.language match {
@@ -707,16 +702,17 @@ trait Renderers extends WithArtifactExt with WithBasicRenderers with WithProject
             "\n",
             "\n} }",
           )
-
-        if (s.defs.exists(_._2.isInstanceOf[Const.CRaw])) {
-          r
-        } else {
-          cached(r)
-        }
     }
 
-    val all = in ++ Seq(name) ++ Seq(op, out)
-    all.mkString(" ")
+    /**
+     * Cache the full assignment (key + scope + op + RHS) rather than just the RHS.
+     * This preserves the expected-type direction of `:=`/`+=`/`++=`, so implicit
+     * conversions on the RHS (e.g. `(Generator, File) => protocbridge.Target` for
+     * `PB.targets`) fire as if inlined.
+     * @see https://github.com/scalapb/protoc-bridge/blob/master/bridge/src/main/scala/protocbridge/Target.scala
+     */
+    val fullAssignment = (in ++ Seq(name) ++ Seq(op, rhs)).mkString(" ")
+    cached(fullAssignment)
   }
 
   protected def renderLibDeps(isJvmOnly: Boolean, targetPlatform: Platform)(sharedArtDeps: Seq[ScopedLibrary]): Option[String] = {
