@@ -187,11 +187,11 @@ class Renderer(
     val artifacts = agg.filteredArtifacts
     if (artifacts.isEmpty) None
     else {
-      val rendered   = artifacts.map(a => renderArtifact(prepareArtifact(project, a)))
+      val rendered = artifacts.map(a => renderArtifact(prepareArtifact(project, a)))
       val holderName = renderName(s"${agg.name.value}_holder")
-      val body       = rendered.map(_.shift(2)).mkString("\n\n")
-      val wrapped    = s"val $holderName = new {\n$body\n}"
-      val exports    = artifacts.flatMap(renderHolderReExports(holderName))
+      val body = rendered.map(_.shift(2)).mkString("\n\n")
+      val wrapped = s"val $holderName = new {\n$body\n}"
+      val exports = artifacts.flatMap(renderHolderReExports(holderName))
       Some((wrapped +: exports).mkString("\n"))
     }
   }
@@ -202,16 +202,17 @@ class Renderer(
     // picks them up. Cross projects expose a `CrossProject` plus per-platform
     // `Project`s; we annotate the platform-specific re-exports and let the
     // outer one infer.
-    val mainTpe  = if (a.isJvmOnly) ": Project" else ""
-    val main     = s"lazy val $mainName$mainTpe = $holderName.$mainName"
-    val derived  = if (a.isJvmOnly) Seq.empty
-    else {
-      a.platforms.filter(p => platformEnabled(p.platform)).map {
-        penv =>
-          val n = renderName(a.nameOn0(penv.platform))
-          s"lazy val $n: Project = $holderName.$n"
+    val mainTpe = if (a.isJvmOnly) ": Project" else ""
+    val main = s"lazy val $mainName$mainTpe = $holderName.$mainName"
+    val derived =
+      if (a.isJvmOnly) Seq.empty
+      else {
+        a.platforms.filter(p => platformEnabled(p.platform)).map {
+          penv =>
+            val n = renderName(a.nameOn0(penv.platform))
+            s"lazy val $n: Project = $holderName.$n"
+        }
       }
-    }
     main +: derived
   }
 
@@ -705,12 +706,12 @@ trait Renderers extends WithArtifactExt with WithBasicRenderers with WithProject
     }
 
     /**
-     * Cache the full assignment (key + scope + op + RHS) rather than just the RHS.
-     * This preserves the expected-type direction of `:=`/`+=`/`++=`, so implicit
-     * conversions on the RHS (e.g. `(Generator, File) => protocbridge.Target` for
-     * `PB.targets`) fire as if inlined.
-     * @see https://github.com/scalapb/protoc-bridge/blob/master/bridge/src/main/scala/protocbridge/Target.scala
-     */
+      * Cache the full assignment (key + scope + op + RHS) rather than just the RHS.
+      * This preserves the expected-type direction of `:=`/`+=`/`++=`, so implicit
+      * conversions on the RHS (e.g. `(Generator, File) => protocbridge.Target` for
+      * `PB.targets`) fire as if inlined.
+      * @see https://github.com/scalapb/protoc-bridge/blob/master/bridge/src/main/scala/protocbridge/Target.scala
+      */
     val fullAssignment = (in ++ Seq(name) ++ Seq(op, rhs)).mkString(" ")
     cached(fullAssignment)
   }
