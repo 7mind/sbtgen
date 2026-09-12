@@ -147,16 +147,16 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
       ("org.scoverage" % "sbt-scoverage" % "2.4.4").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
 
       // http://www.scala-sbt.org/sbt-pgp/
-      ("com.github.sbt" % "sbt-pgp" % "2.3.1").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
+      ("com.github.sbt" % "sbt-pgp" % "2.3.2").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
 
       // https://github.com/sbt/sbt-git
-      ("com.github.sbt" % "sbt-git" % "2.1.0").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
+      ("com.github.sbt" % "sbt-git" % "2.2.0").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
 
       // https://github.com/orrsella/sbt-stats
       ("com.orrsella" % "sbt-stats" % "1.0.7").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
 
       // https://github.com/sbt/sbt-release
-      ("com.github.sbt" % "sbt-release" % "1.4.0").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
+      ("com.github.sbt" % "sbt-release" % "1.5.0").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
 
       // https://github.com/sbt/sbt-dependency-graph
       ("org.scala-sbt" % "sbt-dependency-tree" % sbtVersion.value).extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
