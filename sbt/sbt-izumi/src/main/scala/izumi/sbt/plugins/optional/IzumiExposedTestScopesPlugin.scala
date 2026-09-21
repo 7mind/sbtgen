@@ -2,9 +2,13 @@ package izumi.sbt.plugins.optional
 
 import java.nio.file.Path
 
+import izumi.sbt.compat.PluginCompat
 import sbt.internal.inc.Analysis
 import sbt.internal.util.ConsoleLogger
+import sbt.librarymanagement.Configuration
 import sbt.{Attributed, Def, IO, _}
+import sbtcompat.PluginCompat._
+import xsbti.FileConverter
 import xsbti.compile.CompileAnalysis
 
 import scala.util.control.NonFatal
@@ -17,59 +21,68 @@ object IzumiExposedTestScopesPlugin extends AutoPlugin {
 
   protected val logger: ConsoleLogger = ConsoleLogger()
 
-  val testSettings: Seq[Def.Setting[_]] = Seq(
-    Test / compile := Def.task {
-      extractExposableTestScopeParts(
-        streams.value,
-        (Test / classDirectory).value,
-        (Test / compile).value,
-      )
-    }.value,
-    Test / dependencyClasspath := Def.task {
-      modifyTestScopeDependency(
-        streams.value,
-        (Test / dependencyClasspath).value,
-        "test-classes",
-        projectID.value.name,
-      )
-    }.value,
-  )
+  val testSettings: Seq[Def.Setting[_]] = exposedSettings(Test, "test-classes")
 
-  val itSettings: Seq[Def.Setting[_]] = Seq(
-    IntegrationTest / compile := Def.task {
-      extractExposableTestScopeParts(
-        streams.value,
-        (IntegrationTest / classDirectory).value,
-        (IntegrationTest / compile).value,
-      )
-    }.value,
-    IntegrationTest / dependencyClasspath := Def.task {
-      modifyTestScopeDependency(
-        streams.value,
-        (IntegrationTest / dependencyClasspath).value,
-        "it-classes",
-        projectID.value.name,
-      )
-    }.value,
-  )
+  /**
+    * sbt 1.x only: sbt 2.x removed the `IntegrationTest` configuration in favour of
+    * declaring integration tests as a separate subproject, so there is nothing to scope these to.
+    */
+  def itSettings: Seq[Def.Setting[_]] = {
+    PluginCompat.integrationTestConfig match {
+      case Some(config) =>
+        exposedSettings(config, "it-classes")
+      case None =>
+        throw new UnsupportedOperationException(
+          "IzumiExposedTestScopesPlugin.itSettings is unavailable on sbt 2.x: the IntegrationTest configuration was removed, " +
+          "declare integration tests as a separate subproject instead"
+        )
+    }
+  }
 
   override def projectSettings: Seq[sbt.Setting[_]] = testSettings
+
+  private def exposedSettings(config: Configuration, classesDirectoryName: String): Seq[Def.Setting[_]] = {
+    Seq(
+      // sbt 2.x caches every task; neither CompileAnalysis nor Classpath has a JsonFormat,
+      // and both of these rewrite files on disk on every run
+      config / compile := Def.uncached {
+        extractExposableTestScopeParts(
+          streams.value,
+          (config / classDirectory).value,
+          (config / compile).value,
+        )
+      },
+      config / dependencyClasspath := Def.uncached {
+        implicit val converter: FileConverter = fileConverter.value
+        modifyTestScopeDependency(
+          streams.value,
+          (config / dependencyClasspath).value,
+          classesDirectoryName,
+          projectID.value.name,
+        )
+      },
+    )
+  }
 
   private def modifyTestScopeDependency(
     streams: TaskStreams,
     classpath: Classpath,
     directoryNameToModify: String,
     project: String,
-  ): Seq[Attributed[File]] = {
+  )(implicit converter: FileConverter
+  ): Classpath = {
     val logger = streams.log
     classpath.flatMap {
-      case f if f.data.getName.equals(directoryNameToModify) =>
-        val modified = modifyPath(f.data).toFile
-        logger.debug(s"Classpath entry modified in $project: ${f.data} => $modified")
-        Seq(Attributed.blank(modified))
-      case f =>
-        logger.debug(s"Classpath entry NOT modified in $project: $f")
-        Seq(f)
+      entry =>
+        val data = toFile(entry.data)
+        if (data.getName.equals(directoryNameToModify)) {
+          val modified = modifyPath(data).toFile
+          logger.debug(s"Classpath entry modified in $project: $data => $modified")
+          Seq(Attributed.blank(toFileRef(modified)))
+        } else {
+          logger.debug(s"Classpath entry NOT modified in $project: $entry")
+          Seq(entry)
+        }
     }
   }
 

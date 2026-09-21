@@ -15,7 +15,8 @@ function build {
 }
 
 function scripted {
-  csbt clean publishLocal sbt-tests/scripted || exit 1
+  # cross over both sbt majors: the plugin is published for sbt 1.x and sbt 2.x
+  csbt +clean +publishLocal +sbt-tests/scripted || exit 1
 }
 
 function publish {

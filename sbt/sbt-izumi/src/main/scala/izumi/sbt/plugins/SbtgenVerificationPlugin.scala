@@ -12,7 +12,7 @@ object SbtgenVerificationPlugin extends AutoPlugin {
 
     val projectScripts = file("project") ** "*.sc"
     val sbtgenScripts = file("sbtgen") ** "*.sc"
-    val scFiles = Seq(new File("sbtgen.sc")) ++ projectScripts.get ++ sbtgenScripts.get
+    val scFiles = Seq(new File("sbtgen.sc")) ++ projectScripts.get() ++ sbtgenScripts.get()
 
     val sbtgen = scFiles
       .filter(_.exists())

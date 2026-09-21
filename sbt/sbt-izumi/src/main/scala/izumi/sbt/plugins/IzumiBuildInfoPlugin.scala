@@ -124,7 +124,7 @@ object IzumiBuildInfoPlugin extends AutoPlugin {
           .split('.')
           .foldLeft((Compile / sourceManaged).value)(_ / _) / s"$objectName.scala"
 
-      val sd = settingsData.in(Global).value
+      val sd = (Global / settingsData).value
       val ver = (LocalRootProject / version).value
       val group = (LocalRootProject / organization).value
 
@@ -162,7 +162,7 @@ object IzumiBuildInfoPlugin extends AutoPlugin {
             ImportedDeps(p.safeId, deps)
         }.map {
           d =>
-            val uniqEntries = d.deps.groupBy(_.safeId).mapValues(_.head).values.toSeq.sortBy(_.safeId)
+            val uniqEntries = d.deps.groupBy(_.safeId).map { case (_, v) => v.head }.toSeq.sortBy(_.safeId)
 
             val vals = uniqEntries.map {
               v =>

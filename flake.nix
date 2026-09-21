@@ -1,7 +1,7 @@
 {
   description = "SICK build environment";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-24.11";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/release-26.05";
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
@@ -18,8 +18,9 @@
           devShells.default = pkgs.mkShell {
             nativeBuildInputs = with pkgs.buildPackages; [
               ncurses
-              graalvm-ce
+              graalvmPackages.graalvm-ce
               sbt
+              scalafmt
 
               git
               openssl

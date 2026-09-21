@@ -99,6 +99,52 @@ Usage: sbtgen [options]
 Cannot parse commandline
 ```
 
+## sbt 2.x
+
+`sbt-izumi` is published for both sbt majors: sbt 1.x picks up `sbt-izumi_2.12_1.0`,
+sbt 2.x picks up `sbt-izumi_sbt2_3`. `addSbtPlugin` resolves the right one, so nothing
+changes in `project/plugins.sbt`.
+
+To make `sbtgen` emit a build for sbt 2.x, set `sbtTarget` and a matching `sbtVersion`:
+
+```scala
+val globalSettings = GlobalSettings(
+  groupId = "my.org",
+  sbtVersion = Some("2.0.9"),
+  sbtTarget = SbtTarget.Sbt2,
+)
+```
+
+The two must agree, otherwise generation fails.
+
+Differences in the generated output:
+
+* Project definitions are emitted flat, rather than grouped into the anonymous-class
+  holders used to stay under the JVM classfile size limit on sbt 1.x. Scala 3, which
+  compiles `build.sbt` on sbt 2.x, infers `Object` instead of a structural refinement
+  for `new { ... }`, so the holders' members would be unreachable.
+* `rootPlugins` and `topLevelSettings` are attached to the root project instead of being
+  emitted as bare statements, because sbt 2.x injects bare statements into *every*
+  subproject.
+
+Known limitations on sbt 2.x:
+
+* Scala.js builds cannot use `sbt-scalajs-bundler` or `sbt-jsdependencies`, which have no
+  sbt 2.x releases. Set `bundlerVersion = None` and `sbtJsDependenciesVersion = None`;
+  generation fails otherwise rather than silently dropping them.
+* Scala.js/Native also need plugin versions newer than the defaults this project pins, since
+  the older ones were never published for sbt 2.x:
+
+  ```scala
+  scalaJsVersion = Version.VConst("1.22.0"),
+  scalaNativeVersion = Version.VConst("0.5.12"),
+  crossProjectVersion = Version.VConst("1.4.0"),
+  ```
+* `sbt-izumi` does not re-export `sbt-duplicates-finder` or `sbt-stats` there (no sbt 2.x
+  releases). `sbt-dependency-tree` is in-sourced into sbt 2.x itself, so it is still available.
+* `IzumiExposedTestScopesPlugin.itSettings` throws on sbt 2.x: the `IntegrationTest`
+  configuration was removed, and integration tests are meant to be a separate subproject.
+
 ## IDE Support
 
 Intellij has built-in support for Ammonite scripts, if it doesn't work go to `Preferences -> Languages and Frameworks -> Scala -> Worksheet` and change `Treat .sc files as:` to `Always Ammonite`

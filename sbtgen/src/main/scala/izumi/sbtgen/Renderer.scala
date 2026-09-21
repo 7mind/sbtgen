@@ -109,8 +109,15 @@ class Renderer(
     }
   }
 
+  /**
+    * sbt 2.x compiles `build.sbt` with Scala 3, which does not infer structural
+    * refinement types for `new { ... }`, and treats bare statements as common
+    * settings injected into every subproject rather than as root-project settings.
+    */
+  protected val sbt2: Boolean = config.settings.sbtTarget == SbtTarget.Sbt2
+
   def render(): Seq[String] = {
-    val artifacts = aggregates.flatMap(renderHolderBlock)
+    val artifacts = aggregates.flatMap(agg => if (sbt2) renderFlatBlock(agg) else renderHolderBlock(agg))
 
     val filteredAggs = aggregates.flatMap(prepareCrossAggregate).filterNot(_.aggregatedNames.isEmpty)
 
@@ -135,13 +142,17 @@ class Renderer(
           }
 
           val aggregatedIds = group.filterNot(_.dontIncludeInSuperAgg).map(a => renderName(a.id))
+          val isRoot = p == Platform.All
           PreparedAggregate(
             id = ArtifactId(name),
             pathPrefix = path,
             aggregatedNames = aggregatedIds,
             platform = p,
-            plugins = project.globalPlugins,
-            isRoot = p == Platform.All,
+            // On sbt 2.x bare statements are injected into every subproject, so anything
+            // meant for the root project has to be attached to the root project itself.
+            plugins = if (isRoot && sbt2) project.globalPlugins ++ project.rootPlugins else project.globalPlugins,
+            isRoot = isRoot,
+            settings = if (isRoot && sbt2) project.topLevelSettings else Seq.empty,
           )
       }
 
@@ -152,10 +163,11 @@ class Renderer(
     val unexpected = project.topLevelSettings.filterNot(_.scope.platform == Platform.All)
     assert(unexpected.isEmpty, "Global settings cannot be scoped to a platform")
 
-    val settings = project.topLevelSettings.filter(_.scope.platform == Platform.All).map(renderSetting)
+    // On sbt 2.x these are emitted as part of the root project instead, see `superAgg` above.
+    val settings = if (sbt2) Seq.empty else project.topLevelSettings.filter(_.scope.platform == Platform.All).map(renderSetting)
 
     val imports = Seq(project.imports.filter(p => platformEnabled(p.platform)).map(i => s"import ${i.value}").mkString("\n"))
-    val plugins = formatPlugins(project.rootPlugins, Platform.All, dot = false, inclusive = true)
+    val plugins = if (sbt2) Seq.empty else formatPlugins(project.rootPlugins, Platform.All, dot = false, inclusive = true)
 
     val sc = settingsCache.toSeq.sortBy(_._2).map {
       case (s, idx) =>
@@ -194,6 +206,21 @@ class Renderer(
       val exports    = artifacts.flatMap(renderHolderReExports(holderName))
       Some((wrapped +: exports).mkString("\n"))
     }
+  }
+
+  /**
+    * Renders all of [[Aggregate]]'s child artifacts as plain top-level
+    * `lazy val`s, without the anonymous-class wrapper used for sbt 1.x.
+    *
+    * Scala 3, which compiles `build.sbt` on sbt 2.x, infers `Object` rather than
+    * a structural refinement for `new { ... }`, so the holder's members are
+    * unreachable there; `.sbt` files also reject an explicit refinement type
+    * annotation and do not share `object`/`lazy val` definitions across files.
+    */
+  protected def renderFlatBlock(agg: Aggregate): Option[String] = {
+    val artifacts = agg.filteredArtifacts
+    if (artifacts.isEmpty) None
+    else Some(artifacts.map(a => renderArtifact(prepareArtifact(project, a))).mkString("\n\n"))
   }
 
   protected def renderHolderReExports(holderName: String)(a: Artifact): Seq[String] = {
