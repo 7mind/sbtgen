@@ -167,6 +167,16 @@ object Entrypoint {
 
     b.append(doNotEditHeader)
 
+    // A snapshot sbtgen publishes sbt-izumi as a snapshot too, which no default resolver serves.
+    if (project.appendPlugins.exists(p => renderer.renderVersion(p.version).contains("-SNAPSHOT"))) {
+      b.append(
+        """// snapshot plugin versions are not served by the default resolvers
+          |resolvers += "central-snapshots" at "https://central.sonatype.com/repository/maven-snapshots/"
+          |
+          |""".stripMargin
+      )
+    }
+
     if (config.js) {
       b.append(
         s"""// https://www.scala-js.org/

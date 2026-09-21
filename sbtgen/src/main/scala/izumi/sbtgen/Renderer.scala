@@ -109,13 +109,6 @@ class Renderer(
     }
   }
 
-  /**
-    * sbt 2.x compiles `build.sbt` with Scala 3, which does not infer structural
-    * refinement types for `new { ... }`, and treats bare statements as common
-    * settings injected into every subproject rather than as root-project settings.
-    */
-  protected val sbt2: Boolean = config.settings.sbtTarget == SbtTarget.Sbt2
-
   def render(): Seq[String] = {
     val artifacts = aggregates.flatMap(agg => if (sbt2) renderFlatBlock(agg) else renderHolderBlock(agg))
 
@@ -377,6 +370,14 @@ class Renderer(
     )
   }
 
+  /** Whether the artifact declares itself an sbt plugin, i.e. carries `sbtPlugin := true`. */
+  protected def declaresSbtPlugin(settings: Seq[SettingDef]): Boolean = {
+    settings.exists {
+      case SettingDef.UnscopedSettingDef("sbtPlugin", SettingOp.Assign, Const.CBoolean(true), _) => true
+      case _ => false
+    }
+  }
+
   protected def prepareCrossArtifactSettings(
     project: Project,
     subGroupId: Option[String],
@@ -400,13 +401,24 @@ class Renderer(
       )
     } else Seq.empty
 
+    // An sbt 2.x plugin has to be built with the metabuild's own Scala version: pinning one from
+    // the model either clashes with sbt's (conflicting cross-version suffixes) or produces TASTy
+    // the metabuild compiler cannot read. Leaving the axis undeclared lets sbt derive it, and
+    // keeps working across sbt 2.x upgrades.
+    val derivesScalaVersion = sbt2 && declaresSbtPlugin(artifactSettings)
+
     val platformSettings = {
       enabledPlatforms.flatMap {
         penv =>
-          val psettings = Seq(
-            "crossScalaVersions" := penv.language.map(_.value),
-            "scalaVersion" := "crossScalaVersions.value.head".raw,
-          ) ++ penv.settings
+          val scalaAxis = if (derivesScalaVersion) {
+            Seq.empty
+          } else {
+            Seq(
+              "crossScalaVersions" := penv.language.map(_.value),
+              "scalaVersion" := "crossScalaVersions.value.head".raw,
+            )
+          }
+          val psettings = scalaAxis ++ penv.settings
 
           filterSettings(psettings.map(_.withPlatform(penv.platform)), penv.platform) ++
           filterSettings(artifactSettings, penv.platform) ++
@@ -783,6 +795,8 @@ trait Renderers extends WithArtifactExt with WithBasicRenderers with WithProject
   }
 
   protected def renderLib(isJvmOnly: Boolean, targetPlatform: Platform)(lib: ScopedLibrary): Const.CRaw = {
+    // On sbt 2.x `%%` encodes the platform suffix as well as the Scala one, so `%%%` is gone
+    // and a JVM-only dependency of a cross project has to opt out of the platform suffix.
     val sep = lib.dependency.kind match {
       case LibraryType.AutoJvm =>
         "%%"
@@ -792,16 +806,18 @@ trait Renderers extends WithArtifactExt with WithBasicRenderers with WithProject
         targetPlatform match {
           case Platform.Jvm =>
             "%%"
-          case Platform.Js =>
-            "%%%"
-          case Platform.Native =>
-            "%%%"
+          case Platform.Js | Platform.Native =>
+            if (sbt2) "%%" else "%%%"
           case Platform.All if isJvmOnly =>
             "%%"
           case Platform.All =>
-            "%%%"
+            if (sbt2) "%%" else "%%%"
         }
     }
+
+    // the two cases where `%%` already means "JVM artifact" and needs no opt-out
+    val jvmOnlyContext = targetPlatform == Platform.Jvm || (targetPlatform == Platform.All && isJvmOnly)
+    val forceJvmPlatform = sbt2 && lib.dependency.kind == LibraryType.AutoJvm && !jvmOnlyContext
 
     val suffix = lib.scope.scope match {
       case Scope.Runtime =>
@@ -832,7 +848,13 @@ trait Renderers extends WithArtifactExt with WithBasicRenderers with WithProject
 
     val libLiteral = Seq(stringLit(lib.dependency.group), sep, stringLit(lib.dependency.artifact), "%", renderVersion(lib.dependency.version))
 
-    val out = Seq(libLiteral, suffix, exclusionsOrRaw).flatten.mkString(" ")
+    val moduleLiteral = if (forceJvmPlatform) {
+      Seq(s"(${libLiteral.mkString(" ")}).platform(Platform.jvm)")
+    } else {
+      libLiteral
+    }
+
+    val out = Seq(moduleLiteral, suffix, exclusionsOrRaw).flatten.mkString(" ")
 
     if (lib.compilerPlugin) {
       s"compilerPlugin($out)".raw

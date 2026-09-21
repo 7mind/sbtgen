@@ -3,47 +3,65 @@
 // ALL CHANGES WILL BE LOST
 
 
+import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 
-lazy val `sbt2-core` = project.in(file("lib/sbt2-core"))
+
+lazy val `sbt2-core` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("lib/sbt2-core"))
   .settings(
-    crossScalaVersions := Seq(
-      "3.3.7",
-      "2.13.18"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
+    libraryDependencies ++= Seq(
+      "org.scala-lang.modules" %% "scala-collection-compat" % "2.14.0",
+      ("org.scala-lang" %% "scala3-compiler" % "3.3.7").platform(Platform.jvm)
+    )
+  )
+  .settings(
     organization := "io.7mind",
-    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
-    Compile / unmanagedSourceDirectories ++= (scalaBinaryVersion.value :: CrossVersion.partialVersion(scalaVersion.value).toList.map(_._1))
-      .map(v => baseDirectory.value / s".jvm/src/main/scala-$v").distinct,
-    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
-    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
-    Test / unmanagedSourceDirectories ++= (scalaBinaryVersion.value :: CrossVersion.partialVersion(scalaVersion.value).toList.map(_._1))
-      .map(v => baseDirectory.value / s".jvm/src/test/scala-$v").distinct,
-    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     Test / testOptions += Tests.Argument("-oDF")
   )
+  .jvmSettings(
+    crossScalaVersions := Seq(
+      "3.3.7"
+    ),
+    scalaVersion := crossScalaVersions.value.head
+  )
+  .jsSettings(
+    crossScalaVersions := Seq(
+      "3.3.7"
+    ),
+    scalaVersion := crossScalaVersions.value.head
+  )
+lazy val `sbt2-coreJVM` = `sbt2-core`.jvm
+lazy val `sbt2-coreJS` = `sbt2-core`.js
 
-lazy val `sbt2-api` = project.in(file("lib/sbt2-api"))
+lazy val `sbt2-api` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.Pure).in(file("lib/sbt2-api"))
   .dependsOn(
     `sbt2-core` % "test->compile;compile->compile"
   )
   .settings(
-    crossScalaVersions := Seq(
-      "3.3.7",
-      "2.13.18"
-    ),
-    scalaVersion := crossScalaVersions.value.head,
     organization := "io.7mind",
-    Compile / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/main/scala" ,
-    Compile / unmanagedSourceDirectories ++= (scalaBinaryVersion.value :: CrossVersion.partialVersion(scalaVersion.value).toList.map(_._1))
-      .map(v => baseDirectory.value / s".jvm/src/main/scala-$v").distinct,
-    Compile / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/main/resources" ,
-    Test / unmanagedSourceDirectories += baseDirectory.value / ".jvm/src/test/scala" ,
-    Test / unmanagedSourceDirectories ++= (scalaBinaryVersion.value :: CrossVersion.partialVersion(scalaVersion.value).toList.map(_._1))
-      .map(v => baseDirectory.value / s".jvm/src/test/scala-$v").distinct,
-    Test / unmanagedResourceDirectories += baseDirectory.value / ".jvm/src/test/resources" ,
     Test / testOptions += Tests.Argument("-oDF")
+  )
+  .jvmSettings(
+    crossScalaVersions := Seq(
+      "3.3.7"
+    ),
+    scalaVersion := crossScalaVersions.value.head
+  )
+  .jsSettings(
+    crossScalaVersions := Seq(
+      "3.3.7"
+    ),
+    scalaVersion := crossScalaVersions.value.head
+  )
+lazy val `sbt2-apiJVM` = `sbt2-api`.jvm
+lazy val `sbt2-apiJS` = `sbt2-api`.js
+
+lazy val `sbt2-plugin` = project.in(file("sbt-plugins/sbt2-plugin"))
+  .settings(
+    organization := "io.7mind",
+    Test / testOptions += Tests.Argument("-oDF"),
+    sbtPlugin := true,
+    sbtPluginPublishLegacyMavenStyle := false
   )
 
 lazy val `sbt2-agg` = (project in file(".agg/lib-sbt2-agg"))
@@ -54,8 +72,10 @@ lazy val `sbt2-agg` = (project in file(".agg/lib-sbt2-agg"))
     SettingKey[Boolean]("ide-skip-project") := true
   )
   .aggregate(
-    `sbt2-core`,
-    `sbt2-api`
+    `sbt2-coreJVM`,
+    `sbt2-coreJS`,
+    `sbt2-apiJVM`,
+    `sbt2-apiJS`
   )
 
 lazy val `sbt2-agg-jvm` = (project in file(".agg/lib-sbt2-agg-jvm"))
@@ -66,8 +86,42 @@ lazy val `sbt2-agg-jvm` = (project in file(".agg/lib-sbt2-agg-jvm"))
     SettingKey[Boolean]("ide-skip-project") := true
   )
   .aggregate(
-    `sbt2-core`,
-    `sbt2-api`
+    `sbt2-coreJVM`,
+    `sbt2-apiJVM`
+  )
+
+lazy val `sbt2-agg-js` = (project in file(".agg/lib-sbt2-agg-js"))
+  .settings(
+    crossScalaVersions := Nil,
+    libraryDependencies := Nil,
+    publish / skip := true,
+    SettingKey[Boolean]("ide-skip-project") := true
+  )
+  .aggregate(
+    `sbt2-coreJS`,
+    `sbt2-apiJS`
+  )
+
+lazy val `sbt2-plugins` = (project in file(".agg/sbt-plugins-sbt2-plugins"))
+  .settings(
+    crossScalaVersions := Nil,
+    libraryDependencies := Nil,
+    publish / skip := true,
+    SettingKey[Boolean]("ide-skip-project") := true
+  )
+  .aggregate(
+    `sbt2-plugin`
+  )
+
+lazy val `sbt2-plugins-jvm` = (project in file(".agg/sbt-plugins-sbt2-plugins-jvm"))
+  .settings(
+    crossScalaVersions := Nil,
+    libraryDependencies := Nil,
+    publish / skip := true,
+    SettingKey[Boolean]("ide-skip-project") := true
+  )
+  .aggregate(
+    `sbt2-plugin`
   )
 
 lazy val `test-sbt2-jvm` = (project in file(".agg/.agg-jvm"))
@@ -79,6 +133,17 @@ lazy val `test-sbt2-jvm` = (project in file(".agg/.agg-jvm"))
   )
   .aggregate(
     `sbt2-agg-jvm`
+  )
+
+lazy val `test-sbt2-js` = (project in file(".agg/.agg-js"))
+  .settings(
+    crossScalaVersions := Nil,
+    libraryDependencies := Nil,
+    publish / skip := true,
+    SettingKey[Boolean]("ide-skip-project") := true
+  )
+  .aggregate(
+    `sbt2-agg-js`
   )
 
 lazy val `test-sbt2` = (project in file("."))

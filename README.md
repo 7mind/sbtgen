@@ -119,6 +119,14 @@ The two must agree, otherwise generation fails.
 
 Differences in the generated output:
 
+* `LibraryType.Auto` dependencies use `%%` rather than `%%%`: sbt 2.x removed `%%%` and made `%%`
+  platform-aware. For the same reason `LibraryType.AutoJvm` dependencies of a cross-platform
+  artifact are emitted as `(... %% ...).platform(Platform.jvm)`, so they keep resolving the JVM
+  artifact instead of a `_sjs1` one.
+* Artifacts declaring `sbtPlugin := true` get no `crossScalaVersions`/`scalaVersion`. An sbt 2.x
+  plugin must be built with the metabuild's own Scala version; pinning one from the model either
+  clashes with sbt's (conflicting cross-version suffixes) or produces TASTy the metabuild cannot
+  read. Leaving the axis to sbt also survives sbt 2.x upgrades.
 * Project definitions are emitted flat, rather than grouped into the anonymous-class
   holders used to stay under the JVM classfile size limit on sbt 1.x. Scala 3, which
   compiles `build.sbt` on sbt 2.x, infers `Object` instead of a structural refinement
@@ -144,6 +152,23 @@ Known limitations on sbt 2.x:
   releases). `sbt-dependency-tree` is in-sourced into sbt 2.x itself, so it is still available.
 * `IzumiExposedTestScopesPlugin.itSettings` throws on sbt 2.x: the `IntegrationTest`
   configuration was removed, and integration tests are meant to be a separate subproject.
+* sbt 2.x defaults a project's `organization` to its project id. `withBuildInfo` therefore emits
+  useless coordinates (`"bi" %% "bi" % version`) for projects that never set one, so set
+  `ThisBuild / organization` if you use it.
+
+### Migrating your own settings
+
+sbtgen rewrites what it generates, but settings you supply as `RawSettingDef` are passed through
+verbatim, and two sbt 2.x changes bite almost every consumer:
+
+* **Cached tasks.** sbt 2.x caches every task, and a task whose result type has no `JsonFormat`
+  fails at load with `given evidence sjsonnew.HashWriter[...] is not found; opt out of caching by
+  annotating the key with @transient, or as foo := Def.uncached(...)`. Wrap those in
+  `Def.uncached { ... }`. Do the same for any task that must re-run for its side effects, or sbt
+  will serve the cached result and silently skip them.
+* **`mappings` is `Seq[(HashedVirtualFileRef, String)]`**, no longer `Seq[(File, String)]`.
+  Convert with `fileConverter.value.toVirtualFile(...)`, or `toFileRefsMapping` from
+  [sbt2-compat](https://github.com/sbt/sbt2-compat).
 
 ## IDE Support
 

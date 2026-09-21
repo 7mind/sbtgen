@@ -1,13 +1,20 @@
 package izumi.sbtgen.impl
 
 import izumi.sbtgen.model.Platform.BasePlatform
-import izumi.sbtgen.model.{Aggregate, Artifact, ArtifactReference, GenConfig, Group, Platform, PlatformEnv}
+import izumi.sbtgen.model.{Aggregate, Artifact, ArtifactReference, GenConfig, Group, Platform, PlatformEnv, SbtTarget}
 
 trait WithArtifactExt {
   this: WithBasicRenderers =>
 
   protected val config: GenConfig
   protected val configuredGroups: Set[Group]
+
+  /**
+    * sbt 2.x compiles `build.sbt` with Scala 3, which does not infer structural refinement types
+    * for `new { ... }`; it treats bare statements as common settings injected into every
+    * subproject; and its `%%` encodes the platform suffix, so `%%%` no longer exists.
+    */
+  protected final def sbt2: Boolean = config.settings.sbtTarget == SbtTarget.Sbt2
 
   protected implicit class AggregateExt(agg: Aggregate) {
     def filteredArtifacts: Seq[Artifact] = {

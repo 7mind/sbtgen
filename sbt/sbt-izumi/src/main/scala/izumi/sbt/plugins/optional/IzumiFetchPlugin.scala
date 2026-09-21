@@ -16,6 +16,10 @@ import sbtcompat.PluginCompat._
 
 object IzumiFetchPlugin extends AutoPlugin {
 
+  // resolveArtifacts reads IzumiPublishingPlugin's `publishTargets`, which only exists in that
+  // plugin's globalSettings; without this the setting is undefined whenever Fetch is enabled alone.
+  override def requires: Plugins = super.requires && IzumiPublishingPlugin
+
   object Keys {
     lazy val fetchArtifacts = settingKey[Seq[ModuleID]]("Jars to fetch from outside")
     lazy val artifactsTargetDir = settingKey[File]("Jars to fetch from outside")
