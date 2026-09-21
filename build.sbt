@@ -1,6 +1,21 @@
-import sbt.internal.librarymanagement.mavenint.PomExtraDependencyAttributes.SbtVersionKey
-import sbt.internal.librarymanagement.mavenint.PomExtraDependencyAttributes.ScalaVersionKey
 import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations._
+
+/** True while building the sbt 1.x variant of a plugin, false while building the sbt 2.x one. */
+val isSbt1 = Def.setting(scalaBinaryVersion.value == "2.12")
+
+/**
+  * Attaches the sbt/Scala binary versions an sbt plugin dependency is published under.
+  * On sbt 1.x this yields the `_2.12_1.0` coordinates, on sbt 2.x the `_sbt2_3` ones.
+  */
+def sbtPlugins(modules: Def.Initialize[Seq[ModuleID]], sbt1Only: Boolean = false): Def.Initialize[Seq[ModuleID]] = Def.setting {
+  if (sbt1Only && !isSbt1.value) {
+    Seq.empty
+  } else {
+    val sbtBinary = (pluginCrossBuild / sbtBinaryVersion).value
+    val scalaBinary = (update / scalaBinaryVersion).value
+    modules.value.map(Defaults.sbtPluginExtra(_, sbtBinary, scalaBinary))
+  }
+}
 
 ThisBuild / turbo := true
 
@@ -89,7 +104,7 @@ val scalaOpts = scalacOptions ++= ((isSnapshot.value, scalaVersion.value) match 
     "-Wvalue-discard",
     "-Wunused:_",
   )
-  case (_, ScalaVersions.scala_3) => Seq(
+  case (_, ScalaVersions.scala_3 | ScalaVersions.scala_3_sbt2) => Seq(
     "-no-indent",
     "-explain",
   )
@@ -134,43 +149,73 @@ lazy val sbtgen = (project in file("sbtgen"))
 
 lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
   .settings(
-    crossScalaVersions := Seq(ScalaVersions.scala_212),
+    // sbt 1.x plugins are Scala 2.12, sbt 2.x plugins are Scala 3; `pluginCrossBuild / sbtVersion`
+    // maps each Scala version onto the sbt version the plugin is compiled against.
+    crossScalaVersions := Seq(ScalaVersions.scala_212, ScalaVersions.scala_3_sbt2),
     scalaVersion := crossScalaVersions.value.head,
-    crossSbtVersions := Seq(sbtVersion.value),
     sbtPlugin := true,
     sbtPluginPublishLegacyMavenStyle := false,
+    pluginCrossBuild / sbtVersion := {
+      if (isSbt1.value) sbtVersion.value else Deps.sbt2Version
+    },
     libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always,
-    libraryDependencies ++= Seq(
-      "io.get-coursier" %% "coursier" % "2.1.24",
+    // coursier_3 is built against Scala 3.9, whose TASTy the sbt 2.x metabuild compiler cannot read,
+    // so the Scala 3 build consumes the Scala 2.13 artifact instead. Its Scala 2.13 flavours of the
+    // standard modules are dropped in favour of the Scala 3 ones sbt itself already brings in.
+    libraryDependencies += {
+      val coursier = "io.get-coursier" %% "coursier" % Deps.coursierVersion
+      if (isSbt1.value) {
+        coursier
+      } else {
+        coursier
+          .cross(CrossVersion.for3Use2_13)
+          .exclude("org.scala-lang.modules", "scala-xml_2.13")
+          .exclude("org.scala-lang.modules", "scala-collection-compat_2.13")
+      }
+    },
+    libraryDependencies ++= sbtPlugins(
+      Def.setting(Seq(
+        // https://github.com/scoverage/sbt-scoverage
+        "org.scoverage" % "sbt-scoverage" % "2.4.4",
 
-      // https://github.com/scoverage/sbt-scoverage
-      ("org.scoverage" % "sbt-scoverage" % "2.4.4").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
+        // http://www.scala-sbt.org/sbt-pgp/
+        "com.github.sbt" % "sbt-pgp" % "2.3.1",
 
-      // http://www.scala-sbt.org/sbt-pgp/
-      ("com.github.sbt" % "sbt-pgp" % "2.3.1").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
+        // https://github.com/sbt/sbt-git
+        "com.github.sbt" % "sbt-git" % "2.1.0",
 
-      // https://github.com/sbt/sbt-git
-      ("com.github.sbt" % "sbt-git" % "2.1.0").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
+        // https://github.com/sbt/sbt-release
+        "com.github.sbt" % "sbt-release" % "1.4.0",
 
-      // https://github.com/orrsella/sbt-stats
-      ("com.orrsella" % "sbt-stats" % "1.0.7").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
+        // https://github.com/sbt/sbt2-compat, shims the sbt 1.x/2.x API differences
+        "com.github.sbt" % "sbt2-compat" % Deps.sbt2CompatVersion,
+      ))
+    ).value,
+    // No sbt 2.x releases exist for these. sbt-dependency-tree is in-sourced into sbt 2.x core,
+    // the other two are unmaintained, so the sbt 2.x plugin simply does not re-export them.
+    libraryDependencies ++= sbtPlugins(
+      Def.setting(Seq(
+        // https://github.com/sbt/sbt-dependency-graph
+        "org.scala-sbt" % "sbt-dependency-tree" % sbtVersion.value,
 
-      // https://github.com/sbt/sbt-release
-      ("com.github.sbt" % "sbt-release" % "1.4.0").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
+        // https://github.com/sbt/sbt-duplicates-finder
+        "com.github.sbt" % "sbt-duplicates-finder" % "1.1.0",
 
-      // https://github.com/sbt/sbt-dependency-graph
-      ("org.scala-sbt" % "sbt-dependency-tree" % sbtVersion.value).extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
-
-      // https://github.com/sbt/sbt-duplicates-finder
-      ("com.github.sbt" % "sbt-duplicates-finder" % "1.1.0").extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
-    ),
-    libraryDependencies ++= Seq(
-      ("org.scala-js" % "sbt-scalajs" % ScalaVersions.scalaJsVersion % Test).extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
-      ("org.scala-native" % "sbt-scala-native" % ScalaVersions.scalaNativeVersion % Test).extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
-      ("org.portable-scala" % "sbt-scalajs-crossproject" % Deps.crossProjectVersion % Test).extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
-      ("ch.epfl.scala" % "sbt-scalajs-bundler" % Deps.bundlerVersion % Test).extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
-      ("org.scala-js" % "sbt-jsdependencies" % Deps.sbtJsDependenciesVersion % Test).extra(SbtVersionKey -> (pluginCrossBuild / sbtBinaryVersion).value, ScalaVersionKey -> (update / scalaBinaryVersion).value).withCrossVersion(Disabled()),
-    ),
+        // https://github.com/orrsella/sbt-stats
+        "com.orrsella" % "sbt-stats" % "1.0.7",
+      )),
+      sbt1Only = true,
+    ).value,
+    libraryDependencies ++= sbtPlugins(
+      Def.setting(Seq(
+        "org.scala-js" % "sbt-scalajs" % ScalaVersions.scalaJsVersion % Test,
+        "org.scala-native" % "sbt-scala-native" % ScalaVersions.scalaNativeVersion % Test,
+        "org.portable-scala" % "sbt-scalajs-crossproject" % Deps.crossProjectVersion % Test,
+        "ch.epfl.scala" % "sbt-scalajs-bundler" % Deps.bundlerVersion % Test,
+        "org.scala-js" % "sbt-jsdependencies" % Deps.sbtJsDependenciesVersion % Test,
+      )),
+      sbt1Only = true,
+    ).value,
     scalaOpts,
   )
 
@@ -178,14 +223,23 @@ lazy val `sbt-tests` = (project in file("sbt/sbt-tests"))
   .dependsOn(`sbt-izumi`)
   .enablePlugins(ScriptedPlugin)
   .settings(
-    crossSbtVersions := Seq(sbtVersion.value),
-    crossScalaVersions := Seq(ScalaVersions.scala_212),
+    crossScalaVersions := Seq(ScalaVersions.scala_212, ScalaVersions.scala_3_sbt2),
     scalaVersion := crossScalaVersions.value.head,
     sbtPlugin := true,
     sbtPluginPublishLegacyMavenStyle := false,
-    libraryDependencies ++= Seq(
-      "org.scala-sbt" % "sbt" % sbtVersion.value
-    ),
+    pluginCrossBuild / sbtVersion := {
+      if (isSbt1.value) sbtVersion.value else Deps.sbt2Version
+    },
+    // the scripted fixtures differ between sbt majors, so each gets its own tree
+    sbtTestDirectory := {
+      val name = if (isSbt1.value) "sbt-test" else "sbt2-test"
+      sourceDirectory.value / name
+    },
+    // sbt 2.x pulls compiler-interface 2.x, which conflicts with the one scala3-compiler wants;
+    // the scripted fixtures are the actual tests here, so this project needs no sbt on its classpath
+    libraryDependencies ++= {
+      if (isSbt1.value) Seq("org.scala-sbt" % "sbt" % sbtVersion.value) else Seq.empty
+    },
     publish / skip :=true,
     scriptedLaunchOpts := {
       Seq(

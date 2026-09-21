@@ -8,6 +8,7 @@ import sbt.io.syntax
 import sbt.io.syntax.File
 import sbt.librarymanagement.PublishConfiguration
 import sbt.{AutoPlugin, Credentials, MavenRepository, _}
+import sbtcompat.PluginCompat._
 
 object IzumiPublishingPlugin extends AutoPlugin {
 
@@ -32,8 +33,9 @@ object IzumiPublishingPlugin extends AutoPlugin {
   )
 
   override lazy val projectSettings = Seq(
-    publishConfiguration := withOverwrite(publishConfiguration.value, isSnapshot.value),
-    publishSignedConfiguration := withOverwrite(publishSignedConfiguration.value, isSnapshot.value),
+    // sbt 2.x caches every task; PublishConfiguration has no JsonFormat
+    publishConfiguration := Def.uncached(withOverwrite(publishConfiguration.value, isSnapshot.value)),
+    publishSignedConfiguration := Def.uncached(withOverwrite(publishSignedConfiguration.value, isSnapshot.value)),
     publishLocalConfiguration ~= withOverwriteEnabled,
     publishLocalSignedConfiguration ~= withOverwriteEnabled,
     sonatypeTarget := {

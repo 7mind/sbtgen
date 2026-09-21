@@ -5,6 +5,7 @@ import izumi.sbtgen.sbtmeta.SbtgenMeta
 final case class GlobalSettings(
   groupId: String,
   sbtVersion: Option[String] = SbtgenMeta.extractMandatory("sbt-version"),
+  sbtTarget: SbtTarget = SbtTarget.Sbt1,
   scalaJsVersion: Version = Version.VConst(SbtgenMeta.extractMandatory("scala-js-version").get),
   scalaNativeVersion: Version = Version.VConst(SbtgenMeta.extractMandatory("scala-native-version").get),
   crossProjectVersion: Version = Version.VConst(SbtgenMeta.extractMandatory("crossproject-version").get),

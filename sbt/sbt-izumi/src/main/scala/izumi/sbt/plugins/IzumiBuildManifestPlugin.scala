@@ -3,8 +3,9 @@ package izumi.sbt.plugins
 import java.time.ZonedDateTime
 
 import sbt.Keys._
+import sbtcompat.PluginCompat._
 import sbt.internal.util.ConsoleLogger
-import sbt.{AutoPlugin, Compile, Def, Package, PackageOption, PluginTrigger, taskKey}
+import sbt._
 
 object IzumiBuildManifestPlugin extends AutoPlugin {
   protected val logger: ConsoleLogger = ConsoleLogger()
@@ -21,7 +22,7 @@ object IzumiBuildManifestPlugin extends AutoPlugin {
 
   override def projectSettings: Seq[Def.Setting[_]] = {
     Seq(
-      extendedManifestMfAttributes := Def.task {
+      extendedManifestMfAttributes := Def.uncached {
         val attributes = Map(
           IzumiManifest.BuiltBy -> System.getProperty("user.name"),
           IzumiManifest.BuildJdk -> System.getProperty("java.version"),
@@ -37,7 +38,7 @@ object IzumiBuildManifestPlugin extends AutoPlugin {
         }
 
         Seq(Package.ManifestAttributes(attributes.toSeq: _*))
-      }.value,
+      },
       packageBin / packageOptions ++= extendedManifestMfAttributes.value,
       Compile / packageOptions ++= extendedManifestMfAttributes.value,
     )

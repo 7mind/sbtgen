@@ -5,14 +5,14 @@ import java.io.File
 import coursier._
 import coursier.core.Authentication
 import coursier.maven.MavenRepository
+import izumi.sbt.compat.{DirectCredential, PluginCompat}
 import izumi.sbt.plugins.optional.IzumiPublishingPlugin.Keys.publishTargets
 import izumi.sbt.plugins.optional.IzumiPublishingPlugin.MavenTarget
 import sbt.Keys.{target, _}
 import sbt.internal.util.ConsoleLogger
-import sbt.io.{CopyOptions, IO}
-import sbt.librarymanagement.ModuleID
-import sbt.librarymanagement.ivy.{DirectCredentials, FileCredentials}
-import sbt.{AutoPlugin, Def, librarymanagement => lm, settingKey, taskKey}
+import sbt.io.CopyOptions
+import sbt.{librarymanagement => lm, _}
+import sbtcompat.PluginCompat._
 
 object IzumiFetchPlugin extends AutoPlugin {
 
@@ -43,7 +43,7 @@ object IzumiFetchPlugin extends AutoPlugin {
         import sbt.io.syntax._
         target.value / "artifacts"
       },
-      fetchResolvers := {
+      fetchResolvers := Def.uncached {
         val defaultResolvers = Seq(
           sbt.librarymanagement.Resolver.DefaultMavenRepository
         )
@@ -53,7 +53,7 @@ object IzumiFetchPlugin extends AutoPlugin {
             m.toCoursier(sbt.Keys.credentials.value)
         }
       },
-      resolveArtifacts := Def.task {
+      resolveArtifacts := Def.uncached {
         val ownRepos = publishTargets.value.map(_.toCoursier)
         val repos = ownRepos ++ fetchResolvers.value
         val scala = scalaBinaryVersion.value
@@ -62,8 +62,8 @@ object IzumiFetchPlugin extends AutoPlugin {
         val resolved = artifactFetcher.value.resolve(repos.distinct, deps)
         logger.info(s"Resolved artifacts: ${resolved.size}")
         resolved
-      }.value,
-      copyArtifacts := Def.task {
+      },
+      copyArtifacts := Def.uncached {
         val targetDir = artifactsTargetDir.value
         val resolved = resolveArtifacts.value
         IO.delete(targetDir)
@@ -72,15 +72,17 @@ object IzumiFetchPlugin extends AutoPlugin {
           resolved.map(r => (r, targetDir.toPath.resolve(r.getName).toFile)),
           CopyOptions(overwrite = true, preserveLastModified = true, preserveExecutable = true),
         )
-      }.value,
-      lm.syntax.Compile / packageBin := Def.taskDyn {
-        copyArtifacts.value
+      },
+      Compile / packageBin := Def.uncached {
+        Def.taskDyn {
+          copyArtifacts.value
 
-        val ctask = (lm.syntax.Compile / packageBin).value
-        Def.task {
-          ctask
-        }
-      }.value,
+          val ctask = (Compile / packageBin).value
+          Def.task {
+            ctask
+          }
+        }.value
+      },
     )
   }
 }
@@ -88,7 +90,7 @@ object IzumiFetchPlugin extends AutoPlugin {
 object CoursierCompat {
 
   implicit class SbtRepoExt(repository: lm.MavenRepository) {
-    def toCoursier(creds: Seq[lm.ivy.Credentials]): MavenRepository = {
+    def toCoursier(creds: Seq[Credentials]): MavenRepository = {
       val auth = creds
         .map(toDirect)
         .find {
@@ -108,23 +110,18 @@ object CoursierCompat {
 
   implicit class IzumiExt(target: MavenTarget) {
     def toCoursier: MavenRepository = {
-      val creds: DirectCredentials = toDirect(target.credentials)
+      val creds: DirectCredential = toDirect(target.credentials)
       CoursierCompat.toCoursier(target.repo.root, creds)
     }
   }
 
-  def toCoursier(root: String, creds: DirectCredentials): MavenRepository = {
+  def toCoursier(root: String, creds: DirectCredential): MavenRepository = {
     val auth = Authentication(creds.userName, creds.passwd)
     MavenRepository(root, authentication = Some(auth))
   }
 
-  def toDirect(credentials: lm.ivy.Credentials): DirectCredentials = {
-    credentials match {
-      case f: FileCredentials =>
-        lm.ivy.Credentials.loadCredentials(f.path).right.get
-      case d: DirectCredentials =>
-        d
-    }
+  def toDirect(credentials: Credentials): DirectCredential = {
+    PluginCompat.resolveCredentials(credentials)
   }
 
   implicit class ModuleIdExt(module: lm.ModuleID) {

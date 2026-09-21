@@ -3,7 +3,7 @@ package izumi.sbtgen
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Paths}
 
-import izumi.sbtgen.model.{GenConfig, GlobalSettings, Project}
+import izumi.sbtgen.model.{GenConfig, GlobalSettings, Project, SbtTarget}
 import scopt.OptionParser
 
 case class Config(
@@ -88,6 +88,8 @@ object Entrypoint {
   }
 
   final def run(config: GenConfig, project: Project, renderer: Renderer): Unit = {
+    validate(config)
+
     val artifacts = renderer.render()
     val buildSbtStr = Seq(doNotEditHeader) ++ (if (!config.jvmOnly) {
                                                  Seq(
@@ -124,6 +126,39 @@ object Entrypoint {
                |""".stripMargin
           )
         }
+    }
+  }
+
+  /**
+    * Rejects combinations we cannot emit a working build for, instead of emitting
+    * a build that fails to load (or, worse, silently drops a plugin).
+    */
+  private def validate(config: GenConfig): Unit = {
+    val settings = config.settings
+    val target = settings.sbtTarget
+
+    settings.sbtVersion.foreach {
+      version =>
+        val major = version.takeWhile(_ != '.')
+        if (major != target.majorVersion) {
+          throw new IllegalArgumentException(
+            s"GlobalSettings.sbtVersion=$version contradicts GlobalSettings.sbtTarget=$target, which requires sbt ${target.majorVersion}.x"
+          )
+        }
+    }
+
+    if (target == SbtTarget.Sbt2 && config.js) {
+      // Both plugins are published for sbt 1.x only, so a JS build cannot use them on sbt 2.x.
+      val unsupported = Seq(
+        "bundlerVersion" -> settings.bundlerVersion,
+        "sbtJsDependenciesVersion" -> settings.sbtJsDependenciesVersion,
+      ).collect { case (name, Some(_)) => name }
+
+      if (unsupported.nonEmpty) {
+        throw new IllegalArgumentException(
+          s"${unsupported.mkString(", ")} must be None when targeting sbt 2.x: sbt-scalajs-bundler and sbt-jsdependencies have no sbt 2.x releases"
+        )
+      }
     }
   }
 

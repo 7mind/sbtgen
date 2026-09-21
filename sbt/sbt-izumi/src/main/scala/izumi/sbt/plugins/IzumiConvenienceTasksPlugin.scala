@@ -50,7 +50,7 @@ object IzumiConvenienceTasksPlugin extends AutoPlugin {
         val suffix: String = (token(Space) ~> token(StringBasic, "suffix")).parsed
 
         val name = "target"
-        val pairs = (file(".") ** (DirectoryFilter && new ExactFilter(name))).get.map {
+        val pairs = (file(".") ** (DirectoryFilter && new ExactFilter(name))).get().map {
           fn =>
             val withSuffix = fn.toPath.getParent.resolve(s"${fn.getName}.$suffix")
             logger.debug(s"Preserving directory $fn => $withSuffix")
@@ -65,7 +65,7 @@ object IzumiConvenienceTasksPlugin extends AutoPlugin {
       rmDirs := {
         val name: String = (token(Space) ~> token(StringBasic, "name")).parsed
 
-        val dirs = (file(".") ** (DirectoryFilter && new ExactFilter(name))).get
+        val dirs = (file(".") ** (DirectoryFilter && new ExactFilter(name))).get()
         IO.delete(dirs)
       },
       newModule := {
