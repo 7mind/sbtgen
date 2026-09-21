@@ -25,7 +25,10 @@ object IzumiConvenienceTasksPlugin extends AutoPlugin {
 
   override def globalSettings: Seq[Def.Setting[_]] = {
     Seq(
-      defaultStubPackage := Some((ThisBuild / organization).value)
+      // `.?` rather than a direct reference: sbt 2.x fails the whole build with
+      // "Reference to undefined setting" when a global setting reads `ThisBuild / organization`
+      // from a build that never defines it.
+      defaultStubPackage := (ThisBuild / organization).?.value
     )
   } // These settings are only suitable for root project, it's okay to activate this plugin on root level only
 

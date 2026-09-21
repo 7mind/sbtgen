@@ -1,0 +1,3 @@
+# the build must load at all, and the stub package must simply be absent
+> compile
+> show defaultStubPackage
