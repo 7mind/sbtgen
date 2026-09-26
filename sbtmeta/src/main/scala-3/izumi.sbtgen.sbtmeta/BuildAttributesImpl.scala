@@ -11,7 +11,8 @@ object BuildAttributesImpl {
   def sbtProjectRoot()(using quotes: Quotes): Expr[Option[String]] = {
     import quotes.reflect.*
 
-    val result = SourceFile.current.getJPath
+    val result = SourceFile
+      .current.getJPath
       .flatMap(findProjectRoot)
       .map(_.toFile.getCanonicalPath)
 
