@@ -36,7 +36,7 @@ object IzumiGitStampPlugin extends AutoPlugin {
             logger.debug(s"Manifest value: $k = $v")
         }
 
-        Package.ManifestAttributes(gitValues.toSeq *)
+        Package.ManifestAttributes(gitValues.toSeq*)
       }.value,
     )
   }
