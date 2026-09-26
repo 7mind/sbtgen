@@ -1,7 +1,7 @@
 object ScalaVersions {
   val scala_212 = "2.12.21"
   val scala_213 = "2.13.18"
-  val scala_3 = "3.3.7"
+  val scala_3 = "3.3.8"
 
   // sbt 2.x plugins must be compiled with the Scala version of the sbt 2.x metabuild:
   // its API is published as TASTy, which an older compiler cannot read.
