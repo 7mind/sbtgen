@@ -182,7 +182,7 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
         "com.github.sbt" % "sbt-pgp" % "2.3.1",
 
         // https://github.com/sbt/sbt-git
-        "com.github.sbt" % "sbt-git" % "2.1.0",
+        "com.github.sbt" % "sbt-git" % "2.2.0",
 
         // https://github.com/sbt/sbt-release
         "com.github.sbt" % "sbt-release" % "1.4.0",
