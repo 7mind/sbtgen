@@ -179,7 +179,7 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
         "org.scoverage" % "sbt-scoverage" % "2.4.4",
 
         // http://www.scala-sbt.org/sbt-pgp/
-        "com.github.sbt" % "sbt-pgp" % "2.3.1",
+        "com.github.sbt" % "sbt-pgp" % "2.3.2",
 
         // https://github.com/sbt/sbt-git
         "com.github.sbt" % "sbt-git" % "2.2.0",
