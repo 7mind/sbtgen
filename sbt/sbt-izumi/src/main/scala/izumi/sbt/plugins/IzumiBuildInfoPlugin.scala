@@ -189,7 +189,7 @@ object IzumiBuildInfoPlugin extends AutoPlugin {
            |object $objectName {
            |  final val version = "$ver"
            |  final val group = "$group"
-           |  final val scalaVersion = "${scalaVersion.value}"
+           |  final val scalaVersion = "${(LocalRootProject / scalaVersion).value}"
            |  final val sbtVersion = "${(pluginCrossBuild / Keys.sbtVersion).value}"
            |
            |  /**
