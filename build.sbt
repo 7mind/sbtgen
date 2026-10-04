@@ -179,13 +179,13 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
         "org.scoverage" % "sbt-scoverage" % "2.4.4",
 
         // http://www.scala-sbt.org/sbt-pgp/
-        "com.github.sbt" % "sbt-pgp" % "2.3.1",
+        "com.github.sbt" % "sbt-pgp" % "2.3.2",
 
         // https://github.com/sbt/sbt-git
-        "com.github.sbt" % "sbt-git" % "2.1.0",
+        "com.github.sbt" % "sbt-git" % "2.2.0",
 
         // https://github.com/sbt/sbt-release
-        "com.github.sbt" % "sbt-release" % "1.4.0",
+        "com.github.sbt" % "sbt-release" % "1.5.0",
 
         // https://github.com/sbt/sbt2-compat, shims the sbt 1.x/2.x API differences
         "com.github.sbt" % "sbt2-compat" % Deps.sbt2CompatVersion,
