@@ -11,7 +11,7 @@ lazy val `sbt2-core` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType
   .settings(
     libraryDependencies ++= Seq(
       "org.scala-lang.modules" %% "scala-collection-compat" % "2.14.0",
-      ("org.scala-lang" %% "scala3-compiler" % "3.3.7").platform(Platform.jvm)
+      ("org.scala-lang" %% "scala3-compiler" % "3.3.8").platform(Platform.jvm)
     )
   )
   .settings(
@@ -20,13 +20,13 @@ lazy val `sbt2-core` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType
   )
   .jvmSettings(
     crossScalaVersions := Seq(
-      "3.3.7"
+      "3.3.8"
     ),
     scalaVersion := crossScalaVersions.value.head
   )
   .jsSettings(
     crossScalaVersions := Seq(
-      "3.3.7"
+      "3.3.8"
     ),
     scalaVersion := crossScalaVersions.value.head
   )
@@ -43,13 +43,13 @@ lazy val `sbt2-api` = crossProject(JVMPlatform, JSPlatform).crossType(CrossType.
   )
   .jvmSettings(
     crossScalaVersions := Seq(
-      "3.3.7"
+      "3.3.8"
     ),
     scalaVersion := crossScalaVersions.value.head
   )
   .jsSettings(
     crossScalaVersions := Seq(
-      "3.3.7"
+      "3.3.8"
     ),
     scalaVersion := crossScalaVersions.value.head
   )
@@ -153,7 +153,7 @@ lazy val `test-sbt2` = (project in file("."))
     publish / skip := true,
     ThisBuild / publishMavenStyle := true,
     crossScalaVersions := Nil,
-    scalaVersion := "3.3.7",
+    scalaVersion := "3.3.8",
     ThisBuild / organization := "io.7mind"
   )
   .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
