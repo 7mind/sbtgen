@@ -77,7 +77,7 @@ class SbtGenTest extends AnyWordSpec {
 
     "reject an sbt version contradicting the sbt target" in {
       val e = intercept[IllegalArgumentException] {
-        runWith(sbt2Settings.copy(sbtVersion = Some("1.12.8")))
+        runWith(sbt2Settings.copy(sbtVersion = Some("1.12.15")))
       }
       assert(e.getMessage.contains("contradicts"))
     }
