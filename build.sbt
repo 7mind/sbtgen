@@ -185,7 +185,7 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
         "com.github.sbt" % "sbt-git" % "2.2.0",
 
         // https://github.com/sbt/sbt-release
-        "com.github.sbt" % "sbt-release" % "1.4.0",
+        "com.github.sbt" % "sbt-release" % "1.5.0",
 
         // https://github.com/sbt/sbt2-compat, shims the sbt 1.x/2.x API differences
         "com.github.sbt" % "sbt2-compat" % Deps.sbt2CompatVersion,
