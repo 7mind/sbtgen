@@ -105,17 +105,17 @@ Cannot parse commandline
 sbt 2.x picks up `sbt-izumi_sbt2_3`. `addSbtPlugin` resolves the right one, so nothing
 changes in `project/plugins.sbt`.
 
-To make `sbtgen` emit a build for sbt 2.x, set `sbtTarget` and a matching `sbtVersion`:
+To make `sbtgen` emit a build for sbt 1.x, set `sbtTarget` and a matching `sbtVersion`:
 
 ```scala
 val globalSettings = GlobalSettings(
   groupId = "my.org",
-  sbtVersion = Some("2.0.9"),
-  sbtTarget = SbtTarget.Sbt2,
+  sbtVersion = Some("1.12.8"),
+  sbtTarget = SbtTarget.Sbt1,
 )
 ```
 
-The two must agree, otherwise generation fails.
+`sbtgen` emits a build for sbt 2.x by default. The two must agree, otherwise generation fails.
 
 Differences in the generated output:
 

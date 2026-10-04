@@ -10,7 +10,13 @@ import java.nio.file.{Files, Paths}
 import scala.sys.process._
 
 class SbtGenTest extends AnyWordSpec {
-  def genProjects(dir: String, args: Seq[String], settings: GlobalSettings = GlobalSettings(groupId = "io.7mind")): Unit = {
+  private val sbt1Settings = GlobalSettings(
+    groupId = "io.7mind",
+    sbtVersion = Some(SbtGenTest.sbt1Version),
+    sbtTarget = SbtTarget.Sbt1,
+  )
+
+  def genProjects(dir: String, args: Seq[String], settings: GlobalSettings = sbt1Settings): Unit = {
     val out = args ++ Seq("-o", _: String)
     Entrypoint.main(Izumi.izumi, settings, out(dir))
     Entrypoint.main(TestDottyProject.project, settings, out(s"$dir/dotty"))
@@ -111,6 +117,12 @@ class SbtGenTest extends AnyWordSpec {
       assert(!releasePluginsSbt.contains("central-snapshots"))
     }
 
+    "default to sbt 2" in {
+      val defaults = GlobalSettings(groupId = "io.7mind")
+      assert(defaults.sbtTarget == SbtTarget.Sbt2)
+      assert(defaults.sbtVersion == Some(SbtGenTest.sbt2Version))
+    }
+
     "extract build meta" in {
       assert(SbtgenMeta.extractScalaVersions().nonEmpty)
     }
@@ -143,5 +155,6 @@ class SbtGenTest extends AnyWordSpec {
 }
 
 object SbtGenTest {
+  final val sbt1Version = "1.12.8"
   final val sbt2Version = "2.0.9"
 }
