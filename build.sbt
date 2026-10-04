@@ -134,7 +134,7 @@ lazy val sbtgen = (project in file("sbtgen"))
     scalacOptions ++= Seq(
       s"-Xmacro-settings:product-version=${version.value}",
       s"-Xmacro-settings:product-group=${organization.value}",
-      s"-Xmacro-settings:sbt-version=${sbtVersion.value}",
+      s"-Xmacro-settings:sbt-version=${Deps.sbt2Version}",
       s"-Xmacro-settings:scala-version=${scalaVersion.value}",
       s"-Xmacro-settings:scala-versions=${crossScalaVersions.value.mkString(":")}",
       s"-Xmacro-settings:scala-js-version=${ScalaVersions.scalaJsVersion}",
@@ -156,9 +156,16 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
     sbtPlugin := true,
     sbtPluginPublishLegacyMavenStyle := false,
     pluginCrossBuild / sbtVersion := {
-      if (isSbt1.value) sbtVersion.value else Deps.sbt2Version
+      if (isSbt1.value) Deps.sbt1Version else Deps.sbt2Version
     },
     libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always,
+    resolvers ++= {
+      if (isSbt1.value) {
+        Seq(Resolver.sbtPluginRepo("releases"))
+      } else {
+        Seq.empty
+      }
+    },
     // coursier_3 is built against Scala 3.9, whose TASTy the sbt 2.x metabuild compiler cannot read,
     // so the Scala 3 build consumes the Scala 2.13 artifact instead. Its Scala 2.13 flavours of the
     // standard modules are dropped in favour of the Scala 3 ones sbt itself already brings in.
@@ -196,7 +203,7 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
     libraryDependencies ++= sbtPlugins(
       Def.setting(Seq(
         // https://github.com/sbt/sbt-dependency-graph
-        "org.scala-sbt" % "sbt-dependency-tree" % sbtVersion.value,
+        "org.scala-sbt" % "sbt-dependency-tree" % Deps.sbt1Version,
 
         // https://github.com/sbt/sbt-duplicates-finder
         "com.github.sbt" % "sbt-duplicates-finder" % "1.1.0",
@@ -228,7 +235,7 @@ lazy val `sbt-tests` = (project in file("sbt/sbt-tests"))
     sbtPlugin := true,
     sbtPluginPublishLegacyMavenStyle := false,
     pluginCrossBuild / sbtVersion := {
-      if (isSbt1.value) sbtVersion.value else Deps.sbt2Version
+      if (isSbt1.value) Deps.sbt1Version else Deps.sbt2Version
     },
     // the scripted fixtures differ between sbt majors, so each gets its own tree
     sbtTestDirectory := {
@@ -238,7 +245,7 @@ lazy val `sbt-tests` = (project in file("sbt/sbt-tests"))
     // sbt 2.x pulls compiler-interface 2.x, which conflicts with the one scala3-compiler wants;
     // the scripted fixtures are the actual tests here, so this project needs no sbt on its classpath
     libraryDependencies ++= {
-      if (isSbt1.value) Seq("org.scala-sbt" % "sbt" % sbtVersion.value) else Seq.empty
+      if (isSbt1.value) Seq("org.scala-sbt" % "sbt" % Deps.sbt1Version) else Seq.empty
     },
     publish / skip :=true,
     scriptedLaunchOpts := {
@@ -279,7 +286,7 @@ lazy val `izumi-sbtgen` = (project in file("."))
       runTest, // : ReleaseStep
       runClean, // : ReleaseStep
       ReleaseStep(
-        action = { st: State =>
+        action = (st: State) => {
           val extracted = Project.extract(st)
           val ref = extracted.get(`sbt-tests` / thisProjectRef)
           extracted.runInputTask(ref / (Global / scripted), "", st)._1

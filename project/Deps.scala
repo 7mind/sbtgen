@@ -5,6 +5,8 @@ object Deps {
 
   val coursierVersion = "2.1.24"
 
+  val sbt1Version = "1.12.8"
+
   // minimum sbt 2.x the plugin is built against
   val sbt2Version = "2.0.9"
   // shims for the sbt 1.x/2.x API differences, https://github.com/sbt/sbt2-compat
