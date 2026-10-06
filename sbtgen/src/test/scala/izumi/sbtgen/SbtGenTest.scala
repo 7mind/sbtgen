@@ -155,6 +155,6 @@ class SbtGenTest extends AnyWordSpec {
 }
 
 object SbtGenTest {
-  final val sbt1Version = "1.12.15"
+  final val sbt1Version = "1.13.0"
   final val sbt2Version = "2.0.9"
 }
