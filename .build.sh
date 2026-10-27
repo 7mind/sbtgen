@@ -6,7 +6,7 @@ set -e
 SONATYPE_SECRET=.secrets/credentials.sonatype-nexus.properties
 
 function csbt {
-  COMMAND="time sbt -batch -no-colors -v $*"
+  COMMAND="time sbt --server -batch -no-colors -v $*"
   eval $COMMAND
 }
 
