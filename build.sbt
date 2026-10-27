@@ -128,7 +128,7 @@ lazy val sbtgen = (project in file("sbtgen"))
   .settings(
     crossScalaVersions := Seq(ScalaVersions.scala_3, ScalaVersions.scala_213, ScalaVersions.scala_212),
     scalaVersion := crossScalaVersions.value.head,
-    libraryDependencies += "com.github.scopt" %% "scopt" % "4.1.0",
+    libraryDependencies += "com.github.scopt" %% "scopt" % "4.2.0",
     libraryDependencies += "org.scala-lang.modules" %% "scala-collection-compat" % "2.14.0",
     (ThisBuild / libraryDependencies) += "org.scalatest" %% "scalatest" % "3.2.20" % Test,
     scalacOptions ++= Seq(
