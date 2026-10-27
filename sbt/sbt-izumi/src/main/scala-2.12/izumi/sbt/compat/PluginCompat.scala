@@ -1,6 +1,6 @@
 package izumi.sbt.compat
 
-import sbt.Credentials
+import sbt.{Credentials, Def}
 import sbt.librarymanagement.Configuration
 import sbt.librarymanagement.ivy.{DirectCredentials, FileCredentials}
 
@@ -14,6 +14,8 @@ object PluginCompat {
 
   /** Removed in sbt 2.x, see sbt/sbt#8184. */
   def integrationTestConfig: Option[Configuration] = Some(sbt.IntegrationTest)
+
+  def ivyUpdateOptionsSettings: Seq[Def.Setting[_]] = IvyUpdateOptions.settings
 
   def resolveCredentials(credentials: Credentials): DirectCredential = {
     val direct = credentials match {
