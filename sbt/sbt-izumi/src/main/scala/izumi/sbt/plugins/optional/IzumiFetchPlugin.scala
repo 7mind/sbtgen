@@ -2,9 +2,9 @@ package izumi.sbt.plugins.optional
 
 import java.io.File
 
-import coursier._
-import coursier.core.Authentication
-import coursier.maven.MavenRepository
+import lmcoursier.internal.shaded.coursier._
+import lmcoursier.internal.shaded.coursier.core.Authentication
+import lmcoursier.internal.shaded.coursier.maven.MavenRepository
 import izumi.sbt.compat.{DirectCredential, PluginCompat}
 import izumi.sbt.plugins.optional.IzumiPublishingPlugin.Keys.publishTargets
 import izumi.sbt.plugins.optional.IzumiPublishingPlugin.MavenTarget
@@ -25,7 +25,7 @@ object IzumiFetchPlugin extends AutoPlugin {
     lazy val artifactsTargetDir = settingKey[File]("Jars to fetch from outside")
     lazy val resolveArtifacts = taskKey[Seq[File]]("Performs transitive resolution with Coursier")
     lazy val copyArtifacts = taskKey[Set[File]]("Copy artifacts into target directory")
-    lazy val fetchResolvers = taskKey[Seq[coursier.MavenRepository]]("")
+    lazy val fetchResolvers = taskKey[Seq[MavenRepository]]("")
     lazy val artifactFetcher = settingKey[CoursierFetch]("")
   }
 

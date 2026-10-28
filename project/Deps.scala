@@ -3,8 +3,6 @@ object Deps {
   val bundlerVersion = "0.21.1"
   val sbtJsDependenciesVersion = "1.0.2"
 
-  val coursierVersion = "2.1.24"
-
   val sbt1Version = "1.12.15"
 
   // minimum sbt 2.x the plugin is built against

@@ -158,26 +158,11 @@ lazy val `sbt-izumi` = (project in file("sbt/sbt-izumi"))
     pluginCrossBuild / sbtVersion := {
       if (isSbt1.value) Deps.sbt1Version else Deps.sbt2Version
     },
-    libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always,
     resolvers ++= {
       if (isSbt1.value) {
         Seq(Resolver.sbtPluginRepo("releases"))
       } else {
         Seq.empty
-      }
-    },
-    // coursier_3 is built against Scala 3.9, whose TASTy the sbt 2.x metabuild compiler cannot read,
-    // so the Scala 3 build consumes the Scala 2.13 artifact instead. Its Scala 2.13 flavours of the
-    // standard modules are dropped in favour of the Scala 3 ones sbt itself already brings in.
-    libraryDependencies += {
-      val coursier = "io.get-coursier" %% "coursier" % Deps.coursierVersion
-      if (isSbt1.value) {
-        coursier
-      } else {
-        coursier
-          .cross(CrossVersion.for3Use2_13)
-          .exclude("org.scala-lang.modules", "scala-xml_2.13")
-          .exclude("org.scala-lang.modules", "scala-collection-compat_2.13")
       }
     },
     libraryDependencies ++= sbtPlugins(
@@ -261,11 +246,7 @@ lazy val `sbt-tests` = (project in file("sbt/sbt-tests"))
       ).flatten
     },
     scriptedBufferLog := false,
-    scalaOpts,
-    // Ignore scala-xml version conflict between scoverage where `coursier` requires scala-xml v2
-    // and scoverage requires scala-xml v1 on Scala 2.12,
-    // introduced when updating scoverage from 1.9.3 to 2.0.5
-    libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
+    scalaOpts
   )
 
 lazy val `izumi-sbtgen` = (project in file("."))
